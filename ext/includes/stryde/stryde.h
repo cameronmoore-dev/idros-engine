@@ -1,0 +1,31 @@
+#pragma once
+
+#include "typedefs.h"
+#include "strdtime.h"
+#include "strdmath.h"
+#include "strdassert.h"
+
+#include "window/window.h"
+#include "window/input.h"
+#include "window/event.h"
+
+#include "graphics/blendmode.h"
+#include "graphics/circle.h"
+#include "graphics/colour.h"
+#include "graphics/font.h"
+#include "graphics/framebuffer.h"
+#include "graphics/glyph.h"
+#include "graphics/image.h"
+#include "graphics/renderer.h"
+#include "graphics/shader.h"
+#include "graphics/text.h"
+#include "graphics/texture.h"
+#include "graphics/vertex.h"
+#include "graphics/vertexarray.h"
+#include "graphics/view2d.h"
+#include "graphics/view3d.h"
+
+#include "audio/audio_engine.h"
+#include "audio/format_headers.h"
+#include "audio/music.h"
+#include "audio/sound.h"
