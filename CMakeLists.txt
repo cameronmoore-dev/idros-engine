@@ -13,12 +13,21 @@ set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
 add_library(idros SHARED EXCLUDE_FROM_ALL 
     "src/entry.cpp"
     "src/engine.cpp"
+    "src/scene_manager.cpp"
 )
 
-target_include_directories(idros PUBLIC ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/stryde)
-target_link_libraries(idros PRIVATE ${LIB_PATH}/libstryde.dll.a)
+target_include_directories(idros PUBLIC ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
+target_link_libraries(idros PRIVATE ${LIB_PATH}/libidros_pal.a)
 
+if (WIN32)
+	if (MSVC)
+		target_link_libraries(idros PRIVATE xinput.lib xaudio2_9.lib winmm.lib opengl32.lib)
+	else()
+		target_link_libraries(idros PRIVATE -lxinput -lxaudio2_9 -lwinmm -lopengl32)
+	endif()
+endif()
 
+# Copies over necessary files to the test app
 add_custom_command(
     TARGET idros
     POST_BUILD
@@ -36,11 +45,20 @@ add_custom_command(
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SRC_PATH}/entry.h"
+    "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
     "${SRC_PATH}/scene.h"
     "${SRC_PATH}/scene_manager.h"
+    "${SRC_PATH}/scene_manager.inl"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
 )
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+    "${LIB_INCLUDE_PATH}/pal"
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\pal"
+)
+#

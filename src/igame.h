@@ -1,5 +1,8 @@
 #pragma once
 
+#include <pal/window/window.h>
+#include <pal/graphics/renderer.h>
+
 namespace idrs
 {
     class IGame
@@ -7,9 +10,9 @@ namespace idrs
     public:
         virtual ~IGame() = default;
 
-        virtual void start() = 0;
-        virtual void processEvents() = 0;
+        virtual void start(Window &window) = 0;
+        virtual void processEvents(const Event &event) = 0;
         virtual void update() = 0;
-        virtual void draw() = 0;
+        virtual void draw(Renderer &renderer) = 0;
     };
 }

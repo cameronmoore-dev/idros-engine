@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stryde.h>
+#include <idros_pal.h>
 
 #include "igame.h"
 
@@ -14,9 +14,9 @@ namespace idrs
         void run();
 
     private:
-        IGame *m_game;
-        strd::Window *m_window;
-        strd::Renderer *m_renderer;
+        IGame    *m_game;
+        Window   *m_window;
+        Renderer *m_renderer;
 
     private:
         void processEvents();
