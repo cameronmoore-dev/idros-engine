@@ -1,12 +1,13 @@
 template<typename T>
-void SceneManager::addScene(Window &window)
+inline void SceneManager::loadScene(Window &window)
 {
     SceneManager &instance = get();
-    if (!instance.m_scenes.empty())
+    if (instance.m_scene)
     {
-        instance.m_scenes.pop();
+        instance.m_scene->shutdown();
+        delete(instance.m_scene);
     }
 
-    instance.m_scenes.push(std::make_unique<T>(window));
-    instance.m_scenes.top()->start();
+    instance.m_scene = new T(window);
+    instance.m_scene->start();
 }

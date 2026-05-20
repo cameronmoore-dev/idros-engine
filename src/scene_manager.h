@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <stack>
-
 #include "scene.h"
 
 namespace idrs
@@ -11,17 +8,14 @@ namespace idrs
 	{
 	public:
 		template<typename T>
-		static void addScene(Window &window);
-		static void removeScene();
-
-		static const std::unique_ptr<Scene> &getActiveScene();
+		static void loadScene(Window &window);
+		static Scene &currentScene();
 	
 	private:
-		std::stack<std::unique_ptr<Scene>> m_scenes;
+		Scene *m_scene = nullptr;
 	
 	private:
 		static SceneManager &get();
-	
 		SceneManager() = default;
 		~SceneManager() = default;
 	};

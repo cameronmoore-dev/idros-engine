@@ -41,6 +41,7 @@ namespace idrs
 
     public:
         Win32AudioEngine(AudioEngine *engine);
+        ~Win32AudioEngine();
 
         void play(const Sound &sound);
         void play(const Music &music);

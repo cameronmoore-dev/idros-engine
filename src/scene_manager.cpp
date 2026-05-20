@@ -8,20 +8,8 @@ namespace idrs
         return instance;
     }
 
-    void SceneManager::removeScene()
+    Scene &SceneManager::currentScene()
     {
-        SceneManager &instance = get();
-        if (instance.m_scenes.size() == 1)
-        {
-            return;
-        }
-
-        instance.m_scenes.top()->shutdown();
-        instance.m_scenes.pop();
-    }
-
-    const std::unique_ptr<Scene> &SceneManager::getActiveScene()
-    {
-        return get().m_scenes.top();
+        return *get().m_scene;
     }
 }

@@ -39,6 +39,8 @@ namespace idrs
         void reset();
         u32 swapMusicBuffers();
 
+        std::ifstream &file() { return m_file; }
+
         const std::vector<char> &samples() const { return m_playBuffer; }
         const u64 &id() const {return m_id;}
         

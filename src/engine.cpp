@@ -7,23 +7,17 @@ namespace idrs
         m_window(new Window()),
         m_renderer(nullptr)
     {
-        if (!m_game)
-        {
-            std::cerr << "IDROS::Game failed to create!" << std::endl;
-            return;
-        }
-        if (!m_window->create("Idros Engine", 1280, 720, Style::Default))
-        {
-            std::cerr << "IDROS::Window failed to create!" << std::endl;
-            return;
-        }
-        
+        IDRS_ASSERT(m_game, "IDROS::Game failed to create!");
+        IDRS_ASSERT(m_window->create("Idros Engine", 1280, 720, Style::Default), "IDROS::Window failed to create!");
         m_renderer = new Renderer();
+
+        m_game->p_window = m_window;
+        m_game->p_renderer = m_renderer;
     }
 
     void Engine::run()
     {
-        m_game->start(*m_window);
+        m_game->start();
 
         while (m_window->isOpen())
         {
@@ -53,7 +47,7 @@ namespace idrs
     {
         m_renderer->clear(0.1f, 0.1f, 0.1f, 1.0f);
 
-        m_game->draw(*m_renderer);
+        m_game->draw();
 
         m_window->swapBuffers();
     }
