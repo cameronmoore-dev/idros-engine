@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 
+#include "idrs_assert.h"
 #include "glyph.h"
 #include "texture.h"
 
@@ -15,6 +16,7 @@ namespace idrs
         Font(const std::string &path, const u32 fontSize);
         ~Font();
 
+        void load(const std::string &path, const u32 fontSize = 12);
         void setFontSize(const u32 size);
 
         const std::map<char, Glyph> &getGlyphMap() const;
@@ -31,7 +33,7 @@ namespace idrs
         const u32 k_pixelPaddingWidth = 1;
         
     private:
-        void init();
+        void create();
         void loadAscii(const void *f);
     };
 }

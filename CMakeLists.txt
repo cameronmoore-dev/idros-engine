@@ -5,19 +5,25 @@ project(idros LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(SRC_PATH			"${CMAKE_SOURCE_DIR}/src")
 set(LIB_INCLUDE_PATH	"${CMAKE_SOURCE_DIR}/ext/includes")
 set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
 
-add_library(idros SHARED EXCLUDE_FROM_ALL 
+add_library(idros SHARED 
     "src/entry.cpp"
     "src/engine.cpp"
     "src/scene_manager.cpp"
+    "src/resource_manager.cpp"
 )
 
-target_include_directories(idros PUBLIC ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
-target_link_libraries(idros PRIVATE ${LIB_PATH}/libidros_pal.a)
+target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
+
+add_library(idros_pal STATIC IMPORTED)
+set_target_properties(idros_pal PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidros_pal.a")
+target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idros_pal>")
+add_subdirectory(ext)
 
 if (WIN32)
 	if (MSVC)
@@ -52,6 +58,7 @@ add_custom_command(
     "${SRC_PATH}/scene.h"
     "${SRC_PATH}/scene_manager.h"
     "${SRC_PATH}/scene_manager.inl"
+    "${SRC_PATH}/resource_manager.h"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
 )
 add_custom_command(

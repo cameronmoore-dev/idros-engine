@@ -2,7 +2,7 @@
 
 #if defined(_WIN32)
     #include "win32/win32_audio_engine.h"
-    #define PLATFORM_AUDIO_ENGINE idrs::Win32AudioEngine;
+    #define PLATFORM_AUDIO_ENGINE idrs::Win32AudioEngine
     using PlatformAudioEngine = idrs::Win32AudioEngine;
 #endif
 #if defined (__linux__)

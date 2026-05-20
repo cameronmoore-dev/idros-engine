@@ -10,6 +10,7 @@ namespace idrs
     public:
         Text();
         Text(const std::string &text);
+        ~Text();
 
         void draw();
         void setText(const std::string &text);
