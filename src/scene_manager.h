@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "scene.h"
 
 namespace idrs
@@ -8,11 +10,17 @@ namespace idrs
 	{
 	public:
 		template<typename T>
-		static void loadScene(Window &window);
+		static void includeScene(Window &window, const std::string &name);
+		static void loadScene(const std::string &name);
+
 		static Scene &currentScene();
 	
 	private:
 		Scene *m_scene = nullptr;
+		std::unordered_map<u64, Scene*> m_sceneTable;
+
+	private:
+		u64 hash(const std::string &name);
 	
 	private:
 		static SceneManager &get();

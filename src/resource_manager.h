@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <variant>
 #include <utility>
+#include <filesystem>
 
 #include <pal/idros_pal.h>
 
@@ -22,15 +23,23 @@ namespace idrs
          * @brief Loads resource to be used exclusively within the scene 
          * @param path: File path to resource
          */
+        template <typename T, typename... Args>
+        static T &loadInScene(const std::filesystem::path &path, Args... args);
+
         template<typename T, typename... Args>
-        static T &loadInScene(const std::string &path, Args... args);
-        
+        static T &load(const std::filesystem::path &path, Args... args);
+
         template<typename T, typename... Args>
-        static T &load(const std::string& path, Args... args);
+        static void loadDirectoryInScene(const std::filesystem::path &path, Args... args);
+
+        template <typename T, typename... Args>
+        static void loadDirectory(const std::filesystem::path &path, Args... args);
 
         template<typename T>
-        static T &getResource(const std::string &name);
+        static T &getResource(const std::filesystem::path &name);
 
+        static void clearAll();
+        static void clearCommonResources();
         static void clearSceneResources();
 
     private:
@@ -42,11 +51,7 @@ namespace idrs
         const std::string getResourceName(const std::string &path);
 
     private:
-        static ResourceManager &get()
-        {
-            static ResourceManager instance;
-            return instance;
-        }
+        static ResourceManager &get();
         ResourceManager() = default;
         ~ResourceManager() = default;
     };

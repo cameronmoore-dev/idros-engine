@@ -1,13 +1,8 @@
 template<typename T>
-inline void SceneManager::loadScene(Window &window)
+inline void SceneManager::includeScene(Window &window, const std::string &name)
 {
     SceneManager &instance = get();
-    if (instance.m_scene)
-    {
-        instance.m_scene->shutdown();
-        delete(instance.m_scene);
-    }
 
-    instance.m_scene = new T(window);
-    instance.m_scene->start();
+    u64 key = instance.hash(name);
+    instance.m_sceneTable.emplace(key, new T(window));
 }
