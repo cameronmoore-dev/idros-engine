@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "event_callback_handler.h"
+
 namespace idrs
 {
     Engine::Engine(IGame *game) : 
@@ -21,9 +23,13 @@ namespace idrs
 
         while (m_window->isOpen())
         {
+            EventCallbackHandler::invoke<OnFrameStart>();
+
             processEvents();
             update();
             render();
+
+            EventCallbackHandler::invoke<OnFrameEnd>();
         }
 
         shutdown();

@@ -14,8 +14,14 @@ set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
 add_library(idros SHARED 
     "src/entry.cpp"
     "src/engine.cpp"
+    "src/ecs/ecs.cpp"
+    "src/ecs/entity_manager.cpp"
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
+
+    "src/event_callback_handler.cpp"
+    "src/callbacks/on_frame_start.cpp"
+    "src/callbacks/on_frame_end.cpp"
 )
 
 target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
@@ -55,6 +61,9 @@ add_custom_command(
     "${SRC_PATH}/entry.h"
     "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
+    "${SRC_PATH}/ecs/ecs.h"
+    "${SRC_PATH}/ecs/ecs.inl"
+    "${SRC_PATH}/ecs/entity_manager.h"
     "${SRC_PATH}/scene.h"
     "${SRC_PATH}/scene_manager.h"
     "${SRC_PATH}/scene_manager.inl"
