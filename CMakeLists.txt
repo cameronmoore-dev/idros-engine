@@ -61,9 +61,17 @@ add_custom_command(
     "${SRC_PATH}/entry.h"
     "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
+
     "${SRC_PATH}/ecs/ecs.h"
     "${SRC_PATH}/ecs/ecs.inl"
+    "${SRC_PATH}/ecs/entity.h"
     "${SRC_PATH}/ecs/entity_manager.h"
+    "${SRC_PATH}/ecs/component_manager.h"
+    "${SRC_PATH}/ecs/component_manager.inl"
+    "${SRC_PATH}/ecs/component_set.h"
+    "${SRC_PATH}/ecs/component_set.inl"
+    
+    "${SRC_PATH}/event_callback_handler.h"
     "${SRC_PATH}/scene.h"
     "${SRC_PATH}/scene_manager.h"
     "${SRC_PATH}/scene_manager.inl"

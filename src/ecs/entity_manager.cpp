@@ -2,6 +2,9 @@
 
 #include "event_callback_handler.h"
 
+#include <pal/idrs_time.h>
+#include <cstdio>
+
 namespace idrs
 {
     EntityManager::EntityManager()
@@ -37,11 +40,9 @@ namespace idrs
         {
             return;
         }
-
         for (Entity pending : m_toAdd)
         {
             m_entities.emplace_back(pending);
-            m_activeIds.at(pending) = true;
         }
 
         m_toAdd.clear();
@@ -60,6 +61,7 @@ namespace idrs
         {
             bool match = std::binary_search(m_toRemove.begin(), m_toRemove.end(), e);
             if (match) m_activeIds[e] = false;
+            
             return match;
         }), m_entities.end());
 
@@ -72,6 +74,7 @@ namespace idrs
         {
             if (!m_activeIds.at(i))
             {
+                m_activeIds[i] = true;
                 return i;
             }
         }

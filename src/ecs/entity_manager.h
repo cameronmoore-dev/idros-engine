@@ -3,12 +3,10 @@
 #include <vector>
 #include <algorithm>
 
-#include <pal/typedefs.h>
+#include "entity.h"
 
 namespace idrs
 {
-    using Entity = u32;
-
     class EntityManager
     {
     friend class ECS;
@@ -19,8 +17,7 @@ namespace idrs
         std::vector<Entity> m_toRemove;
         std::vector<bool>   m_activeIds;
 
-        const u32 k_maxEntities   = 100'000;
-        const u32 k_nullEntityID  = UINT32_MAX;
+        const u32 k_maxEntities = 10'000;
 
     private:
         EntityManager();

@@ -16,6 +16,7 @@ namespace idrs
     void ECS::destroy(Entity entity)
     {
         get().m_entityManager.destroy(entity);
+        get().m_componentManager.removeAll(entity);
     }
     
     void ECS::destroyAll()
