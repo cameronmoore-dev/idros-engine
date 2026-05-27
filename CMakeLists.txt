@@ -19,12 +19,16 @@ add_library(idros SHARED
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
 
+    "src/serialization.cpp"
+
     "src/event_callback_handler.cpp"
     "src/callbacks/on_frame_start.cpp"
     "src/callbacks/on_frame_end.cpp"
+
+    "src/tomlc17.c"
 )
 
-target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
+target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal ${LIB_INCLUDE_PATH}/tomlc17)
 
 add_library(idros_pal STATIC IMPORTED)
 set_target_properties(idros_pal PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidros_pal.a")
@@ -76,6 +80,8 @@ add_custom_command(
     "${SRC_PATH}/scene_manager.h"
     "${SRC_PATH}/scene_manager.inl"
     "${SRC_PATH}/resource_manager.h"
+
+    "${SRC_PATH}/serialization.h"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
 )
 add_custom_command(
@@ -84,5 +90,12 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
     "${LIB_INCLUDE_PATH}/pal"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\pal"
+)
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+    "${LIB_INCLUDE_PATH}/tomlc17"
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\tomlc17"
 )
 #
