@@ -1,7 +1,7 @@
 #pragma once
 
 #include "typedefs.h"
-#include "idrs_time.h"
+#include "clock.h"
 #include "idrs_math.h"
 #include "idrs_assert.h"
 

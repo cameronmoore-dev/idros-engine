@@ -2,9 +2,6 @@
 
 #include "event_callback_handler.h"
 
-#include <pal/idrs_time.h>
-#include <cstdio>
-
 namespace idrs
 {
     EntityManager::EntityManager()

@@ -9,13 +9,6 @@ namespace idrs
     using HighResClock  = std::chrono::high_resolution_clock;
     using TimePoint     = std::chrono::high_resolution_clock::time_point;
 
-    inline double getTimeSeconds()
-    {
-        TimePoint now = HighResClock::now();
-        std::chrono::duration<double> time = now.time_since_epoch();
-        return time.count();
-    }
-
     class Clock
     {
     public:

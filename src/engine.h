@@ -20,6 +20,7 @@ namespace idrs
 
     private:
         void processEvents();
+        // fixed update
         void update();
         void render();
 

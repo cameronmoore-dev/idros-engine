@@ -10,7 +10,9 @@ namespace idrs
         m_renderer(nullptr)
     {
         IDRS_ASSERT(m_game, "IDROS::Game failed to create!");
-        IDRS_ASSERT(m_window->create("Idros Engine", 1280, 720, Style::Default), "IDROS::Window failed to create!");
+
+        bool succeeded = m_window->create("Idros Engine", 1280, 720, Style::Default);
+        IDRS_ASSERT(succeeded, "IDROS::Window failed to create!");
         m_renderer = new Renderer();
 
         m_game->p_window = m_window;

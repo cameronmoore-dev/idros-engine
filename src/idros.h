@@ -5,6 +5,7 @@
 #include "igame.h"
 #include "scene_manager.h"
 #include "resource_manager.h"
+#include "time.hpp"
 
 #include "ecs.h"
 #include "entity.h"

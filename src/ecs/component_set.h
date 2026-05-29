@@ -3,8 +3,6 @@
 #include <array>
 #include <vector>
 
-#include <pal/typedefs.h>
-
 #include "entity.h"
 
 namespace idrs

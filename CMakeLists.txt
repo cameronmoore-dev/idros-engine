@@ -19,6 +19,8 @@ add_library(idros SHARED
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
 
+    "src/time.cpp"
+
     "src/serialization.cpp"
 
     "src/event_callback_handler.cpp"
@@ -65,6 +67,7 @@ add_custom_command(
     "${SRC_PATH}/entry.h"
     "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
+    "${SRC_PATH}/time.hpp"
 
     "${SRC_PATH}/ecs/ecs.h"
     "${SRC_PATH}/ecs/ecs.inl"

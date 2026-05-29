@@ -17,7 +17,7 @@ namespace idrs
         std::vector<Entity> m_toRemove;
         std::vector<bool>   m_activeIds;
 
-        const u32 k_maxEntities = 10'000;
+        const u32 k_maxEntities = 100'000;
 
     private:
         EntityManager();
