@@ -14,6 +14,7 @@ namespace idrs
         {
             WriteBinary,
             ReadBinary,
+            WriteText,
             ReadText
         };
 
@@ -24,11 +25,17 @@ namespace idrs
         void writeBinary(void *in, u32 len, u32 tsize);
         void readBinary(void *out, u32 len, u32 tsize);
 
-        // void writeText(const std::string &key);
+        template<typename T>
+        void writeSingle(const std::string &key, T value);
+        void writeString(const std::string &key, const std::string &value);
+
+        template<typename T>
+        void writeArray(const std::string &key, T* ptr, u32 len);
+        void writeStringArray(const std::string &key, std::string *ptr, u32 len);
 
         bool readBool(const std::string &key);
         s64 readInt(const std::string &key);
-        double readFlt(const std::string &key);
+        f32 readFlt(const std::string &key);
         std::string readString(const std::string &key);
 
         void readArrayString(const std::string &key, void *ptr);
