@@ -28,6 +28,7 @@ namespace idrs
             EventCallbackHandler::invoke<OnFrameStart>();
 
             processEvents();
+            fixedUpdate();
             update();
             render();
 
@@ -43,6 +44,14 @@ namespace idrs
         while (m_window->pollEvents(e))
         {
             m_game->processEvents(e);
+        }
+    }
+
+    void Engine::fixedUpdate()
+    {
+        while (Time::doUpdate())
+        {
+            m_game->fixedUpdate();
         }
     }
 

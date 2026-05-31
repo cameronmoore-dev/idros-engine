@@ -26,8 +26,6 @@ add_library(idros SHARED
     "src/event_callback_handler.cpp"
     "src/callbacks/on_frame_start.cpp"
     "src/callbacks/on_frame_end.cpp"
-
-    "src/tomlc17.c"
 )
 
 target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal ${LIB_INCLUDE_PATH}/tomlc17)
@@ -93,12 +91,5 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
     "${LIB_INCLUDE_PATH}/pal"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\pal"
-)
-add_custom_command(
-    TARGET idros
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${LIB_INCLUDE_PATH}/tomlc17"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\tomlc17"
 )
 #

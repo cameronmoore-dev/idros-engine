@@ -3,6 +3,7 @@
 #include <idros_pal.h>
 
 #include "igame.h"
+#include "time.hpp"
 
 namespace idrs
 {
@@ -20,7 +21,7 @@ namespace idrs
 
     private:
         void processEvents();
-        // fixed update
+        void fixedUpdate();
         void update();
         void render();
 

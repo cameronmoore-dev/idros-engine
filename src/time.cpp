@@ -5,7 +5,9 @@
 namespace idrs
 {
     Time::Time() : 
-        m_deltaTime(0.0f)
+        m_deltaTime(0.0f),
+        lag(0.0f),
+        fixedDT(1.0f / 60.f)
     {
         EventCallbackHandler::subscribe<OnFrameStart>(std::bind(&Time::updateTimestep, this));
     }
@@ -14,6 +16,19 @@ namespace idrs
     {
         static Time instance;
         return instance;
+    }
+
+    const bool Time::doUpdate()
+    {
+        Time &instance = get();
+        
+        while (instance.lag >= instance.fixedDT)
+        {
+            instance.lag -= instance.fixedDT;
+            return true;
+        }
+
+        return false;
     }
 
     const f32 Time::deltaTime()
@@ -28,5 +43,11 @@ namespace idrs
         instance.m_clock.stop();
         instance.m_deltaTime = instance.m_clock.secondsf();
         instance.m_clock.start();
+
+        if (m_deltaTime >= 0.1f)
+        {
+            m_deltaTime = 0.1f;
+        }
+        instance.lag += m_deltaTime;
     }
 }
