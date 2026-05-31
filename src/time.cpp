@@ -48,6 +48,7 @@ namespace idrs
         {
             m_deltaTime = 0.1f;
         }
+
         instance.lag += m_deltaTime;
     }
 }

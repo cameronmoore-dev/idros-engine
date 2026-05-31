@@ -16,6 +16,8 @@ namespace idrs
 	public:
 		Shader() = default;
 		Shader(const char* vertPath, const char* fragPath);
+
+		void load(const std::string &vertPath, const std::string &fragPath);
 	
 		void use();
 		void setInt(const std::string& name, int value) const;
