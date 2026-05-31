@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "entity_manager.h"
 #include "component_manager.h"
 
@@ -23,6 +25,9 @@ namespace idrs
 
         template<typename T>
         static std::vector<Entity> &view();
+
+        template<typename... Components, typename Fn>
+        static void _view(Fn fn);
 
         // template<typename T>
         // static bool has(Entity entity);

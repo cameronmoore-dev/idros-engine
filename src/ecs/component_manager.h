@@ -29,18 +29,17 @@ namespace idrs
         template<typename T>
         std::vector<Entity> &view();
 
-        /* 
-         * NOTE: is there any practical use for a 'has' function?
-         *       since the user will have an array of entities
-         *       which must have a given component returned when querying for systems
-         */
-        // template<typename T>
-        // bool has(Entity entity)
-        // {
-        // }
+        template<typename T>
+        bool has(Entity entity)
+        {
+            u64 key = std::type_index(typeid(T)).hash_code();
+            ComponentSet<T> &set = *static_cast<ComponentSet<T>*>(m_pool.at(key));
 
-    private:
-        ComponentManager() = default;
+            return (set.getDenseIndex(entity) != k_nullEntityID);
+        }
+
+        private:
+            ComponentManager() = default;
     };
 
     #include "component_manager.inl"

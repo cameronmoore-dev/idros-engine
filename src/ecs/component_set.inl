@@ -43,3 +43,15 @@ inline u32 ComponentSet<T>::getDenseIndex(Entity entity)
     }
     return k_nullEntityID;
 }
+
+template <class T>
+inline size_t ComponentSet<T>::size()
+{
+    return entities.size();
+}
+
+template <class T>
+inline std::vector<Entity> &ComponentSet<T>::entityList()
+{
+    return entities;
+}
