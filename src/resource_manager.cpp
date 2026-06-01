@@ -103,7 +103,7 @@ namespace idrs
 
     const std::string ResourceManager::getResourceName(const std::string &path)
     {
-        size_t start = path.find_last_of("/") + 1;
+        size_t start = path.find_last_of("/\\") + 1;
         size_t end   = path.find_last_of(".");
         size_t len   = end - start;
         return path.substr(start, len);

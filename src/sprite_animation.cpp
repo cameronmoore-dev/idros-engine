@@ -42,15 +42,15 @@ namespace idrs
 
     void SpriteAnimation::setLoopType(const SpriteAnimation::LoopType type) { m_loop = type; }
     void SpriteAnimation::setSpeed(const u32 speed)         { m_speed = speed; }
-    void SpriteAnimation::setPlaying(const bool status)     { m_playing = status; }
     void SpriteAnimation::setReversing(const bool status)   { m_reversing = status; }
 
-    const char *SpriteAnimation::getName()      { return m_name; }
-    const SpriteAnimation::LoopType SpriteAnimation::getLoopType() { return m_loop; }
-    const f32 SpriteAnimation::getSpeed()       { return m_speed; }
-    const u32 SpriteAnimation::getRows()        { return m_rows; }
-    const u32 SpriteAnimation::getColumns()     { return m_columns; }
-    const u32 SpriteAnimation::getTotalFrames() { return m_frames; }
-    const bool SpriteAnimation::isPlaying()     { return m_playing; }
-    const bool SpriteAnimation::isReversing()   { return m_reversing; }
+    const std::vector<Vec2i> SpriteAnimation::getFrameOffsets()     { return m_frameOffsets; }
+    const Vec2i SpriteAnimation::getStartFrame()    { return m_start; }
+    const char *SpriteAnimation::getName()          { return m_name; }
+    const SpriteAnimation::LoopType SpriteAnimation::getLoopType()  { return m_loop; }
+    const f32 SpriteAnimation::getSpeed()           { return m_speed; }
+    const u32 SpriteAnimation::getRows()            { return m_rows; }
+    const u32 SpriteAnimation::getColumns()         { return m_columns; }
+    const u32 SpriteAnimation::getTotalFrames()     { return m_frames; }
+    const bool SpriteAnimation::isReversing()       { return m_reversing; }
 }

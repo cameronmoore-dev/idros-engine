@@ -35,7 +35,9 @@ namespace idrs
 
     struct SpriteAnimator
     {
-        SpriteAnimation current;
+        SpriteAnimation *current;
+        f32 currentFrame;
+        bool playing;
     };
 
     struct Pathfinder

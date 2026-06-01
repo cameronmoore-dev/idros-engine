@@ -11,7 +11,7 @@ inline T &ComponentManager::add(Entity entity)
     set.setDenseIndex(entity, (u32)set.dense.size());
     u32 denseIndex = set.getDenseIndex(entity);
 
-    T component = {0};
+    T component = {};
     set.dense.emplace_back(component);
     set.entities.emplace_back(entity);
     return set.dense[denseIndex];

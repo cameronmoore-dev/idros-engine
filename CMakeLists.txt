@@ -16,6 +16,8 @@ add_library(idros SHARED
     "src/engine.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
+    "src/ecs/systems/sprite_animation_system.cpp"
+
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
 
@@ -30,7 +32,7 @@ add_library(idros SHARED
     "src/callbacks/on_frame_end.cpp"
 )
 
-target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal ${LIB_INCLUDE_PATH}/tomlc17)
+target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
 
 add_library(idros_pal STATIC IMPORTED)
 set_target_properties(idros_pal PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidros_pal.a")
@@ -63,21 +65,13 @@ add_custom_command(
 add_custom_command(
     TARGET idros
     POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SRC_PATH}/entry.h"
     "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
     "${SRC_PATH}/time.hpp"
     "${SRC_PATH}/sprite_animation.h"
-
-    "${SRC_PATH}/ecs/ecs.h"
-    "${SRC_PATH}/ecs/ecs.inl"
-    "${SRC_PATH}/ecs/entity.h"
-    "${SRC_PATH}/ecs/entity_manager.h"
-    "${SRC_PATH}/ecs/component_manager.h"
-    "${SRC_PATH}/ecs/component_manager.inl"
-    "${SRC_PATH}/ecs/component_set.h"
-    "${SRC_PATH}/ecs/component_set.inl"
     
     "${SRC_PATH}/event_callback_handler.h"
     "${SRC_PATH}/scene.h"
@@ -88,6 +82,34 @@ add_custom_command(
     "${SRC_PATH}/serialization.h"
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
 )
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SRC_PATH}/ecs/ecs.h"
+    "${SRC_PATH}/ecs/ecs.inl"
+    "${SRC_PATH}/ecs/entity.h"
+    "${SRC_PATH}/ecs/entity_manager.h"
+    "${SRC_PATH}/ecs/component_manager.h"
+    "${SRC_PATH}/ecs/component_manager.inl"
+    "${SRC_PATH}/ecs/component_set.h"
+    "${SRC_PATH}/ecs/component_set.inl"
+    "${SRC_PATH}/ecs/components.h"
+
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs"
+)
+
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SRC_PATH}/ecs/systems/sprite_animation_system.h"
+
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
+)
+
 add_custom_command(
     TARGET idros
     POST_BUILD

@@ -7,10 +7,13 @@
 #include "resource_manager.h"
 #include "time.hpp"
 
-#include "ecs.h"
-#include "entity.h"
-#include "entity_manager.h"
-#include "component_manager.h"
+#include "ecs/ecs.h"
+#include "ecs/entity.h"
+#include "ecs/entity_manager.h"
+#include "ecs/component_manager.h"
+#include "ecs/components.h"
+
+#include "ecs/systems/sprite_animation_system.h"
 
 #include "sprite_animation.h"
 
