@@ -26,7 +26,7 @@ namespace idrs
         void setPlaying(const bool status);
         void setReversing(const bool status);
 
-        const std::vector<Vec2i> getFrameOffsets();
+        std::vector<Vec2i> getFrameOffsets();
         const Vec2i getStartFrame();
         const char *getName();
         const LoopType getLoopType();

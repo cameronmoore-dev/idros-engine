@@ -42,13 +42,23 @@ namespace idrs
         Vec2i offset = animator.current->getFrameOffsets()[(u32)frame];
         Vec2i framePos = { start.x + ((u32)sprite.width * offset.x), start.y + ((u32)sprite.height * offset.y) };
 
-        sprite.textureRect.x = ((f32)framePos.x / sprite.texture->getWidth());
-        sprite.textureRect.y = (((f32)sprite.texture->getHeight() - sprite.height) - (f32)framePos.y) / sprite.texture->getHeight();
+        f32 x = ((f32)framePos.x / sprite.texture->getWidth());
+        f32 y = (((f32)sprite.texture->getHeight() - sprite.height) - (f32)framePos.y) / sprite.texture->getHeight();
+        f32 w = sprite.textureRect.w;
+        f32 h = sprite.textureRect.h;
 
-        sprite.vertices[0].uv = { sprite.textureRect.x, sprite.textureRect.y };
-        sprite.vertices[1].uv = { sprite.textureRect.x + sprite.textureRect.w, sprite.textureRect.y };
-        sprite.vertices[2].uv = { sprite.textureRect.x, sprite.textureRect.y + sprite.textureRect.h };
-        sprite.vertices[3].uv = { sprite.textureRect.x + sprite.textureRect.w, sprite.textureRect.y + sprite.textureRect.h };
+        if (sprite.flipx)
+        {
+            x += sprite.textureRect.w;
+            w = -sprite.textureRect.w;
+        }
+        if (sprite.flipy)
+        {
+            y += sprite.textureRect.h - (f32)framePos.y;
+            h = -sprite.textureRect.h;
+        }
+
+        SpriteUtils::setTextureCoords(sprite, x, y, w, h);
     }
 
     void SpriteAnimationSystem::play(Entity entity)

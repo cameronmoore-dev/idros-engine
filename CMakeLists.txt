@@ -11,20 +11,19 @@ set(SRC_PATH			"${CMAKE_SOURCE_DIR}/src")
 set(LIB_INCLUDE_PATH	"${CMAKE_SOURCE_DIR}/ext/includes")
 set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
 
+
+
 add_library(idros SHARED 
     "src/entry.cpp"
     "src/engine.cpp"
+    "src/time.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
     "src/ecs/systems/sprite_animation_system.cpp"
-
+    "src/utils/sprite_utils.cpp"
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
-
-    "src/time.cpp"
-
     "src/sprite_animation.cpp"
-
     "src/serialization.cpp"
 
     "src/event_callback_handler.cpp"
@@ -108,6 +107,16 @@ add_custom_command(
     "${SRC_PATH}/ecs/systems/sprite_animation_system.h"
 
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
+)
+
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SRC_PATH}/utils/sprite_utils.h"
+
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
 )
 
 add_custom_command(

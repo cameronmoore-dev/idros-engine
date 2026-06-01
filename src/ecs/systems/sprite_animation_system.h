@@ -4,6 +4,7 @@
 #include "resource_manager.h"
 #include "ecs/ecs.h"
 #include "ecs/components.h"
+#include "utils/sprite_utils.h"
 
 namespace idrs
 {

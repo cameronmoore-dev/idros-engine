@@ -44,7 +44,7 @@ namespace idrs
     void SpriteAnimation::setSpeed(const u32 speed)         { m_speed = speed; }
     void SpriteAnimation::setReversing(const bool status)   { m_reversing = status; }
 
-    const std::vector<Vec2i> SpriteAnimation::getFrameOffsets()     { return m_frameOffsets; }
+    std::vector<Vec2i> SpriteAnimation::getFrameOffsets() { return m_frameOffsets; }
     const Vec2i SpriteAnimation::getStartFrame()    { return m_start; }
     const char *SpriteAnimation::getName()          { return m_name; }
     const SpriteAnimation::LoopType SpriteAnimation::getLoopType()  { return m_loop; }

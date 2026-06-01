@@ -12,8 +12,9 @@
 #include "ecs/entity_manager.h"
 #include "ecs/component_manager.h"
 #include "ecs/components.h"
-
 #include "ecs/systems/sprite_animation_system.h"
+
+#include "utils/sprite_utils.h"
 
 #include "sprite_animation.h"
 
