@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <utility>
 
 #include "entity_manager.h"
 #include "component_manager.h"

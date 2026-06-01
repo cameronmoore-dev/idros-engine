@@ -27,6 +27,15 @@ inline T &ComponentManager::get(Entity entity)
     return set.dense[index];
 }
 
+template <typename T>
+inline bool ComponentManager::has(Entity entity)
+{
+    u64 key = std::type_index(typeid(T)).hash_code();
+    ComponentSet<T> &set = *static_cast<ComponentSet<T> *>(m_pool.at(key));
+
+    return (set.getDenseIndex(entity) != k_nullEntityID);
+}
+
 template<typename T>
 inline void ComponentManager::remove(Entity entity)
 {
@@ -52,4 +61,27 @@ inline std::vector<Entity> &ComponentManager::view()
     ComponentSet<T> &set = *static_cast<ComponentSet<T>*>(m_pool.at(key));
 
     return set.entities;
+}
+
+template <typename... Components, typename Fn>
+inline void ComponentManager::_view(Fn fn)
+{
+    std::array<IComponentSet*, sizeof...(Components)> sets =
+    {
+        static_cast<IComponentSet*>(m_pool.at(std::type_index(typeid(Components)).hash_code()))...
+    };
+
+    auto smallestSet = *std::min_element(sets.begin(), sets.end(), [](IComponentSet *a, IComponentSet *b)
+    {
+        return a->size() < b->size();
+    });
+
+    for (Entity e : smallestSet->entityList())
+    {
+        bool has_needed = (has<Components>(e) && ...);
+        if (has_needed)
+        {
+            fn(e, get<Components>(e)...);
+        }
+    }
 }

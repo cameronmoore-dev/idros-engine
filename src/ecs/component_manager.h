@@ -22,24 +22,20 @@ namespace idrs
         T &get(Entity entity);
 
         template<typename T>
-        void remove(Entity entity);
+        bool has(Entity entity);
 
+        template<typename T>
+        void remove(Entity entity);
         void removeAll(Entity entity);
 
         template<typename T>
         std::vector<Entity> &view();
 
-        template<typename T>
-        bool has(Entity entity)
-        {
-            u64 key = std::type_index(typeid(T)).hash_code();
-            ComponentSet<T> &set = *static_cast<ComponentSet<T>*>(m_pool.at(key));
+        template<typename... Components, typename Fn>
+        void _view(Fn fn);
 
-            return (set.getDenseIndex(entity) != k_nullEntityID);
-        }
-
-        private:
-            ComponentManager() = default;
+    private:
+        ComponentManager() = default;
     };
 
     #include "component_manager.inl"
