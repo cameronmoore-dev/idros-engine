@@ -6,10 +6,10 @@ namespace idrs
 {
     struct ProjectionMatrixState
     {
-        f32 x;
-        f32 w;
-        f32 y;
-        f32 h;
+        s32 x;
+        s32 w;
+        s32 y;
+        s32 h;
         f32 zNear;
         f32 zFar;
     };
@@ -18,16 +18,16 @@ namespace idrs
     {
     public:
         View2D() = default;
-        View2D(const FRect &rect, const f32 zNear, const f32 zFar);
+        View2D(const IRect &rect, const f32 zNear, const f32 zFar);
 
-        void move(const Vec2f &offset);
+        void move(const Vec2i &offset);
         void rotate(const f32 zOffset);
-        void setPosition(const Vec2f &pos);
+        void setPosition(const Vec2i &pos);
         void setRotation(const f32 zAngle);
-        void setViewport(const u32 x, const u32 y, const u32 w, const u32 h);
-        void setViewport(const FRect &rect);
+        void setViewport(const s32 x, const s32 y, const s32 w, const s32 h);
+        void setViewport(const IRect &rect);
 
-        const FRect getViewport() const;
+        const IRect getViewport() const;
         const Mat4 &projection() const;
         const Mat4 &view() const;
         

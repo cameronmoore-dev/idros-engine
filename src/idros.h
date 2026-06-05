@@ -15,6 +15,7 @@
 #include "ecs/systems/sprite_animation_system.h"
 
 #include "utils/sprite_utils.h"
+#include "utils/physicsutils.h"
 
 #include "sprite_animation.h"
 

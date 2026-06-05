@@ -21,6 +21,7 @@ add_library(idros SHARED
     "src/ecs/entity_manager.cpp"
     "src/ecs/systems/sprite_animation_system.cpp"
     "src/utils/sprite_utils.cpp"
+    "src/utils/physicsutils.cpp"
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
     "src/sprite_animation.cpp"
@@ -115,6 +116,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SRC_PATH}/utils/sprite_utils.h"
+    "${SRC_PATH}/utils/physicsutils.h"
 
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
 )

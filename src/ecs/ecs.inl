@@ -10,16 +10,16 @@ inline T &ECS::get(Entity entity)
     return get().m_componentManager.get<T>(entity);
 }
 
+template<typename T>
+inline std::vector<Entity> &ECS::getEntities()
+{
+    return get().m_componentManager.getEntities<T>();
+}
+
 template <typename T>
 inline void ECS::remove(Entity entity)
 {
     return get().m_componentManager.remove<T>(entity);
-}
-
-template<typename T>
-inline std::vector<Entity> &ECS::view()
-{
-    return get().m_componentManager.view<T>();
 }
 
 template<typename... Components, typename Fn>

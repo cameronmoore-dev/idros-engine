@@ -38,9 +38,9 @@ namespace idrs
     void SpriteAnimationSystem::animate(Sprite &sprite, SpriteAnimator &animator)
     {
         f32 frame = std::floor(animator.currentFrame);
-        Vec2i start = animator.current->getStartFrame();
-        Vec2i offset = animator.current->getFrameOffsets()[(u32)frame];
-        Vec2i framePos = { start.x + ((u32)sprite.width * offset.x), start.y + ((u32)sprite.height * offset.y) };
+        Vec2u start = animator.current->getStartFrame();
+        Vec2u offset = animator.current->getFrameOffsets()[(u32)frame];
+        Vec2u framePos = { start.x + ((u32)sprite.width * offset.x), start.y + ((u32)sprite.height * offset.y) };
 
         f32 x = ((f32)framePos.x / sprite.texture->getWidth());
         f32 y = (((f32)sprite.texture->getHeight() - sprite.height) - (f32)framePos.y) / sprite.texture->getHeight();

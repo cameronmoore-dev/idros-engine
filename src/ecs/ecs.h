@@ -18,14 +18,14 @@ namespace idrs
         template<typename T>
         static T &add(Entity entity);
 
-        template <typename T>
+        template<typename T>
         static T &get(Entity entity);
 
         template<typename T>
-        static void remove(Entity entity);
+        static std::vector<Entity> &getEntities();
 
         template<typename T>
-        static std::vector<Entity> &view();
+        static void remove(Entity entity);
 
         template<typename... Components, typename Fn>
         static void _view(Fn fn);

@@ -31,6 +31,12 @@ namespace idrs
         FRect bounds;
         Vec2f offset;
         bool trigger;
+        bool isStatic;
+    };
+
+    struct Tag
+    {
+        char string[32];
     };
 
     struct SpriteAnimator
@@ -38,18 +44,5 @@ namespace idrs
         SpriteAnimation *current;
         f32 currentFrame;
         bool playing;
-    };
-
-    struct Pathfinder
-    {
-
-    };
-
-    struct PathfindingNode
-    {
-        std::vector<PathfindingNode*> neighbours;
-        PathfindingNode *parent;
-        Vec2f position;
-        bool visited;
     };
 }

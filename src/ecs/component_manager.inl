@@ -27,6 +27,15 @@ inline T &ComponentManager::get(Entity entity)
     return set.dense[index];
 }
 
+template<typename T>
+inline std::vector<Entity> &ComponentManager::getEntities()
+{
+    u64 key = std::type_index(typeid(T)).hash_code();
+    // ComponentSet<T> &set = *static_cast<ComponentSet<T>*>();
+
+    return m_pool.at(key)->entityList();
+}
+
 template <typename T>
 inline bool ComponentManager::has(Entity entity)
 {
@@ -54,13 +63,13 @@ inline void ComponentManager::removeAll(Entity entity)
     }
 }
 
-template <typename T>
-inline std::vector<Entity> &ComponentManager::view()
+inline void ComponentManager::clear()
 {
-    u64 key = std::type_index(typeid(T)).hash_code();
-    ComponentSet<T> &set = *static_cast<ComponentSet<T>*>(m_pool.at(key));
-
-    return set.entities;
+    for (auto &[k, v] : m_pool)
+    {
+        delete v;
+    }
+    m_pool.clear();
 }
 
 template <typename... Components, typename Fn>

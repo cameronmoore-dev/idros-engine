@@ -11,11 +11,11 @@
     using PlatformWindow = idrs::X11_Window;
 #endif
 
+#include <array>
 #include <chrono>
 #include <thread>
 
 #include "event.h"
-#include "typedefs.h"
 
 namespace idrs
 {
@@ -65,24 +65,25 @@ namespace idrs
         ~Window();
 
         bool pollEvents(Event &event);
-        void setHint(Hints index, u8 value);
-        void cursorEnableFlags(const u8 flags);
-        void cursorDisableFlags(const u8 flags);
-        void getScreenSize(s32 &outWidth, s32 &outHeight);
+        void setHint(Hints index, uint8_t value);
+        void cursorEnableFlags(const uint8_t flags);
+        void cursorDisableFlags(const uint8_t flags);
+        void getScreenSize(uint32_t &outWidth, uint32_t &outHeight);
         void close();
         const bool isOpen();
 
         bool create(const std::string &title, uint16_t width, uint16_t height, uint32_t style);
         void swapBuffers();
-        void swapInterval(u8 interval);
-        void setFramerate(const u64 framerate);
+        void swapInterval(uint8_t interval);
+        void setFramerate(const uint64_t framerate);
         void setTitle(const std::string &title);
         void setFullscreen(bool fullscreen);
-        void getPos(s32 &outX, s32 &outY);
-        void getSize(s32 &outWidth, s32 &outHeight);
-        void setPos(s32 x, s32 y);
-        void setSize(s32 width, s32 height);
-        void setFlash(u32 count, unsigned long timeout, bool sound);
+        void setPos(int32_t x, int32_t y);
+        void setSize(uint32_t width, uint32_t height);
+        void setFlash(uint32_t count, unsigned long timeout, bool sound);
+        void getCursorPos(int32_t &outX, int32_t &outY, bool relative = true);
+        void getPos(int32_t &outX, int32_t &outY);
+        void getSize(uint32_t &outWidth, uint32_t &outHeight);
         const bool isFocused();
         const Style nativeStyle(const Style style);
     
@@ -93,11 +94,11 @@ namespace idrs
         std::array<Hints, HintsCount> m_hints;
         std::string m_title;
         std::chrono::high_resolution_clock::time_point m_frameStart;
-        u64 m_targetFramerate;
-        u32 m_style;
-        u16 m_width;
-        u16 m_height;
-        u8 m_cursorState;
+        uint64_t m_targetFramerate;
+        uint32_t m_style;
+        uint16_t m_width;
+        uint16_t m_height;
+        uint8_t m_cursorState;
         bool m_isOpen = false;
     
     private:

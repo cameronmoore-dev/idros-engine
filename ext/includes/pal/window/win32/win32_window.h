@@ -12,11 +12,10 @@
 #define NOMINMAX
 #endif
 
-#include <string>
-#include <array>
-#include <vector>
-#include <queue>
 #include <cstdint>
+#include <string>
+// #include <array>
+#include <vector>
 #include <chrono>
 #include <thread>
 
@@ -30,19 +29,20 @@ namespace idrs
     public:
         Win32_Window();
 
-        bool create(Window *wnd, const std::string &title, const u16 width, const u16 height, const u32 style);
+        bool create(Window *wnd, const std::string &title, uint16_t width, uint16_t height, uint32_t style);
         void cleanup();
         void swapBuffers();
-        void swapInterval(u8 interval);
+        void swapInterval(uint8_t interval);
         void setTitle(const std::string &title);
         void setFullscreen(bool fullscreen);
-        void getPos(s32 &outX, s32 &outY);
-        void getSize(s32 &outWidth, s32 &outHeight);
-        void setPos(s32 x, s32 y);
-        void setSize(s32 width, s32 height);
+        void setPos(int32_t x, int32_t y);
+        void setSize(uint32_t width, uint32_t height);
         void setFlash(UINT count, DWORD timeout, bool sound);
+        void getCursorPos(int32_t &outX, int32_t &outY, bool relative);
+        void getPos(int32_t &outX, int32_t &outY);
+        void getSize(uint32_t &outWidth, uint32_t &outHeight);
         bool isFocused();
-        const u32 nativeStyle(const u32 style);
+        const uint32_t nativeStyle(uint32_t style);
 
         void glSetup();
         void registerInputDevices();

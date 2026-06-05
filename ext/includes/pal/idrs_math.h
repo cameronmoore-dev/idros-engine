@@ -15,23 +15,35 @@ namespace idrs
     inline const f32 pi = 3.14159265359f;
     inline const f32 e = 2.71828f;
 
+    struct Vec2u
+    {
+        u32 x;
+        u32 y;
+    };
+
     struct Vec2i
     {
-        u32 x = 0;
-        u32 y = 0;
+        s32 x;
+        s32 y;
     };
 
     struct Vec2f
     {
-        f32 x = 0.f;
-        f32 y = 0.f;
+        f32 x;
+        f32 y;
+
+        const Vec2f operator-(const Vec2f &rhs) const { return { x - rhs.x, y - rhs.y }; }
+        const Vec2f operator/(const Vec2f &rhs) const { return { x / rhs.x, y / rhs.y }; }
+
+        const Vec2f operator*(const f32 &rhs) const { return { x * rhs, y * rhs }; }
+        const Vec2f operator/(const f32 &rhs) const { return { x / rhs, y / rhs }; }
     };
     
     struct Vec3f
     {
-        f32 x = 0.f;
-        f32 y = 0.f;
-        f32 z = 0.f;
+        f32 x;
+        f32 y;
+        f32 z;
 
         const Vec3f operator+=(const Vec3f &rhs) { return { x += rhs.x, y += rhs.y, z += rhs.z }; }
         const Vec3f operator-=(const Vec3f &rhs) { return { x -= rhs.x, y -= rhs.y, z -= rhs.z }; }
@@ -45,24 +57,40 @@ namespace idrs
     
     struct Vec4f
     {
-        f32 x = 0.f;
-        f32 y = 0.f;
-        f32 z = 0.f;
-        f32 w = 0.f;
+        f32 x;
+        f32 y;
+        f32 z;
+        f32 w;
     };
 
     struct FRect
     {
-        f32 x = 0.f;
-        f32 y = 0.f;
-        f32 w = 0.f;
-        f32 h = 0.f;
+        f32 x;
+        f32 y;
+        f32 w;
+        f32 h;
+    };
+
+    struct URect
+    {
+        u32 x;
+        u32 y;
+        u32 w;
+        u32 h;
+    };
+
+    struct IRect
+    {
+        s32 x;
+        s32 y;
+        s32 w;
+        s32 h;
     };
 
     namespace matrix
     {
         const Mat4 perspective(const f32 fov, const f32 aspect, const f32 zNear, const f32 zFar);
-        const Mat4 orthographic(const f32 left, const f32 right, const f32 bottom, const f32 top, const f32 zNear, const f32 zFar);
+        const Mat4 orthographic(const s32 left, const s32 right, const s32 bottom, const s32 top, const f32 zNear, const f32 zFar);
         const Mat4 lookAt(const Vec3f& pos, const Vec3f& forward, const Vec3f& up);
         const Mat4 translate(const Vec3f &vec);
         const Mat4 rotate(const f32 angle, const Vec3f &axis);
@@ -78,8 +106,11 @@ namespace idrs
     {
         const f32 degToRad(const f32 deg);
         const f32 dot(const Vec3f &a, const Vec3f &b);
+        const f32 dot(const Vec2f &a, const Vec2f &b);
         const Vec3f normalize(const Vec3f &vec);
+        const Vec2f normalize(const Vec2f &vec);
         const Vec3f cross(const Vec3f &a, const Vec3f &b);
+        const f32 cross(const Vec2f &a, const Vec2f &b);
     } // namespace math
 } // namespace idrs
 

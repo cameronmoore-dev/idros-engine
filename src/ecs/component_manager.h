@@ -18,8 +18,11 @@ namespace idrs
         template<typename T>
         T &add(Entity entity);
 
-        template <typename T>
+        template<typename T>
         T &get(Entity entity);
+
+        template<typename T>
+        std::vector<Entity> &getEntities();
 
         template<typename T>
         bool has(Entity entity);
@@ -28,8 +31,7 @@ namespace idrs
         void remove(Entity entity);
         void removeAll(Entity entity);
 
-        template<typename T>
-        std::vector<Entity> &view();
+        void clear();
 
         template<typename... Components, typename Fn>
         void _view(Fn fn);

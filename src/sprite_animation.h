@@ -26,8 +26,8 @@ namespace idrs
         void setPlaying(const bool status);
         void setReversing(const bool status);
 
-        std::vector<Vec2i> getFrameOffsets();
-        const Vec2i getStartFrame();
+        std::vector<Vec2u> getFrameOffsets();
+        const Vec2u getStartFrame();
         const char *getName();
         const LoopType getLoopType();
         const f32 getSpeed();
@@ -37,9 +37,9 @@ namespace idrs
         const bool isReversing();
 
     private:
-        std::vector<Vec2i> m_frameOffsets;
+        std::vector<Vec2u> m_frameOffsets;
         char m_name[32];
-        Vec2i m_start;
+        Vec2u m_start;
         LoopType m_loop;
         f32 m_speed;
         u32 m_rows;

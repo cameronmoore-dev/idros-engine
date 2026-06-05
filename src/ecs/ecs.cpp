@@ -1,5 +1,7 @@
 #include "ecs.h"
 
+#include <cstdio>
+
 namespace idrs
 {
     ECS &ECS::get()
@@ -22,5 +24,6 @@ namespace idrs
     void ECS::destroyAll()
     {
         get().m_entityManager.clear();
+        get().m_componentManager.clear();
     }
 }

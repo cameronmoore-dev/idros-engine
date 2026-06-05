@@ -5,12 +5,14 @@
 
 #include "entity.h"
 
+#include <cstdio>
+
 namespace idrs
 {
     class IComponentSet
     {
     public:
-        ~IComponentSet() = default;
+        virtual ~IComponentSet() = default;
         virtual void remove(Entity entity) = 0;
         virtual size_t size() = 0;
         virtual std::vector<Entity> &entityList() = 0;
