@@ -32,6 +32,7 @@ namespace idrs
         f32 x;
         f32 y;
 
+        const Vec2f operator+(const Vec2f &rhs) const { return { x + rhs.x, y + rhs.y }; }
         const Vec2f operator-(const Vec2f &rhs) const { return { x - rhs.x, y - rhs.y }; }
         const Vec2f operator/(const Vec2f &rhs) const { return { x / rhs.x, y / rhs.y }; }
 
@@ -61,6 +62,8 @@ namespace idrs
         f32 y;
         f32 z;
         f32 w;
+
+        const Vec4f operator/=(const f32 &rhs) { return { x /= rhs, y /= rhs, z /= rhs, w /= rhs }; }
     };
 
     struct FRect
@@ -96,6 +99,8 @@ namespace idrs
         const Mat4 rotate(const f32 angle, const Vec3f &axis);
         const Mat4 scale(const Vec3f &vec);
         const Mat4 identity();
+
+        void inverse4(Mat4 &out, const Mat4 &matrix);
 
         const Mat4 multiply(const Mat4 &matA, const Mat4 &matB);
         const Vec4f multiply(const Mat4 &mat, const Vec4f &vec);

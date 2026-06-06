@@ -27,6 +27,8 @@ namespace idrs
         void setViewport(const s32 x, const s32 y, const s32 w, const s32 h);
         void setViewport(const IRect &rect);
 
+        const Vec2f screenToWorld(Vec2f &point);
+
         const IRect getViewport() const;
         const Mat4 &projection() const;
         const Mat4 &view() const;

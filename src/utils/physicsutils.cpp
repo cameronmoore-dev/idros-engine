@@ -40,13 +40,22 @@ namespace idrs
         return true;
     }
 
-    bool PhysicsUtils::raycast2D(RaycastResult &result, Vec2f &start, Vec2f &dir, f32 dist)
+    bool PhysicsUtils::raycast2D(RaycastResult &result, Vec2f &start, Vec2f &dir, f32 dist, Entity exclude)
     {
         Vec2f end = math::normalize(dir) * dist;
-        bool hit = false;
-        
-        ECS::_view<RectCollider>([&hit, &result, &start, &end](Entity e, RectCollider &collider)
+        f32 length = 1.0f;
+        Entity hit;
+
+        std::vector<Entity> colliders = ECS::getEntities<RectCollider>();
+        for (Entity e : colliders)
         {
+            if (e == exclude)
+            {
+                continue;
+            }
+
+            RectCollider& collider = ECS::get<RectCollider>(e);
+
             Vec2f c = {};
             Vec2f d = {};
             for (u32 side = 0; side < 4; side++)
@@ -83,25 +92,43 @@ namespace idrs
                     default: break;
                 }
 
-                auto orient = [](Vec2f &a, Vec2f& b, Vec2f &c)
-                {
-                    return math::cross(b-a, c-a);
-                };
+				Vec2f s = d - c;
+				Vec2f cma = c - start;
+				f32 rxs = math::cross(end, s);
 
-                f32 oa = orient(c, d, start);
-                f32 ob = orient(c, d, end);
-                f32 oc = orient(start, end, c);
-                f32 od = orient(start, end, d);
-               
-                if (oa * ob < 0.0f && oc * od < 0.0f)
-                {
-                    result.hitPoint = (start * ob) - (end * oa) / (ob - oa);
-                    result.hitEntity = e;
-                    hit = true;
-                }
+				/* The scalar value of the ray being cast */
+				f32 t = math::cross(cma, s) / rxs;
+
+				/* The scalar value of the line between c and d */
+				f32 u = math::cross(cma, end) / rxs;
+
+				/* 
+                 * If both scalar values are less then the normalised distance between their respective points,
+                 * then there is an intersection
+                 */
+				if ((t >= 0 && t <= 1) && (u >= 0 && u <= 1))
+				{
+					/* If the intersection point's distance is closer then the previous value */
+					if (t < length)
+					{
+						length = t;
+						hit = e;
+					}
+				}
             }
-        });
+        }
 
-        return hit;
+        /* 
+         * Once all of the entities are looped through,
+		 * return the closest distance and the entity that was hit
+         */
+		if (length < 1.0f)
+		{
+            result.hitEntity = hit;
+            result.hitPoint = start + (dir * length);
+			return true;
+		}
+
+        return false;
     }
 }
