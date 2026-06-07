@@ -1,8 +1,7 @@
 #pragma once
 
-#include <pal/idrs_math.h>
-#include <pal/graphics/texture.h>
-#include <pal/graphics/vertexarray.h>
+#include <idlai/graphics/texture.h>
+#include <idlai/graphics/vertexarray.h>
 
 #include "sprite_animation.h"
 

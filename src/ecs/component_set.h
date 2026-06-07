@@ -5,8 +5,6 @@
 
 #include "entity.h"
 
-#include <cstdio>
-
 namespace idrs
 {
     class IComponentSet

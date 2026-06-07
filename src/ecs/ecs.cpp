@@ -1,7 +1,5 @@
 #include "ecs.h"
 
-#include <cstdio>
-
 namespace idrs
 {
     ECS &ECS::get()

@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "typedefs.h"
-#include "idrs_math.h"
+#include "math.hpp"
 
 namespace idrs 
 {

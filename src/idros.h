@@ -1,11 +1,12 @@
 #pragma once
 
-#include <pal/idros_pal.h>
+#include <idlai/idlai.h>
 
 #include "igame.h"
+#include "debug.h"
+#include "time.hpp"
 #include "scene_manager.h"
 #include "resource_manager.h"
-#include "time.hpp"
 
 #include "ecs/ecs.h"
 #include "ecs/entity.h"

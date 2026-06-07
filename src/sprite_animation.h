@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstring>
 
-#include <pal/idrs_math.h>
+#include <idlai/math.hpp>
 
 namespace idrs
 {

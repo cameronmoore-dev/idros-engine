@@ -1,9 +1,8 @@
 #pragma once
 
-#include <idros_pal.h>
+#include <idlai/idlai.h>
 
 #include "igame.h"
-#include "time.hpp"
 
 namespace idrs
 {

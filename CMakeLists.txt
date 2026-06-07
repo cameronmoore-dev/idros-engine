@@ -16,6 +16,7 @@ set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
 add_library(idros SHARED 
     "src/entry.cpp"
     "src/engine.cpp"
+    "src/debug.cpp"
     "src/time.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
@@ -32,11 +33,11 @@ add_library(idros SHARED
     "src/callbacks/on_frame_end.cpp"
 )
 
-target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/pal)
+target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/idlai)
 
-add_library(idros_pal STATIC IMPORTED)
-set_target_properties(idros_pal PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidros_pal.a")
-target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idros_pal>")
+add_library(idlai STATIC IMPORTED)
+set_target_properties(idlai PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidlai.a")
+target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idlai>")
 add_subdirectory(ext)
 
 if (WIN32)
@@ -70,6 +71,7 @@ add_custom_command(
     "${SRC_PATH}/entry.h"
     "${SRC_PATH}/idros.h"
     "${SRC_PATH}/igame.h"
+    "${SRC_PATH}/debug.h"
     "${SRC_PATH}/time.hpp"
     "${SRC_PATH}/sprite_animation.h"
     
@@ -125,7 +127,7 @@ add_custom_command(
     TARGET idros
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${LIB_INCLUDE_PATH}/pal"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\pal"
+    "${LIB_INCLUDE_PATH}/idlai"
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\idlai"
 )
 #

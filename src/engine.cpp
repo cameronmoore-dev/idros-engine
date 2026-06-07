@@ -1,6 +1,9 @@
 #include "engine.h"
 
 #include "event_callback_handler.h"
+#include "time.hpp"
+
+#include "debug.h"
 
 namespace idrs
 {
@@ -9,10 +12,7 @@ namespace idrs
         m_window(new Window()),
         m_renderer(nullptr)
     {
-        IDRS_ASSERT(m_game, "IDROS::Game failed to create!");
-
-        bool succeeded = m_window->create("Idros Engine", 1280, 720, Style::Default);
-        IDRS_ASSERT(succeeded, "IDROS::Window failed to create!");
+        m_window->create("Idros Engine", 1280, 720, Style::Default);
         m_renderer = new Renderer();
 
         m_game->p_window = m_window;

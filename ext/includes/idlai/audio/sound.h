@@ -7,7 +7,6 @@
 #include <cmath>
 #include <algorithm>
 
-#include "idrs_assert.h"
 #include "typedefs.h"
 #include "format_headers.h"
 

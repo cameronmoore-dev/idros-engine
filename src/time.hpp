@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pal/typedefs.h>
-#include <pal/clock.h>
+#include <idlai/typedefs.h>
+#include <idlai/clock.h>
 
 namespace idrs
 {

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <cmath>
-#include <algorithm>
 
 #include "typedefs.h"
 

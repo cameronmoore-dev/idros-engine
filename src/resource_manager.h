@@ -6,7 +6,12 @@
 #include <utility>
 #include <filesystem>
 
-#include <pal/idros_pal.h>
+#include <idlai/graphics/texture.h>
+#include <idlai/graphics/image.h>
+#include <idlai/graphics/shader.h>
+#include <idlai/graphics/font.h>
+#include <idlai/audio/sound.h>
+#include <idlai/audio/music.h>
 
 #include "sprite_animation.h"
 

@@ -2,8 +2,7 @@
 
 #include "typedefs.h"
 #include "clock.h"
-#include "idrs_math.h"
-#include "idrs_assert.h"
+#include "math.hpp"
 
 #include "window/window.h"
 #include "window/input.h"

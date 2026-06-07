@@ -3,7 +3,6 @@
 #include <map>
 #include <string>
 
-#include "idrs_assert.h"
 #include "glyph.h"
 #include "texture.h"
 

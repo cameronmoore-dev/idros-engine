@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pal/window/window.h>
-#include <pal/graphics/renderer.h>
+#include <idlai/window/window.h>
+#include <idlai/graphics/renderer.h>
 
 namespace idrs
 {

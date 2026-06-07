@@ -8,7 +8,6 @@
 #include <algorithm>
 
 #include "typedefs.h"
-#include "idrs_assert.h"
 #include "format_headers.h"
 
 namespace idrs

@@ -1,6 +1,6 @@
 #include "physicsutils.h"
 
-#include <pal/idrs_math.h>
+#include <idlai/math.hpp>
 
 namespace idrs
 {
@@ -125,7 +125,7 @@ namespace idrs
 		if (length < 1.0f)
 		{
             result.hitEntity = hit;
-            result.hitPoint = start + (dir * length);
+            result.hitPoint = start + end * length;
 			return true;
 		}
 

@@ -33,7 +33,6 @@ namespace idrs
     template<typename T, typename... Args>
     void ResourceManager::loadDirectory(const std::filesystem::path &path, Args... args)
     {
-        IDRS_ASSERT(std::filesystem::exists(path), "Path doesn't lead to a valid directory: " + path.string());
         for (const auto &dir : std::filesystem::directory_iterator(path))
         {
             load<T>(dir.path(), args...);

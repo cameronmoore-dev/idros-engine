@@ -1,6 +1,6 @@
 #pragma once
 
-#include "idrs_math.h"
+#include "math.hpp"
 #include "colour.h"
 
 namespace idrs
