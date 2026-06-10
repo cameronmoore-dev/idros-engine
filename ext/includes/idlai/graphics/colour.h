@@ -1,6 +1,7 @@
 #pragma once
 
 #include "typedefs.h"
+#include "math.hpp"
 
 namespace idrs
 {
@@ -14,13 +15,24 @@ namespace idrs
 
     namespace colour
     {
-        inline const Colour black    = { 0, 0, 0, 255 };
-        inline const Colour white    = { 255, 255, 255, 255 };
-        inline const Colour red      = { 255, 0, 0, 255 };
-        inline const Colour green    = { 0, 255, 0, 255 };
-        inline const Colour blue     = { 0, 0, 255, 255 };
-        inline const Colour yellow   = { 255, 255, 0, 255 };
-        inline const Colour magenta  = { 255, 0, 255, 255 };
-        inline const Colour cyan     = { 0, 255, 255, 255 };
+        inline const Vec4f normalizeColour(Colour colour)
+        {
+            Vec4f c;
+            c.x = colour.r / 255.0f;
+            c.y = colour.g / 255.0f;
+            c.z = colour.b / 255.0f;
+            c.w = colour.a / 255.0f;
+
+            return c;
+        }
+
+        inline constexpr Colour black    = { 0, 0, 0, 255 };
+        inline constexpr Colour white    = { 255, 255, 255, 255 };
+        inline constexpr Colour red      = { 255, 0, 0, 255 };
+        inline constexpr Colour green    = { 0, 255, 0, 255 };
+        inline constexpr Colour blue     = { 0, 0, 255, 255 };
+        inline constexpr Colour yellow   = { 255, 255, 0, 255 };
+        inline constexpr Colour magenta  = { 255, 0, 255, 255 };
+        inline constexpr Colour cyan     = { 0, 255, 255, 255 };
     }
 }

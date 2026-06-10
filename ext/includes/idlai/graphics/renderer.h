@@ -9,7 +9,7 @@ namespace idrs
     class Renderer
     {
     public:
-        enum class Features
+        enum GPUFeatures
         {
             Blend = 0,
             CullFace,
@@ -25,13 +25,13 @@ namespace idrs
     public:
         Renderer();
 
-        void setFeatureActive(const Features feature, const bool enable);
+        void setFeatureActive(GPUFeatures feature, bool enable);
 
-        void clear(const u32 colour);
+        void clear(const Colour colour);
         void clear(const Vec4f &colour);
-        void clear(const f32 r, const f32 g, const f32 b, const f32 a);
-        void draw(const VertexArray &vertices);
-        void drawIndex(const VertexArray &vertices);
+        void clear(f32 r, f32 g, f32 b, f32 a);
+        void draw(VertexArray &vertices);
+        void drawIndex(VertexArray &vertices);
 
         /* setBlendMode */
 
@@ -39,6 +39,6 @@ namespace idrs
         BlendMode m_blendMode;
 
     private:
-        const u32 gpuFeature(const Features feature) const;
+        u32 gpuFeature(GPUFeatures feature);
     };
 }

@@ -7,6 +7,7 @@
 #include <idlai/graphics/vertexarray.h>
 #include <idlai/graphics/font.h>
 #include <idlai/graphics/text.h>
+#include <idlai/graphics/shader.h>
 
 #if defined(MSC_VER)
     #define BREAK __debugbreak
@@ -47,11 +48,11 @@ namespace idrs
     class Debug
     {
     public:
-        static void initDebugText(Font &font);
+        static void initDebugText(Font &font, const Vec2f &textPos);
         static void drawText(const char *text, ...);
         static void drawLine(f32 x1, f32 y1, f32 x2, f32 y2);
         
-        static void draw(Renderer &renderer);
+        static void draw(Renderer &renderer, Shader &textShader, Shader &lineShader);
 
         static void _drawGeo(Renderer &renderer);
         static void _drawText();

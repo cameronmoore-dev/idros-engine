@@ -19,6 +19,7 @@ namespace idrs
         VertexArray vertices;
         FRect textureRect;
         Texture *texture;
+        Vec4f colour;
         f32 width;
         f32 height;
         bool flipx;

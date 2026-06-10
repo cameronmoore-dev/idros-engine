@@ -13,7 +13,7 @@ namespace idrs
         m_drawables.setVertexAttrib(0, 2, VertexArray::VertexAttribType::Float, false, offsetof(Vertex, position));
     }
 
-    void Debug::initDebugText(Font &font)
+    void Debug::initDebugText(Font &font, const Vec2f &textPos)
     {
         Debug &instance = get();
         
@@ -62,33 +62,39 @@ namespace idrs
         instance.m_accumText.clear();
     }
 
-    void Debug::draw(Renderer &renderer)
+    void Debug::draw(Renderer &renderer, Shader &textShader, Shader &lineShader)
     {
         EARLY_OUT();
 
-        // drawGeo(renderer);
-        // drawText();
+        Debug &instance = get();
+        
+        instance.m_drawables.update();
+        renderer.draw(instance.m_drawables);
+        
+        textShader.use();
+        instance.m_text.setText(instance.m_accumText);
+        instance.m_text.draw();
 
         clear();
     }
 
-    void Debug::_drawGeo(Renderer &renderer)
-    {
-        Debug &instance = get();
-
-        instance.m_drawables.update();
-        renderer.draw(instance.m_drawables);
-    }
-
-    void Debug::_drawText()
-    {
-        Debug &instance = get();
-
-        instance.m_text.setText(instance.m_accumText);
-        instance.m_text.draw();
-
-        // clear();
-    }
+    // void Debug::_drawGeo(Renderer &renderer)
+    // {
+    //     Debug &instance = get();
+    //
+    //     instance.m_drawables.update();
+    //     renderer.draw(instance.m_drawables);
+    // }
+    //
+    // void Debug::_drawText()
+    // {
+    //     Debug &instance = get();
+    //
+    //     instance.m_text.setText(instance.m_accumText);
+    //     instance.m_text.draw();
+    //
+    //     // clear();
+    // }
 
     Debug &Debug::get()
     {
