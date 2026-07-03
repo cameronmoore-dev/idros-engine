@@ -1,10 +1,7 @@
 #pragma once
 
-#include "time.hpp"
-#include "resource_manager.h"
-#include "ecs/ecs.h"
+#include "ecs/entity.h"
 #include "ecs/components.h"
-#include "utils/sprite_utils.h"
 
 namespace idrs
 {

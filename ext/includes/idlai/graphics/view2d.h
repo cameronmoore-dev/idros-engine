@@ -20,7 +20,7 @@ namespace idrs
         View2D() = default;
         View2D(const IRect &rect, const f32 zNear, const f32 zFar);
 
-        void move(const Vec2i &offset);
+        void move(const Vec2f &offset);
         void rotate(const f32 zOffset);
         void setPosition(const Vec2i &pos);
         void setRotation(const f32 zAngle);

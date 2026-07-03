@@ -1,8 +1,5 @@
 #pragma once
 
-#include <array>
-#include <utility>
-
 #include "entity_manager.h"
 #include "component_manager.h"
 
@@ -28,10 +25,10 @@ namespace idrs
         static void remove(Entity entity);
 
         template<typename... Components, typename Fn>
-        static void _view(Fn fn);
+        static void view(Fn fn);
 
-        // template<typename T>
-        // static bool has(Entity entity);
+        template<typename T>
+        static bool has(Entity entity);
 
     private:
         EntityManager m_entityManager;

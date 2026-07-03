@@ -1,10 +1,15 @@
 #include "sprite_animation_system.h"
 
+#include "time.hpp"
+#include "resource_manager.h"
+#include "ecs/ecs.h"
+#include "utils/sprite_utils.h"
+
 namespace idrs
 {
     void SpriteAnimationSystem::update()
     {
-        ECS::_view<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
+        ECS::view<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
         {
             if (animator.playing)
             {

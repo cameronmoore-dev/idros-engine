@@ -54,10 +54,7 @@ namespace idrs
         
         static void draw(Renderer &renderer, Shader &textShader, Shader &lineShader);
 
-        static void _drawGeo(Renderer &renderer);
-        static void _drawText();
-        
-        private:
+    private:
         VertexArray m_drawables;
         std::string m_accumText;
         Text m_text;

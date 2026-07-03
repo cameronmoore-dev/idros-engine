@@ -6,6 +6,10 @@ inline T &ComponentManager::add(Entity entity)
     {
         m_pool.emplace(key, new ComponentSet<T>());
     }
+    else if (!m_pool[key])
+    {
+        m_pool[key] = new ComponentSet<T>();
+    }
     ComponentSet<T> &set = *static_cast<ComponentSet<T>*>(m_pool.at(key));
 
     set.setDenseIndex(entity, (u32)set.dense.size());
@@ -31,8 +35,6 @@ template<typename T>
 inline std::vector<Entity> &ComponentManager::getEntities()
 {
     u64 key = std::type_index(typeid(T)).hash_code();
-    // ComponentSet<T> &set = *static_cast<ComponentSet<T>*>();
-
     return m_pool.at(key)->entityList();
 }
 
@@ -73,17 +75,28 @@ inline void ComponentManager::clear()
 }
 
 template <typename... Components, typename Fn>
-inline void ComponentManager::_view(Fn fn)
+inline void ComponentManager::view(Fn fn)
 {
     std::array<IComponentSet*, sizeof...(Components)> sets =
     {
-        static_cast<IComponentSet*>(m_pool.at(std::type_index(typeid(Components)).hash_code()))...
+        static_cast<IComponentSet*>(m_pool[std::type_index(typeid(Components)).hash_code()])...
     };
 
-    auto smallestSet = *std::min_element(sets.begin(), sets.end(), [](IComponentSet *a, IComponentSet *b)
+    bool nullSet = false;
+    auto smallestSet = *std::min_element(sets.begin(), sets.end(), [&nullSet](IComponentSet *a, IComponentSet *b)
     {
+        if (!a || !b)
+        {
+            nullSet = true;
+            return false;
+        }
         return a->size() < b->size();
     });
+
+    if (nullSet)
+    {
+        return;
+    }
 
     for (Entity e : smallestSet->entityList())
     {

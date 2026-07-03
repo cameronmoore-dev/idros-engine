@@ -16,14 +16,20 @@ inline std::vector<Entity> &ECS::getEntities()
     return get().m_componentManager.getEntities<T>();
 }
 
-template <typename T>
+template<typename T>
 inline void ECS::remove(Entity entity)
 {
     return get().m_componentManager.remove<T>(entity);
 }
 
-template<typename... Components, typename Fn>
-inline void ECS::_view(Fn fn)
+template<typename T>
+inline bool ECS::has(Entity entity)
 {
-    get().m_componentManager._view<Components...>(std::forward<Fn>(fn));
+    return get().m_componentManager.has<T>(entity);
+}
+
+template<typename... Components, typename Fn>
+inline void ECS::view(Fn fn)
+{
+    get().m_componentManager.view<Components...>(std::forward<Fn>(fn));
 }

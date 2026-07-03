@@ -23,6 +23,9 @@ namespace idrs
     {
         s32 x;
         s32 y;
+
+        const Vec2i operator+(const Vec2i &rhs) const { return { x + rhs.x, y + rhs.y }; }
+        const Vec2i operator-(const Vec2i &rhs) const { return { x - rhs.x, y - rhs.y }; }
     };
 
     struct Vec2f
@@ -36,6 +39,11 @@ namespace idrs
 
         const Vec2f operator*(const f32 &rhs) const { return { x * rhs, y * rhs }; }
         const Vec2f operator/(const f32 &rhs) const { return { x / rhs, y / rhs }; }
+
+        const Vec2f operator+=(const Vec2f &rhs) { return { x += rhs.x, y += rhs.y }; }
+        const Vec2f operator-=(const Vec2f &rhs) { return { x -= rhs.x, y -= rhs.y }; }
+        const Vec2f operator*=(const Vec2f &rhs) { return { x *= rhs.x, y *= rhs.y }; }
+        const Vec2f operator/=(const Vec2f &rhs) { return { x /= rhs.x, y /= rhs.y }; }
     };
     
     struct Vec3f

@@ -21,8 +21,12 @@ add_library(idros SHARED
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
     "src/ecs/systems/sprite_animation_system.cpp"
+    "src/ecs/systems/pathfindingsystem.cpp"
     "src/utils/sprite_utils.cpp"
     "src/utils/physicsutils.cpp"
+    "src/utils/mouseutils.cpp"
+    "src/utils/textutils.cpp"
+    "src/utils/uiutils.cpp"
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
     "src/sprite_animation.cpp"
@@ -108,6 +112,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SRC_PATH}/ecs/systems/sprite_animation_system.h"
+    "${SRC_PATH}/ecs/systems/pathfindingsystem.h"
 
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
 )
@@ -119,6 +124,9 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SRC_PATH}/utils/sprite_utils.h"
     "${SRC_PATH}/utils/physicsutils.h"
+    "${SRC_PATH}/utils/mouseutils.h"
+    "${SRC_PATH}/utils/textutils.h"
+    "${SRC_PATH}/utils/uiutils.h"
 
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
 )

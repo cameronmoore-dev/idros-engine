@@ -5,12 +5,13 @@
 namespace idrs
 {
     Debug::Debug() : 
-        m_drawables(VertexArray::Primitive::Line, VertexArray::Usage::Static, 0)
+        m_drawables(VertexArray::Primitive::Line, VertexArray::Usage::Dynamic, 0)
     {
         EARLY_OUT();
 
         m_drawables.generate();
         m_drawables.setVertexAttrib(0, 2, VertexArray::VertexAttribType::Float, false, offsetof(Vertex, position));
+        m_drawables.update();
     }
 
     void Debug::initDebugText(Font &font, const Vec2f &textPos)
@@ -18,7 +19,7 @@ namespace idrs
         Debug &instance = get();
         
         instance.m_text.setFont(font);
-        instance.m_text.setPosition(10.0f, 650.0f);
+        instance.m_text.setPosition(textPos.x, textPos.y);
     }
 
     void Debug::drawText(const char *text, ...)
@@ -67,10 +68,9 @@ namespace idrs
         EARLY_OUT();
 
         Debug &instance = get();
-        
+
         instance.m_drawables.update();
         renderer.draw(instance.m_drawables);
-        
         textShader.use();
         instance.m_text.setText(instance.m_accumText);
         instance.m_text.draw();

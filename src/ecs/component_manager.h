@@ -34,7 +34,7 @@ namespace idrs
         void clear();
 
         template<typename... Components, typename Fn>
-        void _view(Fn fn);
+        void view(Fn fn);
 
     private:
         ComponentManager() = default;

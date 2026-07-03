@@ -1,5 +1,7 @@
 #include "sprite_utils.h"
 
+#include "ecs/ecs.h"
+
 namespace idrs
 {
     void SpriteUtils::constructSprite(Transform &transform, Sprite &sprite)
