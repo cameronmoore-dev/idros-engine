@@ -1,7 +1,5 @@
 #include "on_frame_end.h"
 
-#include <cstdio>
-
 namespace idrs
 {
     void OnFrameEnd::subscribe(std::function<void()> func)

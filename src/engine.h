@@ -1,6 +1,7 @@
 #pragma once
 
-#include <idlai/idlai.h>
+#include <idcore/window/window.h>
+#include <idcore/graphics/renderer.h>
 
 #include "igame.h"
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <typeindex>
 #include <variant>
 #include <unordered_map>
 

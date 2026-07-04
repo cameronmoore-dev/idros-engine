@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include <idlai/typedefs.h>
+#include <idcore/typedefs.h>
 
 namespace idrs
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <idlai/window/window.h>
-#include <idlai/graphics/renderer.h>
+#include <idcore/window/window.h>
+#include <idcore/graphics/renderer.h>
 
 namespace idrs
 {

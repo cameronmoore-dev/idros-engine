@@ -3,8 +3,6 @@
 #include "event_callback_handler.h"
 #include "time.hpp"
 
-#include "debug.h"
-
 namespace idrs
 {
     Engine::Engine(IGame *game) : 

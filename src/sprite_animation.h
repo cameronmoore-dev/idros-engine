@@ -1,10 +1,9 @@
 #pragma once
 
-#include <filesystem>
 #include <vector>
-#include <cstring>
+#include <string>
 
-#include <idlai/math.hpp>
+#include <idcore/math.hpp>
 
 namespace idrs
 {

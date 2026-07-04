@@ -2,10 +2,10 @@
 
 #include <functional>
 
-#include <idlai/graphics/texture.h>
-#include <idlai/graphics/vertexarray.h>
-#include <idlai/graphics/view2d.h>
-#include <idlai/graphics/font.h>
+#include <idcore/graphics/texture.h>
+#include <idcore/graphics/vertexarray.h>
+#include <idcore/graphics/view2d.h>
+#include <idcore/graphics/font.h>
 
 #include "ecs/entity.h"
 #include "sprite_animation.h"

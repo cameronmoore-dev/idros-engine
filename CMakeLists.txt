@@ -37,11 +37,11 @@ add_library(idros SHARED
     "src/callbacks/on_frame_end.cpp"
 )
 
-target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/idlai)
+target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/idcore)
 
-add_library(idlai STATIC IMPORTED)
-set_target_properties(idlai PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidlai.a")
-target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idlai>")
+add_library(idcore STATIC IMPORTED)
+set_target_properties(idcore PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidcore.a")
+target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idcore>")
 add_subdirectory(ext)
 
 if (WIN32)
@@ -135,7 +135,7 @@ add_custom_command(
     TARGET idros
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${LIB_INCLUDE_PATH}/idlai"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\idlai"
+    "${LIB_INCLUDE_PATH}/idcore"
+    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\idcore"
 )
 #

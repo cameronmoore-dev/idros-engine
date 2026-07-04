@@ -1,6 +1,7 @@
 #pragma once
 
 #include <typeindex>
+#include <algorithm>
 #include <unordered_map>
 
 #include "entity.h"

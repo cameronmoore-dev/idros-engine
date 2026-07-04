@@ -1,6 +1,6 @@
 #include "event_callback_handler.h"
 
-#include <cstdio>
+#include <typeindex>
 
 namespace idrs
 {

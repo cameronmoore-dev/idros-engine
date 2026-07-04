@@ -1,5 +1,7 @@
 #include "entity_manager.h"
 
+#include <algorithm>
+
 #include "event_callback_handler.h"
 
 namespace idrs

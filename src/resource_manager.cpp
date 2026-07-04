@@ -1,5 +1,7 @@
 #include "resource_manager.h"
 
+#include <utility>
+
 namespace idrs
 {
     ResourceManager &ResourceManager::get()

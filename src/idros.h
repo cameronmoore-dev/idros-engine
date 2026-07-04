@@ -1,6 +1,6 @@
 #pragma once
 
-#include <idlai/idlai.h>
+#include <idcore/idcore.h>
 
 #include "igame.h"
 #include "debug.h"

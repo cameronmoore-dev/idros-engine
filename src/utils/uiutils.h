@@ -1,7 +1,7 @@
 #pragma once
 
-#include <idlai/math.hpp>
-#include <idlai/typedefs.h>
+#include <idcore/math.hpp>
+#include <idcore/typedefs.h>
 
 namespace idrs
 {

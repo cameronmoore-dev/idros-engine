@@ -78,24 +78,6 @@ namespace idrs
         clear();
     }
 
-    // void Debug::_drawGeo(Renderer &renderer)
-    // {
-    //     Debug &instance = get();
-    //
-    //     instance.m_drawables.update();
-    //     renderer.draw(instance.m_drawables);
-    // }
-    //
-    // void Debug::_drawText()
-    // {
-    //     Debug &instance = get();
-    //
-    //     instance.m_text.setText(instance.m_accumText);
-    //     instance.m_text.draw();
-    //
-    //     // clear();
-    // }
-
     Debug &Debug::get()
     {
         static Debug instance;

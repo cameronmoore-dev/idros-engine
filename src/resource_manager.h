@@ -3,15 +3,14 @@
 #include <memory>
 #include <unordered_map>
 #include <variant>
-#include <utility>
 #include <filesystem>
 
-#include <idlai/graphics/texture.h>
-#include <idlai/graphics/image.h>
-#include <idlai/graphics/shader.h>
-#include <idlai/graphics/font.h>
-#include <idlai/audio/sound.h>
-#include <idlai/audio/music.h>
+#include <idcore/graphics/texture.h>
+#include <idcore/graphics/image.h>
+#include <idcore/graphics/shader.h>
+#include <idcore/graphics/font.h>
+#include <idcore/audio/sound.h>
+#include <idcore/audio/music.h>
 
 #include "sprite_animation.h"
 
