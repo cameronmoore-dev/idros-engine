@@ -18,6 +18,7 @@ add_library(idros SHARED
     "src/engine.cpp"
     "src/debug.cpp"
     "src/time.cpp"
+    "src/random.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
     "src/ecs/systems/sprite_animation_system.cpp"
@@ -77,6 +78,7 @@ add_custom_command(
     "${SRC_PATH}/igame.h"
     "${SRC_PATH}/debug.h"
     "${SRC_PATH}/time.hpp"
+    "${SRC_PATH}/random.hpp"
     "${SRC_PATH}/sprite_animation.h"
     
     "${SRC_PATH}/event_callback_handler.h"

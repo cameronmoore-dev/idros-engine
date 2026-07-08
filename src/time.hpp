@@ -9,15 +9,13 @@ namespace idrs
     {
     public:
         static const f32 deltaTime();
-
         static const bool doUpdate();
 
     private:
         Clock m_clock;
         f32 m_deltaTime;
-
-        f32 lag;
-        f32 fixedDT;
+        f32 m_lag;
+        f32 m_fixedDT;
 
     private:
         static Time &get();

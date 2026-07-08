@@ -5,6 +5,7 @@
 #include "igame.h"
 #include "debug.h"
 #include "time.hpp"
+#include "random.hpp"
 #include "scene_manager.h"
 #include "resource_manager.h"
 

@@ -6,8 +6,8 @@ namespace idrs
 {
     Time::Time() : 
         m_deltaTime(0.0f),
-        lag(0.0f),
-        fixedDT(1.0f / 60.f)
+        m_lag(0.0f),
+        m_fixedDT(1.0f / 60.f)
     {
         EventCallbackHandler::subscribe<OnFrameStart>(std::bind(&Time::updateTimestep, this));
     }
@@ -22,9 +22,9 @@ namespace idrs
     {
         Time &instance = get();
         
-        while (instance.lag >= instance.fixedDT)
+        while (instance.m_lag >= instance.m_fixedDT)
         {
-            instance.lag -= instance.fixedDT;
+            instance.m_lag -= instance.m_fixedDT;
             return true;
         }
 
@@ -49,6 +49,6 @@ namespace idrs
             m_deltaTime = 0.1f;
         }
 
-        instance.lag += m_deltaTime;
+        instance.m_lag += m_deltaTime;
     }
 }

@@ -11,8 +11,35 @@ namespace idrs
         m_entities.reserve(k_maxEntities);
         m_activeIds.resize(k_maxEntities, false);
 
-        EventCallbackHandler::subscribe<OnFrameStart>(std::bind(&EntityManager::addPending, this));
-        EventCallbackHandler::subscribe<OnFrameEnd>(std::bind(&EntityManager::removePending, this));
+        EventCallbackHandler::subscribe<OnFrameStart>([this]()
+        {
+            for (Entity pending : m_toAdd)
+            {
+                m_entities.emplace_back(pending);
+            }
+            m_toAdd.clear();
+        });
+
+        EventCallbackHandler::subscribe<OnFrameEnd>([this]()
+        {
+            if (m_toRemove.empty())
+            {
+                return;
+            }
+            std::sort(m_toRemove.begin(), m_toRemove.end());
+            m_toRemove.erase(std::unique(m_toRemove.begin(), m_toRemove.end()), m_toRemove.end());
+            m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [this](const Entity e)
+            {
+                bool match = std::binary_search(m_toRemove.begin(), m_toRemove.end(), e);
+                if (match)
+                {
+                    m_activeIds[e] = false;
+                }
+                return match;
+            }), m_entities.end());
+
+            m_toRemove.clear();
+        });
     }
 
     Entity EntityManager::create()
@@ -31,40 +58,6 @@ namespace idrs
     void EntityManager::clear()
     {
         m_entities.clear();
-    }
-
-    void EntityManager::addPending()
-    {
-        if (m_toAdd.empty())
-        {
-            return;
-        }
-        for (Entity pending : m_toAdd)
-        {
-            m_entities.emplace_back(pending);
-        }
-
-        m_toAdd.clear();
-    }
-
-    void EntityManager::removePending()
-    {
-        if (m_toRemove.empty())
-        {
-            return;
-        }
-
-        std::sort(m_toRemove.begin(), m_toRemove.end());
-        m_toRemove.erase(std::unique(m_toRemove.begin(), m_toRemove.end()), m_toRemove.end());
-        m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [this](const Entity e)
-        {
-            bool match = std::binary_search(m_toRemove.begin(), m_toRemove.end(), e);
-            if (match) m_activeIds[e] = false;
-            
-            return match;
-        }), m_entities.end());
-
-        m_toRemove.clear();
     }
 
     Entity EntityManager::getFirstFreeID()

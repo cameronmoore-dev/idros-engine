@@ -24,9 +24,6 @@ namespace idrs
         Entity create();
         void destroy(Entity entity);
         void clear();
-        void addPending();
-        void removePending();
-
         Entity getFirstFreeID();
     };
 }
