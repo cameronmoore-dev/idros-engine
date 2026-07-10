@@ -2,6 +2,7 @@ template<typename T>
 inline T &ComponentManager::add(Entity entity)
 {
     u64 key = std::type_index(typeid(T)).hash_code();
+
     if (m_pool.find(key) == m_pool.end())
     {
         m_pool.emplace(key, new ComponentSet<T>());
@@ -61,7 +62,10 @@ inline void ComponentManager::removeAll(Entity entity)
     for (const auto &[hash, set] : m_pool)
     {
         auto *s = dynamic_cast<IComponentSet*>(set);
-        s->remove(entity);
+        if (s)
+        {
+            s->remove(entity);
+        }
     }
 }
 

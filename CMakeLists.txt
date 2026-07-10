@@ -28,6 +28,7 @@ add_library(idros SHARED
     "src/utils/mouseutils.cpp"
     "src/utils/textutils.cpp"
     "src/utils/uiutils.cpp"
+    "src/utils/tagutils.cpp"
     "src/scene_manager.cpp"
     "src/resource_manager.cpp"
     "src/sprite_animation.cpp"
@@ -129,6 +130,7 @@ add_custom_command(
     "${SRC_PATH}/utils/mouseutils.h"
     "${SRC_PATH}/utils/textutils.h"
     "${SRC_PATH}/utils/uiutils.h"
+    "${SRC_PATH}/utils/tagutils.h"
 
     "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
 )

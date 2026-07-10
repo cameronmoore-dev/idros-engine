@@ -48,15 +48,14 @@ namespace idrs
         f32 length = 1.0f;
         Entity hit;
 
-        std::vector<Entity> colliders = ECS::getEntities<RectCollider>();
+        const std::vector<Entity> &colliders = ECS::getEntities<RectCollider>();
         for (Entity e : colliders)
         {
-            if (e == exclude)
+            RectCollider &collider = ECS::get<RectCollider>(e);
+            if (collider.ignoreRaycast)
             {
                 continue;
             }
-
-            RectCollider& collider = ECS::get<RectCollider>(e);
 
             Vec2f c = {};
             Vec2f d = {};

@@ -22,6 +22,7 @@
 #include "utils/mouseutils.h"
 #include "utils/textutils.h"
 #include "utils/uiutils.h"
+#include "utils/tagutils.h"
 
 #include "sprite_animation.h"
 

@@ -50,6 +50,7 @@ namespace idrs
         Vec2f offset;
         bool trigger;
         bool isStatic;
+        bool ignoreRaycast;
     };
 
     struct Child
@@ -63,6 +64,7 @@ namespace idrs
     struct Tag
     {
         char string[32];
+        u32 hash;
     };
 
     struct SpriteAnimator
