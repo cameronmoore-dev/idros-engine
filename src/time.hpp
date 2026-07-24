@@ -9,11 +9,15 @@ namespace idrs
     {
     public:
         static const f32 deltaTime();
+        static const f32 unscaledDeltaTime();
         static const bool doUpdate();
+
+        static void setTimescale(f32 scale);
 
     private:
         Clock m_clock;
         f32 m_deltaTime;
+        f32 m_timescale;
         f32 m_lag;
         f32 m_fixedDT;
 

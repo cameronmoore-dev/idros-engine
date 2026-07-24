@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-
 #include <unordered_map>
 
 #include "typedefs.h"
@@ -30,6 +29,8 @@ namespace idrs
         void setMat2(const std::string& name, const Mat2& mat) const;
         void setMat3(const std::string& name, const Mat3& mat) const;
         void setMat4(const std::string& name, const Mat4& mat) const;
+
+        inline u32 id() { return m_id; }
 
     private:
         u32 m_id = 0;

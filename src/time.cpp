@@ -6,6 +6,7 @@ namespace idrs
 {
     Time::Time() : 
         m_deltaTime(0.0f),
+        m_timescale(1.0f),
         m_lag(0.0f),
         m_fixedDT(1.0f / 60.f)
     {
@@ -21,7 +22,6 @@ namespace idrs
     const bool Time::doUpdate()
     {
         Time &instance = get();
-        
         while (instance.m_lag >= instance.m_fixedDT)
         {
             instance.m_lag -= instance.m_fixedDT;
@@ -33,6 +33,11 @@ namespace idrs
 
     const f32 Time::deltaTime()
     {   
+        return get().m_deltaTime * get().m_timescale;
+    }
+
+    const f32 Time::unscaledDeltaTime()
+    {
         return get().m_deltaTime;
     }
 
@@ -49,6 +54,11 @@ namespace idrs
             m_deltaTime = 0.1f;
         }
 
-        instance.m_lag += m_deltaTime;
+        instance.m_lag += m_deltaTime * instance.m_timescale;
+    }
+
+    void Time::setTimescale(f32 scale)
+    {
+        get().m_timescale = scale;
     }
 }

@@ -6,8 +6,10 @@
 #include <idcore/graphics/vertexarray.h>
 #include <idcore/graphics/view2d.h>
 #include <idcore/graphics/font.h>
+#include <idcore/graphics/shader.h>
 
 #include "ecs/entity.h"
+#include "graphics/colour.h"
 #include "sprite_animation.h"
 
 #define SEEK 0
@@ -31,6 +33,13 @@ namespace idrs
         f32 height;
         bool flipx;
         bool flipy;
+    };
+
+    struct Material
+    {
+        Shader *shader;
+        Texture *albedo;
+        Colour colour = colour::white;
     };
 
     struct SortingLayer

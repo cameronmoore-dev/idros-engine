@@ -107,6 +107,7 @@ namespace idrs
         const Mat4 identity();
 
         void inverse4(Mat4 &out, const Mat4 &matrix);
+        const Mat4 transpose(const Mat4 &matrix);
 
         const Mat4 multiply(const Mat4 &matA, const Mat4 &matB);
         const Vec4f multiply(const Mat4 &mat, const Vec4f &vec);
