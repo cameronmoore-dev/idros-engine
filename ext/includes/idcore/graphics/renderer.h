@@ -1,6 +1,8 @@
 #pragma once
 
 #include "vertexarray.h"
+#include "shader.h"
+#include "texture.h"
 #include "blendmode.h"
 #include "typedefs.h"
 
@@ -30,8 +32,8 @@ namespace idrs
         void clear(const Colour colour);
         void clear(const Vec4f &colour);
         void clear(f32 r, f32 g, f32 b, f32 a);
-        void draw(VertexArray &vertices);
-        void drawIndex(VertexArray &vertices);
+        void draw(VertexArray &vertices, Shader *shader = nullptr, Texture *texture = nullptr);
+        void drawIndex(VertexArray &vertices, Shader *shader = nullptr, Texture *texture = nullptr);
 
         /* setBlendMode */
 

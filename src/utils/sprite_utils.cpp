@@ -6,12 +6,12 @@ namespace idrs
 {
     void SpriteUtils::constructSprite(Transform &transform, Sprite &sprite)
     {
-        if (sprite.texture)
+        if (sprite.material.texture)
         {
-            sprite.textureRect.x /= sprite.texture->getWidth();
-            sprite.textureRect.w /= sprite.texture->getWidth();
-            sprite.textureRect.y /= sprite.texture->getHeight();
-            sprite.textureRect.h /= sprite.texture->getHeight();
+            sprite.textureRect.x /= sprite.material.texture->getWidth();
+            sprite.textureRect.w /= sprite.material.texture->getWidth();
+            sprite.textureRect.y /= sprite.material.texture->getHeight();
+            sprite.textureRect.h /= sprite.material.texture->getHeight();
         }
         sprite.vertices.append(idrs::Vertex{});
         sprite.vertices.append(idrs::Vertex{});
@@ -19,7 +19,7 @@ namespace idrs
         sprite.vertices.append(idrs::Vertex{});
 
         updateDrawPosition(transform, sprite);
-        if (sprite.texture)
+        if (sprite.material.texture)
         {
             setTextureCoords(sprite,
                              sprite.textureRect.x,

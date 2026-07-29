@@ -47,8 +47,8 @@ namespace idrs
         Vec2u offset = animator.current->getFrameOffsets()[(u32)frame];
         Vec2u framePos = { start.x + ((u32)sprite.width * offset.x), start.y + ((u32)sprite.height * offset.y) };
 
-        f32 x = ((f32)framePos.x / sprite.texture->getWidth());
-        f32 y = (((f32)sprite.texture->getHeight() - sprite.height) - (f32)framePos.y) / sprite.texture->getHeight();
+        f32 x = ((f32)framePos.x / sprite.material.texture->getWidth());
+        f32 y = (((f32)sprite.material.texture->getHeight() - sprite.height) - (f32)framePos.y) / sprite.material.texture->getHeight();
         f32 w = sprite.textureRect.w;
         f32 h = sprite.textureRect.h;
 

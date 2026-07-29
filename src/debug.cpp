@@ -70,7 +70,7 @@ namespace idrs
         Debug &instance = get();
 
         instance.m_drawables.update();
-        renderer.draw(instance.m_drawables);
+        renderer.draw(instance.m_drawables, &lineShader);
         textShader.use();
         instance.m_text.setText(instance.m_accumText);
         instance.m_text.draw();

@@ -17,6 +17,7 @@
 #include "graphics/image.h"
 #include "graphics/renderer.h"
 #include "graphics/shader.h"
+#include "graphics/uniformbuffer.h"
 #include "graphics/text.h"
 #include "graphics/texture.h"
 #include "graphics/vertex.h"

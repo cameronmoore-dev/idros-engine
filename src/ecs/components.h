@@ -25,27 +25,23 @@ namespace idrs
 
     struct Sprite
     {
+        struct
+        {
+            Shader *shader;
+            Texture *texture;
+            Colour colour;
+        } material;
         VertexArray vertices;
         FRect textureRect;
-        Texture *texture;
-        Vec4f colour = { 1, 1, 1, 1 };
+        struct
+        {
+            s32 layer;
+            s32 modifier;
+        } sortLayer;
         f32 width;
         f32 height;
         bool flipx;
         bool flipy;
-    };
-
-    struct Material
-    {
-        Shader *shader;
-        Texture *albedo;
-        Colour colour = colour::white;
-    };
-
-    struct SortingLayer
-    {
-        s32 layer;
-        s32 modifier;
     };
 
     struct Velocity
@@ -85,7 +81,7 @@ namespace idrs
 
     struct Camera2D
     {
-        View2D *view;
+        View2D view;
         Entity target;
         f32 smoothing;
     };

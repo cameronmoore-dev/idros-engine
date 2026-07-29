@@ -4,14 +4,14 @@
 
 namespace idrs
 {
-    class UniformBufferObject
+    class UniformBuffer
     {
     public:
-        UniformBufferObject(const std::string &name, u32 bytes, u32 bindingPoint);
-        ~UniformBufferObject();
+        UniformBuffer(const std::string &name, u32 bytes, u32 bindingPoint);
+        ~UniformBuffer();
         void init();
         void update(u32 offset, u32 bytes, void *value);
-        void setBindingPoint(Shader &shader);
+        void setShaderBinding(Shader &shader);
 
     private:
         std::string m_name;
