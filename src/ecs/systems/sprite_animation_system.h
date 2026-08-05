@@ -2,6 +2,7 @@
 
 #include "ecs/entity.h"
 #include "ecs/components.h"
+#include "sprite_animation.h"
 
 namespace idrs
 {
@@ -21,5 +22,7 @@ namespace idrs
         static void repeat(SpriteAnimator &animator);
         static void pingPong(SpriteAnimator &animator);
         static void checkSpriteFlip();
+
+        static void onAnimationLoopComplete(SpriteAnimator &animator, f32 setFrame);
     };
 }

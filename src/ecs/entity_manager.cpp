@@ -2,44 +2,12 @@
 
 #include <algorithm>
 
-#include "event_callback_handler.h"
-
 namespace idrs
 {
     EntityManager::EntityManager()
     {
         m_entities.reserve(k_maxEntities);
         m_activeIds.resize(k_maxEntities, false);
-
-        EventCallbackHandler::subscribe<OnFrameStart>([this]()
-        {
-            for (Entity pending : m_toAdd)
-            {
-                m_entities.emplace_back(pending);
-            }
-            m_toAdd.clear();
-        });
-
-        EventCallbackHandler::subscribe<OnFrameEnd>([this]()
-        {
-            if (m_toRemove.empty())
-            {
-                return;
-            }
-            std::sort(m_toRemove.begin(), m_toRemove.end());
-            m_toRemove.erase(std::unique(m_toRemove.begin(), m_toRemove.end()), m_toRemove.end());
-            m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [this](const Entity e)
-            {
-                bool match = std::binary_search(m_toRemove.begin(), m_toRemove.end(), e);
-                if (match)
-                {
-                    m_activeIds[e] = false;
-                }
-                return match;
-            }), m_entities.end());
-
-            m_toRemove.clear();
-        });
     }
 
     Entity EntityManager::create()
@@ -72,5 +40,35 @@ namespace idrs
         }
 
         return k_nullEntityID;
+    }
+
+    void EntityManager::addEntities()
+    {
+        for (Entity pending : m_toAdd)
+        {
+            m_entities.emplace_back(pending);
+        }
+        m_toAdd.clear();
+    }
+
+    void EntityManager::removeEntities()
+    {
+        if (m_toRemove.empty())
+        {
+            return;
+        }
+        std::sort(m_toRemove.begin(), m_toRemove.end());
+        m_toRemove.erase(std::unique(m_toRemove.begin(), m_toRemove.end()), m_toRemove.end());
+        m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [this](const Entity e)
+        {
+            bool match = std::binary_search(m_toRemove.begin(), m_toRemove.end(), e);
+            if (match)
+            {
+                m_activeIds[e] = false;
+            }
+            return match;
+        }), m_entities.end());
+
+        m_toRemove.clear();
     }
 }

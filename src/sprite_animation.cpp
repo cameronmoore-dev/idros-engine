@@ -25,6 +25,19 @@ namespace idrs
         calculateFrameOffsets();
     }
 
+    void SpriteAnimation::addEvent(AnimationEvent &event)
+    {
+        m_events.emplace_back(event);
+    }
+
+    void SpriteAnimation::resetEventsTriggeredFlag()
+    {
+        for (AnimationEvent &event : m_events)
+        {
+            event.triggered = false;
+        }
+    }
+
     void SpriteAnimation::calculateFrameOffsets()
     {
         u32 parsed = 0;
@@ -48,6 +61,7 @@ namespace idrs
     void SpriteAnimation::setReversing(const bool status)   { m_reversing = status; }
 
     std::vector<Vec2u> SpriteAnimation::getFrameOffsets() { return m_frameOffsets; }
+    std::vector<AnimationEvent> &SpriteAnimation::getEvents() { return m_events; }
     const Vec2u SpriteAnimation::getStartFrame()    { return m_start; }
     const char *SpriteAnimation::getName()          { return m_name; }
     const SpriteAnimation::LoopType SpriteAnimation::getLoopType()  { return m_loop; }

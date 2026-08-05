@@ -1,7 +1,11 @@
 #include "engine.h"
 
-#include "event_callback_handler.h"
+#include "ecs/ecs.h"
+#include "audio.h"
+#include "resource_manager.h"
+#include "debug.h"
 #include "time.hpp"
+#include "random.hpp"
 
 namespace idrs
 {
@@ -15,6 +19,13 @@ namespace idrs
 
         m_game->p_window = m_window;
         m_game->p_renderer = m_renderer;
+
+        ECS::init();
+        Audio::init();
+        Time::init();
+        ResourceManager::init();
+        Debug::init();
+        Random::init();
     }
 
     void Engine::run()
@@ -23,14 +34,15 @@ namespace idrs
 
         while (m_window->isOpen())
         {
-            EventCallbackHandler::invoke<OnFrameStart>();
+            ECS::get().m_entityManager.addEntities();
+            Time::updateTimestep();
 
             processEvents();
             fixedUpdate();
             update();
             render();
 
-            EventCallbackHandler::invoke<OnFrameEnd>();
+            ECS::get().m_entityManager.removeEntities();
         }
 
         shutdown();

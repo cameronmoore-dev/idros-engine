@@ -6,6 +6,7 @@ namespace idrs
 {
     class Random
     {
+    friend class Engine;
     public:
         static const u32 generateSeed();
         static const s32 range(s32 min, s32 max, u32 *seed = nullptr);
@@ -19,5 +20,7 @@ namespace idrs
     private:
         static Random &get();
         Random();
+
+        static void init();
     };
 }

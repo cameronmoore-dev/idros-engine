@@ -7,6 +7,7 @@ namespace idrs
 {
     class Time
     {
+    friend class Engine;
     public:
         static const f32 deltaTime();
         static const f32 unscaledDeltaTime();
@@ -25,6 +26,7 @@ namespace idrs
         static Time &get();
         Time();
 
-        void updateTimestep();
+        static void init();
+        static void updateTimestep();
     };
 }

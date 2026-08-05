@@ -8,6 +8,11 @@ namespace idrs
         return instance;
     }
 
+    void ECS::init()
+    {
+        get();
+    }
+
     Entity ECS::create()
     {
         return get().m_entityManager.create();
@@ -18,7 +23,7 @@ namespace idrs
         get().m_entityManager.destroy(entity);
         get().m_componentManager.removeAll(entity);
     }
-    
+
     void ECS::destroyAll()
     {
         get().m_entityManager.clear();

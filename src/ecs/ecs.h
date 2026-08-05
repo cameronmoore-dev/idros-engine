@@ -7,6 +7,7 @@ namespace idrs
 {
     class ECS
     {
+    friend class Engine;
     public:
         static Entity create();
         static void destroy(Entity entity);
@@ -25,7 +26,7 @@ namespace idrs
         static void remove(Entity entity);
 
         template<typename... Components, typename Fn>
-        static void view(Fn fn);
+        static void query(Fn fn);
 
         template<typename T>
         static bool has(Entity entity);
@@ -37,6 +38,8 @@ namespace idrs
     private:
         static ECS &get();
         ECS() = default;
+
+        static void init();
     };
 
     #include "ecs.inl"

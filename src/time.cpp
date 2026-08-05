@@ -1,7 +1,5 @@
 #include "time.hpp"
 
-#include "event_callback_handler.h"
-
 namespace idrs
 {
     Time::Time() : 
@@ -10,13 +8,17 @@ namespace idrs
         m_lag(0.0f),
         m_fixedDT(1.0f / 60.f)
     {
-        EventCallbackHandler::subscribe<OnFrameStart>(std::bind(&Time::updateTimestep, this));
     }
 
     Time &Time::get()
     {
         static Time instance;
         return instance;
+    }
+
+    void Time::init()
+    {
+        get();
     }
 
     const bool Time::doUpdate()
@@ -32,7 +34,7 @@ namespace idrs
     }
 
     const f32 Time::deltaTime()
-    {   
+    {
         return get().m_deltaTime * get().m_timescale;
     }
 
@@ -49,12 +51,12 @@ namespace idrs
         instance.m_deltaTime = instance.m_clock.secondsf();
         instance.m_clock.start();
 
-        if (m_deltaTime >= 0.1f)
+        if (instance.m_deltaTime >= 0.1f)
         {
-            m_deltaTime = 0.1f;
+            instance.m_deltaTime = 0.1f;
         }
 
-        instance.m_lag += m_deltaTime * instance.m_timescale;
+        instance.m_lag += instance.m_deltaTime * instance.m_timescale;
     }
 
     void Time::setTimescale(f32 scale)

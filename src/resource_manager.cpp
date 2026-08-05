@@ -10,8 +10,13 @@ namespace idrs
         return instance;
     }
 
+    void ResourceManager::init()
+    {
+        get();
+    }
+
     void ResourceManager::setLoadFlag(const LoadFlag flag)
-    { 
+    {
         get().m_flag = flag;
     }
 

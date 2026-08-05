@@ -2,34 +2,14 @@
 
 #include <string>
 #include <vector>
-#include <fstream>
-#include <cstring>
-#include <cmath>
-#include <algorithm>
 
 #include "typedefs.h"
-#include "format_headers.h"
+#include "audioinfo.h"
 
 namespace idrs
 {
     class Sound
     {
-    public:
-        struct SoundInfo
-        {
-            u32 sampleRate;
-            u16 format;
-            u16 numChannels;
-            u16 bitsPerSample;
-        };
-
-        struct LoopInfo
-        {
-            u32 count;
-            u32 start;
-            u32 length;
-        };
-
     public:
         Sound() = default;
         Sound(const std::string &path);
@@ -46,14 +26,14 @@ namespace idrs
         const u32 getBegin() const;
         const u32 getLength() const;
         const std::vector<char> &samples() const;
-        const SoundInfo &info() const;
-        const LoopInfo &loopInfo() const;
+        const AudioInfo &info() const;
+        const AudioLoopInfo &loopInfo() const;
         const u64 &id() const;
         
     private:
         std::vector<char> m_data;
-        SoundInfo m_info;
-        LoopInfo m_loop;
+        AudioInfo m_info;
+        AudioLoopInfo m_loop;
         u64 m_id;
         u32 m_startPos;
         u32 m_playLength;

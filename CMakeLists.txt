@@ -18,6 +18,7 @@ add_library(idros SHARED
     "src/engine.cpp"
     "src/debug.cpp"
     "src/time.cpp"
+    "src/audio.cpp"
     "src/random.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
@@ -33,10 +34,6 @@ add_library(idros SHARED
     "src/resource_manager.cpp"
     "src/sprite_animation.cpp"
     "src/serialization.cpp"
-
-    "src/event_callback_handler.cpp"
-    "src/callbacks/on_frame_start.cpp"
-    "src/callbacks/on_frame_end.cpp"
 )
 
 target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/idcore)
@@ -79,10 +76,10 @@ add_custom_command(
     "${SRC_PATH}/igame.h"
     "${SRC_PATH}/debug.h"
     "${SRC_PATH}/time.hpp"
+    "${SRC_PATH}/audio.h"
     "${SRC_PATH}/random.hpp"
     "${SRC_PATH}/sprite_animation.h"
-    
-    "${SRC_PATH}/event_callback_handler.h"
+
     "${SRC_PATH}/scene.h"
     "${SRC_PATH}/scene_manager.h"
     "${SRC_PATH}/scene_manager.inl"

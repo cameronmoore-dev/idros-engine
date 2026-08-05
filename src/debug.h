@@ -47,20 +47,21 @@ namespace idrs
 
     class Debug
     {
+    friend class Engine;
     public:
         static void initDebugText(Font &font, const Vec2f &textPos);
         static void drawText(const char *text, ...);
         static void drawLine(f32 x1, f32 y1, f32 x2, f32 y2);
-        
         static void draw(Renderer &renderer, Shader &textShader, Shader &lineShader);
 
     private:
         VertexArray m_drawables;
         std::string m_accumText;
         Text m_text;
-        
+
     private:
         static void clear();
+        static void init();
 
     private:
         static Debug &get();

@@ -9,6 +9,9 @@ namespace idrs
     class EntityManager
     {
     friend class ECS;
+    public:
+        void addEntities();
+        void removeEntities();
 
     private:
         std::vector<Entity> m_entities;

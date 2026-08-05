@@ -15,6 +15,11 @@ namespace idrs
         return instance;
     }
 
+    void Random::init()
+    {
+        get();
+    }
+
     const u32 Random::generateSeed()
     {
         std::random_device rd;

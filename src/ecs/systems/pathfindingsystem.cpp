@@ -6,7 +6,7 @@ namespace idrs
 {
     void PathfindingSystem::update()
     {
-        ECS::view<Transform, Velocity, Pathfinder>([](Entity e, auto &transform, auto &velocity, auto &pathfinder)
+        ECS::query<Transform, Velocity, Pathfinder>([](Entity e, auto &transform, auto &velocity, auto &pathfinder)
         {
             switch (pathfinder.steerBehaviour)
             {

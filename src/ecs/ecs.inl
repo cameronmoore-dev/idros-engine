@@ -29,7 +29,7 @@ inline bool ECS::has(Entity entity)
 }
 
 template<typename... Components, typename Fn>
-inline void ECS::view(Fn fn)
+inline void ECS::query(Fn fn)
 {
-    get().m_componentManager.view<Components...>(std::forward<Fn>(fn));
+    get().m_componentManager.query<Components...>(std::forward<Fn>(fn));
 }

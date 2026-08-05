@@ -79,7 +79,7 @@ inline void ComponentManager::clear()
 }
 
 template <typename... Components, typename Fn>
-inline void ComponentManager::view(Fn fn)
+inline void ComponentManager::query(Fn fn)
 {
     std::array<IComponentSet*, sizeof...(Components)> sets =
     {

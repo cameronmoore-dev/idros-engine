@@ -1,14 +1,10 @@
 #pragma once
 
-#include <algorithm>
-
 #include <xaudio2.h>
 
 #include "typedefs.h"
 #include "audio/sound.h"
 #include "audio/music.h"
-
-#define STRD_SOUND_LOOP_INFINITE XAUDIO2_LOOP_INFINITE
 
 namespace idrs
 {
@@ -54,12 +50,15 @@ namespace idrs
 
     private:
         AudioEngine *m_engine = nullptr;
-        std::vector<XAudioVoice> m_voices;
+        std::vector<XAudioVoice> m_monoVoices;
+        std::vector<XAudioVoice> m_stereoVoices;
         std::vector<char> m_samplesCopy;
 
     private:
-        XAudioVoice &getValidVoiceSlot(const u64 soundID);
+        XAudioVoice &getValidVoiceSlot(const u64 soundID, const AudioInfo &info);
         void createAndSubmitBuffer(const XAudioVoice &voice, const Sound &sound);
         void createAndSubmitBuffer(const XAudioVoice &voice, const Music &sound);
+
+        std::vector<XAudioVoice> &getVoicesByChannel(const AudioInfo &info);
     };
 }

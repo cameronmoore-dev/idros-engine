@@ -4,7 +4,7 @@
 
 namespace idrs
 {
-    Debug::Debug() : 
+    Debug::Debug() :
         m_drawables(VertexArray::Primitive::Line, VertexArray::Usage::Dynamic, 0)
     {
         EARLY_OUT();
@@ -14,10 +14,21 @@ namespace idrs
         m_drawables.update();
     }
 
+    Debug &Debug::get()
+    {
+        static Debug instance;
+        return instance;
+    }
+
+    void Debug::init()
+    {
+        get();
+    }
+
     void Debug::initDebugText(Font &font, const Vec2f &textPos)
     {
         Debug &instance = get();
-        
+
         instance.m_text.setFont(font);
         instance.m_text.setPosition(textPos.x, textPos.y);
     }
@@ -32,9 +43,9 @@ namespace idrs
         char buf[128];
         vsnprintf(buf, sizeof(buf), text, args);
         std::string t(buf);
-        
+
         get().m_accumText += (t + "\n");
-        
+
         va_end(args);
     }
 
@@ -52,7 +63,7 @@ namespace idrs
         instance.m_drawables.append(v1);
         instance.m_drawables.append(v2);
     }
-    
+
     void Debug::clear()
     {
         EARLY_OUT();
@@ -78,9 +89,5 @@ namespace idrs
         clear();
     }
 
-    Debug &Debug::get()
-    {
-        static Debug instance;
-        return instance;
-    }
+    
 }

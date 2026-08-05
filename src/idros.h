@@ -6,6 +6,7 @@
 #include "debug.h"
 #include "time.hpp"
 #include "random.hpp"
+#include "audio.h"
 #include "scene_manager.h"
 #include "resource_manager.h"
 

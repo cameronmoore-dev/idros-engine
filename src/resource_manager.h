@@ -18,6 +18,8 @@ namespace idrs
 {
     class ResourceManager
     {
+    friend class Engine;
+
     using ResourceVar = std::variant<
         std::shared_ptr<Texture>, 
         std::shared_ptr<Image>, 
@@ -69,5 +71,7 @@ namespace idrs
         static ResourceManager &get();
         ResourceManager() = default;
         ~ResourceManager() = default;
+
+        static void init();
     };
 }

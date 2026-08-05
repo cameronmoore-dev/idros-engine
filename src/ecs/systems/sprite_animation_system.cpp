@@ -1,5 +1,8 @@
 #include "sprite_animation_system.h"
 
+#include <cmath>
+
+#include "sprite_animation.h"
 #include "time.hpp"
 #include "resource_manager.h"
 #include "ecs/ecs.h"
@@ -9,14 +12,12 @@ namespace idrs
 {
     void SpriteAnimationSystem::update()
     {
-        ECS::view<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
+        ECS::query<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
         {
             if (animator.playing)
             {
                 updateCurrentFrame(animator);
-
-                SpriteAnimation::LoopType type = animator.current->getLoopType();
-                switch (type)
+                switch (animator.current->getLoopType())
                 {
                     case SpriteAnimation::LoopType::None:       oneShot(animator);  break;
                     case SpriteAnimation::LoopType::Repeat:     repeat(animator);   break;
@@ -28,7 +29,7 @@ namespace idrs
             }
         });
     }
-    
+
     void SpriteAnimationSystem::updateCurrentFrame(SpriteAnimator &animator)
     {
         if (animator.current->isReversing())
@@ -64,6 +65,15 @@ namespace idrs
         }
 
         SpriteUtils::setTextureCoords(sprite, x, y, w, h);
+
+        for (AnimationEvent &event : animator.current->getEvents())
+        {
+            if (frame == event.frame && !event.triggered)
+            {
+                event.callback(event.data);
+                event.triggered = true;
+            }
+        }
     }
 
     void SpriteAnimationSystem::play(Entity entity)
@@ -100,14 +110,14 @@ namespace idrs
         {
             if (animator.currentFrame <= 0.0f)
             {
-                animator.currentFrame = (f32)(animator.current->getTotalFrames() - 1);
+                onAnimationLoopComplete(animator, (f32)(animator.current->getTotalFrames() - 1));
             }
             return;
         }
 
         if (animator.currentFrame >= animator.current->getTotalFrames())
         {
-            animator.currentFrame = 0.0f;
+            onAnimationLoopComplete(animator, 0.0f);
         }
     }
 
@@ -118,7 +128,7 @@ namespace idrs
             if (animator.currentFrame <= 0.0f)
             {
                 animator.current->setReversing(false);
-                animator.currentFrame = 0.0f;
+                onAnimationLoopComplete(animator, 0.0f);
             }
             return;
         }
@@ -126,7 +136,13 @@ namespace idrs
         if (animator.currentFrame >= animator.current->getTotalFrames())
         {
             animator.current->setReversing(true);
-            animator.currentFrame = (f32)(animator.current->getTotalFrames() - 1);
+            onAnimationLoopComplete(animator, (f32)(animator.current->getTotalFrames() - 1));
         }
+    }
+
+    void SpriteAnimationSystem::onAnimationLoopComplete(SpriteAnimator &animator, f32 setFrame)
+    {
+        animator.currentFrame = setFrame;
+        animator.current->resetEventsTriggeredFlag();
     }
 }
