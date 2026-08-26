@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
-#include "typedefs.h"
 #include "audioinfo.h"
 
 namespace idrs
@@ -11,39 +11,44 @@ namespace idrs
     class Sound
     {
     public:
+        u32 handle = UINT32_MAX;
+
+    public:
         Sound() = default;
         Sound(const std::string &path);
 
         void load(const std::string &path);
 
-        void setBegin(const u32 startPos);
-        void setLength(const u32 length);
-        void setLoopInfo(const u32 count, const u32 start, const u32 length);
-        void setLoopCount(const u32 count);
-        void setLoopStart(const u32 start);
-        void setLoopLength(const u32 length);
+        void setVolume(f32 volume);
+        void setPitch(f32 pitch);
+        void setBegin(u32 startPos);
+        void setLength(u32 length);
+        void setLoopInfo(u32 count, u32 start, u32 length);
+        void setLoopCount(u32 count);
+        void setLoopStart(u32 start);
+        void setLoopLength(u32 length);
 
-        const u32 getBegin() const;
-        const u32 getLength() const;
-        const std::vector<char> &samples() const;
-        const AudioInfo &info() const;
-        const AudioLoopInfo &loopInfo() const;
-        const u64 &id() const;
-        
+        const f32 getVolume();
+        const f32 getPitch();
+        const u32 getBegin();
+        const u32 getLength();
+        const std::vector<char> &samples();
+        const AudioInfo &info();
+        const AudioLoopInfo &loopInfo();
+
     private:
         std::vector<char> m_data;
-        AudioInfo m_info;
-        AudioLoopInfo m_loop;
-        u64 m_id;
-        u32 m_startPos;
-        u32 m_playLength;
-        u32 m_clipLength;
+        AudioInfo m_info = {};
+        AudioLoopInfo m_loop = {};
+        u32 m_startPos = 0;
+        u32 m_playLength = 0;
+        u32 m_clipLength = 0;
+        f32 m_volume = 1.0f;
+        f32 m_pitch  = 1.0f;
 
     private:
         void loadWAV(const std::string &path);
         /* void loadOGG */
         /* void loadMP3 */
-
-        u64 hashID(const std::string &path);
     };
 }

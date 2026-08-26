@@ -17,4 +17,9 @@ namespace idrs
     {
         get().m_audioEngine.play(sound);
     }
+
+    bool Audio::isPlaying(u32 handle)
+    {
+        return get().m_audioEngine.isPlaying(handle);
+    }
 }

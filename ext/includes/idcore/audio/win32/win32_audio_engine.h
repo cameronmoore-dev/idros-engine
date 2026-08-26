@@ -2,9 +2,13 @@
 
 #include <xaudio2.h>
 
+#include <array>
+
 #include "typedefs.h"
 #include "audio/sound.h"
 #include "audio/music.h"
+
+#define MAX_CONCURRENT_SOUNDS 16
 
 namespace idrs
 {
@@ -22,43 +26,42 @@ namespace idrs
         struct XAudioVoice : IXAudio2VoiceCallback
         {
             IXAudio2SourceVoice *voice;
-            size_t id = 0;
             AudioType type;
-            bool isPlaying = false;
+            bool isPlaying;
 
-            void OnBufferStart(void *pContext) override;
-            void OnBufferEnd(void *pContext) override;
-            void OnStreamEnd() override {}
-            void OnVoiceProcessingPassStart(UINT32 BytesRequired) override {}
-            void OnVoiceProcessingPassEnd() override {}
-            void OnLoopEnd(void *pContext) override {}
-            void OnVoiceError(void *pContext, HRESULT Error) override {}
+            void OnBufferStart(void *pContext) noexcept override;
+            void OnBufferEnd(void *pContext) noexcept override;
+
+            void OnStreamEnd() noexcept override {}
+            void OnVoiceProcessingPassStart(UINT32 BytesRequired) noexcept override {}
+            void OnVoiceProcessingPassEnd() noexcept override {}
+            void OnLoopEnd(void *pContext) noexcept override {}
+            void OnVoiceError(void *pContext, HRESULT Error) noexcept override {}
         };
 
     public:
         Win32AudioEngine(AudioEngine *engine);
         ~Win32AudioEngine();
 
-        void play(const Sound &sound);
-        void play(const Music &music);
-        void pause(const Sound &sound);
-        void pause(const Music &music);
-        void stop(const Sound &sound);
-        void stop(const Music &music);
-        void setVolume(const f32 volume);
-        void setPitch(const f32 pitch);
+        void play(Sound &sound);
+        void play(Music &music);
+        void pause(Sound &sound);
+        void pause(Music &music);
+        void stop(Sound &sound);
+        void stop(Music &music);
+
+        bool isPlaying(u32 handle);
 
     private:
         AudioEngine *m_engine = nullptr;
-        std::vector<XAudioVoice> m_monoVoices;
-        std::vector<XAudioVoice> m_stereoVoices;
-        std::vector<char> m_samplesCopy;
+        std::array<XAudioVoice, MAX_CONCURRENT_SOUNDS> m_monoVoices;
+        std::array<XAudioVoice, MAX_CONCURRENT_SOUNDS> m_stereoVoices;
 
     private:
-        XAudioVoice &getValidVoiceSlot(const u64 soundID, const AudioInfo &info);
-        void createAndSubmitBuffer(const XAudioVoice &voice, const Sound &sound);
-        void createAndSubmitBuffer(const XAudioVoice &voice, const Music &sound);
+        void createAndSubmitBuffer(XAudioVoice &voice, Sound &sound);
+        void createAndSubmitBuffer(XAudioVoice &voice, Music &sound);
 
-        std::vector<XAudioVoice> &getVoicesByChannel(const AudioInfo &info);
+        u32 getOpenVoiceSlot(u32 numChannels);
+        std::array<XAudioVoice, MAX_CONCURRENT_SOUNDS> &getVoiceArrayByChannelCount(u32 numChannels);
     };
 }

@@ -11,6 +11,8 @@ namespace idrs
         static void playSound(Sound &sound);
         static void playMusic(Music &music);
 
+        static bool isPlaying(u32 handle);
+
     private:
         AudioEngine m_audioEngine;
 
