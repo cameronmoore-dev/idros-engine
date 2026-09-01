@@ -62,6 +62,7 @@ namespace idrs
 
     public:
         Window();
+        Window(const std::string &title, uint16_t width, uint16_t height, uint32_t style);
         ~Window();
 
         bool pollEvents(Event &event);
@@ -88,7 +89,7 @@ namespace idrs
         const Style nativeStyle(const Style style);
     
     private:
-        PlatformWindow m_impl;
+        PlatformWindow m_platform;
         
         std::queue<Event> m_events;
         std::array<Hints, HintsCount> m_hints;

@@ -11,13 +11,13 @@
 
 #if defined(MSC_VER)
     #define BREAK __debugbreak
-    #define FILE  __FILE__
+    #define FILE_NAME  __FILE__
 #elif defined(__GNUC__)
     #define BREAK __builtin_trap() /* NOTE: causes an illegal instruction, since gcc has no debug breakpoint intrinsic */
-    #define FILE  __FILE_NAME__
+    #define FILE_NAME  __FILE_NAME__
 #elif defined(__clang__)
     #define BREAK __builtin_debugtrap
-    #define FILE  __FILE__
+    #define FILE_NAME  __FILE__
 #endif
 
 namespace idrs
@@ -25,7 +25,7 @@ namespace idrs
 #ifndef _NDEBUG
     #define LOG(mes, ...) \
     { \
-        std::fprintf(stderr, "[LOG]: " mes " -- %s:%d \n", ##__VA_ARGS__, FILE, __LINE__); \
+        std::fprintf(stderr, "[LOG]: " mes " -- %s:%d \n", ##__VA_ARGS__, FILE_NAME, __LINE__); \
     }
 
     #define ASSERT(cond, mes, ...) \
@@ -47,12 +47,13 @@ namespace idrs
 
     class Debug
     {
-    friend class Engine;
     public:
-        static void initDebugText(Font &font, const Vec2f &textPos);
-        static void drawText(const char *text, ...);
-        static void drawLine(f32 x1, f32 y1, f32 x2, f32 y2);
-        static void draw(Renderer &renderer, Shader &textShader, Shader &lineShader);
+        Debug();
+
+        void initDebugText(Font &font, const Vec2f &textPos);
+        void drawText(const char *text, ...);
+        void drawLine(f32 x1, f32 y1, f32 x2, f32 y2);
+        void draw(Renderer &renderer, Shader &textShader, Shader &lineShader);
 
     private:
         VertexArray m_drawables;
@@ -60,11 +61,6 @@ namespace idrs
         Text m_text;
 
     private:
-        static void clear();
-        static void init();
-
-    private:
-        static Debug &get();
-        Debug();
+        void clear();
     };
 }

@@ -1,14 +1,11 @@
 #pragma once
 
-#include "core/window/window.h"
-#include "core/graphics/renderer.h"
+#include "core/window/event.h"
 
 namespace idrs
 {
     class IGame
     {
-        friend class Engine;
-
     public:
         virtual ~IGame() = default;
 
@@ -17,9 +14,5 @@ namespace idrs
         virtual void fixedUpdate() = 0;
         virtual void update() = 0;
         virtual void draw() = 0;
-
-    protected:
-        Window *p_window = nullptr;
-        Renderer *p_renderer = nullptr;
     };
 }

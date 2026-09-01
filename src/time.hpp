@@ -9,11 +9,13 @@ namespace idrs
     {
     friend class Engine;
     public:
-        static const f32 deltaTime();
-        static const f32 unscaledDeltaTime();
-        static const bool doUpdate();
+        Time();
 
-        static void setTimescale(f32 scale);
+        const f32 deltaTime();
+        const f32 unscaledDeltaTime();
+        const bool doUpdate();
+
+        void setTimescale(f32 scale);
 
     private:
         Clock m_clock;
@@ -23,10 +25,6 @@ namespace idrs
         f32 m_fixedDT;
 
     private:
-        static Time &get();
-        Time();
-
-        static void init();
-        static void updateTimestep();
+        void updateTimestep();
     };
 }

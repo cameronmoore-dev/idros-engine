@@ -1,12 +1,12 @@
 #include "pathfindingsystem.h"
 
-#include "ecs/ecs.h"
+#include "enginecontext.h"
 
 namespace idrs
 {
     void PathfindingSystem::update()
     {
-        ECS::query<Transform, Velocity, Pathfinder>([](Entity e, auto &transform, auto &velocity, auto &pathfinder)
+        g_engine->ecs.query<Transform, Velocity, Pathfinder>([](Entity e, auto &transform, auto &velocity, auto &pathfinder)
         {
             switch (pathfinder.steerBehaviour)
             {
@@ -17,7 +17,7 @@ namespace idrs
 
     void PathfindingSystem::seek(Transform &transform, Velocity &velocity, Pathfinder &pathfinder)
     {
-        Vec3f &targetPos = ECS::get<Transform>(pathfinder.target).position;
+        Vec3f &targetPos = g_engine->ecs.get<Transform>(pathfinder.target).position;
 
         Vec3f desiredVelocity = math::normalize(targetPos - transform.position);
         Vec3f steerForce;

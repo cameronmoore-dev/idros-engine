@@ -14,23 +14,10 @@ namespace idrs
         m_drawables.update();
     }
 
-    Debug &Debug::get()
-    {
-        static Debug instance;
-        return instance;
-    }
-
-    void Debug::init()
-    {
-        get();
-    }
-
     void Debug::initDebugText(Font &font, const Vec2f &textPos)
     {
-        Debug &instance = get();
-
-        instance.m_text.setFont(font);
-        instance.m_text.setPosition(textPos.x, textPos.y);
+        m_text.setFont(font);
+        m_text.setPosition(textPos.x, textPos.y);
     }
 
     void Debug::drawText(const char *text, ...)
@@ -44,7 +31,7 @@ namespace idrs
         vsnprintf(buf, sizeof(buf), text, args);
         std::string t(buf);
 
-        get().m_accumText += (t + "\n");
+        m_accumText += (t + "\n");
 
         va_end(args);
     }
@@ -53,38 +40,32 @@ namespace idrs
     {
         EARLY_OUT();
 
-        Debug &instance = get();
-
         Vertex v1 = {};
         Vertex v2 = {};
         v1.position = { x1, y1 };
         v2.position = { x2, y2 };
 
-        instance.m_drawables.append(v1);
-        instance.m_drawables.append(v2);
+        m_drawables.append(v1);
+        m_drawables.append(v2);
     }
 
     void Debug::clear()
     {
         EARLY_OUT();
 
-        Debug &instance = get();
-
-        instance.m_drawables.clear();
-        instance.m_accumText.clear();
+        m_drawables.clear();
+        m_accumText.clear();
     }
 
     void Debug::draw(Renderer &renderer, Shader &textShader, Shader &lineShader)
     {
         EARLY_OUT();
 
-        Debug &instance = get();
-
-        instance.m_drawables.update();
-        renderer.draw(instance.m_drawables, &lineShader);
+        m_drawables.update();
+        renderer.draw(m_drawables, &lineShader);
         textShader.use();
-        instance.m_text.setText(instance.m_accumText);
-        instance.m_text.draw();
+        m_text.setText(m_accumText);
+        m_text.draw();
 
         clear();
     }

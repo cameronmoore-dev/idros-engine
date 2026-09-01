@@ -1,5 +1,6 @@
 #include "utils/sprite_utils.h"
-#include "ecs/ecs.h"
+
+#include "enginecontext.h"
 
 namespace idrs
 {
@@ -60,7 +61,7 @@ namespace idrs
 
     void SpriteUtils::flipX(Entity entity)
     {
-        Sprite &sprite = ECS::get<Sprite>(entity);
+        Sprite &sprite = g_engine->ecs.get<Sprite>(entity);
 
         sprite.vertices[0].uv.x = sprite.textureRect.w - sprite.vertices[0].uv.x;
         sprite.vertices[1].uv.x = sprite.textureRect.w - sprite.vertices[1].uv.x;
@@ -72,7 +73,7 @@ namespace idrs
 
     void SpriteUtils::flipY(Entity entity)
     {
-        Sprite &sprite = ECS::get<Sprite>(entity);
+        Sprite &sprite = g_engine->ecs.get<Sprite>(entity);
 
         sprite.vertices[0].uv.y = sprite.textureRect.h - sprite.vertices[0].uv.y;
         sprite.vertices[1].uv.y = sprite.textureRect.h - sprite.vertices[1].uv.y;

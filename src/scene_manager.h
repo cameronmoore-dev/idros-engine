@@ -9,23 +9,20 @@ namespace idrs
 	class SceneManager
 	{
 	public:
-		template<typename T>
-		static void includeScene(Window &window, const std::string &name);
-		static void loadScene(const std::string &name);
+		SceneManager();
 
-		static Scene &currentScene();
+		template<typename T>
+		void includeScene(Window &window, const std::string &name);
+		void loadScene(const std::string &name);
+
+		Scene &currentScene();
 	
 	private:
-		Scene *m_scene = nullptr;
+		Scene *m_scene;
 		std::unordered_map<u64, Scene*> m_sceneTable;
 
 	private:
 		u64 hash(const std::string &name);
-	
-	private:
-		static SceneManager &get();
-		SceneManager() = default;
-		~SceneManager() = default;
 	};
 
 	#include "scene_manager.inl"

@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <cmath>
 
-#include "core/window/event.h"
+#include "event.h"
 #include "core/typedefs.h"
 
 /* https://www.psdevwiki.com/ps4/DS4-USB#Data_Format */

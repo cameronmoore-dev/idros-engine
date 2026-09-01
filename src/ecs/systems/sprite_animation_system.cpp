@@ -2,17 +2,15 @@
 
 #include <cmath>
 
+#include "enginecontext.h"
 #include "sprite_animation.h"
-#include "time.hpp"
-#include "resource_manager.h"
-#include "ecs/ecs.h"
 #include "utils/sprite_utils.h"
 
 namespace idrs
 {
     void SpriteAnimationSystem::update()
     {
-        ECS::query<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
+        g_engine->ecs.query<Sprite, SpriteAnimator>([](Entity e, Sprite &sprite, SpriteAnimator &animator)
         {
             if (animator.playing)
             {
@@ -34,11 +32,11 @@ namespace idrs
     {
         if (animator.current->isReversing())
         {
-            animator.currentFrame -= Time::deltaTime() * animator.current->getSpeed();
+            animator.currentFrame -= g_engine->time.deltaTime() * animator.current->getSpeed();
             return;
         }
 
-        animator.currentFrame += Time::deltaTime() * animator.current->getSpeed();
+        animator.currentFrame += g_engine->time.deltaTime() * animator.current->getSpeed();
     }
 
     void SpriteAnimationSystem::animate(Sprite &sprite, SpriteAnimator &animator)
@@ -78,22 +76,22 @@ namespace idrs
 
     void SpriteAnimationSystem::play(Entity entity)
     {
-        ECS::get<SpriteAnimator>(entity).playing = true;
+        g_engine->ecs.get<SpriteAnimator>(entity).playing = true;
     }
 
     void SpriteAnimationSystem::stop(Entity entity)
     {
-        ECS::get<SpriteAnimator>(entity).playing = false;
+        g_engine->ecs.get<SpriteAnimator>(entity).playing = false;
     }
 
     void SpriteAnimationSystem::change(Entity entity, const std::string &name)
     {
-        ECS::get<SpriteAnimator>(entity).current = &ResourceManager::getResource<SpriteAnimation>(name);
+        g_engine->ecs.get<SpriteAnimator>(entity).current = &g_engine->resourceManager.getResource<SpriteAnimation>(name);
     }
 
     void SpriteAnimationSystem::change(Entity entity, SpriteAnimation &anim)
     {
-        ECS::get<SpriteAnimator>(entity).current = &anim;
+        g_engine->ecs.get<SpriteAnimator>(entity).current = &anim;
     }
 
     void SpriteAnimationSystem::oneShot(SpriteAnimator &animator)

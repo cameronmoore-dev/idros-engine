@@ -4,20 +4,9 @@
 
 namespace idrs
 {
-    ResourceManager &ResourceManager::get()
-    {
-        static ResourceManager instance;
-        return instance;
-    }
-
-    void ResourceManager::init()
-    {
-        get();
-    }
-
     void ResourceManager::setLoadFlag(const LoadFlag flag)
     {
-        get().m_flag = flag;
+        m_flag = flag;
     }
 
     Shader &ResourceManager::loadShader(const std::filesystem::path &vpath, const std::filesystem::path &fpath)
@@ -25,7 +14,7 @@ namespace idrs
         std::shared_ptr<Shader> resource = std::make_shared<Shader>();
         resource->load(vpath.string(), fpath.string());
 
-        return get().add<Shader>(vpath, resource);
+        return add<Shader>(vpath, resource);
     }
 
     template <typename T, typename... Args>
@@ -34,7 +23,7 @@ namespace idrs
         std::shared_ptr<T> resource = std::make_shared<T>();
         resource->load(path.string(), std::forward<Args>(args)...);
 
-        return get().add<T>(path, resource);
+        return add<T>(path, resource);
     }
 
     template<typename T, typename... Args>
@@ -49,17 +38,16 @@ namespace idrs
     template<typename T>
     T &ResourceManager::getResource(const std::string &name)
     {
-        ResourceManager &instance = get();
-        u64 key = instance.hash(name);
+        u64 key = hash(name);
 
-        auto it = instance.m_sceneResources.find(key);
-        if (it != instance.m_sceneResources.end())
+        auto it = m_sceneResources.find(key);
+        if (it != m_sceneResources.end())
         {
             return *std::get<std::shared_ptr<T>>(it->second);
         }
 
-        it = instance.m_commonResources.find(key);
-        if (it != instance.m_commonResources.end())
+        it = m_commonResources.find(key);
+        if (it != m_commonResources.end())
         {
             return *std::get<std::shared_ptr<T>>(it->second);
         }
@@ -73,17 +61,15 @@ namespace idrs
     template <typename T>
     T &ResourceManager::add(const std::filesystem::path &path, std::shared_ptr<T> resource)
     {
-        ResourceManager &instance = get();
-
-        u64 key = instance.hash(instance.getResourceName(path.string()));
-        if (instance.m_flag == LoadFlag::Common)
+        u64 key = hash(getResourceName(path.string()));
+        if (m_flag == LoadFlag::Common)
         {
-            instance.m_commonResources.emplace(key, resource);
-            return *std::get<std::shared_ptr<T>>(instance.m_commonResources.at(key));
+            m_commonResources.emplace(key, resource);
+            return *std::get<std::shared_ptr<T>>(m_commonResources.at(key));
         }
 
-        instance.m_sceneResources.emplace(key, resource);
-        return *std::get<std::shared_ptr<T>>(instance.m_sceneResources.at(key));
+        m_sceneResources.emplace(key, resource);
+        return *std::get<std::shared_ptr<T>>(m_sceneResources.at(key));
     }
 
     void ResourceManager::clearAll()
@@ -94,12 +80,12 @@ namespace idrs
 
     void ResourceManager::clearCommonResources()
     {
-        get().m_commonResources.clear();
+        m_commonResources.clear();
     }
 
     void ResourceManager::clearSceneResources()
     {
-        get().m_sceneResources.clear();
+        m_sceneResources.clear();
     }
 
     const u64 ResourceManager::hash(const std::string &name)

@@ -1,48 +1,28 @@
 #include "engine.h"
 
-#include "ecs/ecs.h"
-#include "audio.h"
-#include "resource_manager.h"
-#include "debug.h"
-#include "time.hpp"
-#include "random.hpp"
-
 namespace idrs
 {
     Engine::Engine(IGame *game) : 
-        m_game(game),
-        m_window(new Window()),
-        m_renderer(nullptr)
+        m_game(game)
     {
-        m_window->create("Idros Engine", 1280, 720, Style::Default);
-        m_renderer = new Renderer();
-
-        m_game->p_window = m_window;
-        m_game->p_renderer = m_renderer;
-
-        ECS::init();
-        Audio::init();
-        Time::init();
-        ResourceManager::init();
-        Debug::init();
-        Random::init();
+        g_engine = new EngineContext;
     }
 
     void Engine::run()
     {
         m_game->start();
 
-        while (m_window->isOpen())
+        while (g_engine->window.isOpen())
         {
-            ECS::get().m_entityManager.addEntities();
-            Time::updateTimestep();
+            g_engine->ecs.m_entityManager.addEntities();
+            g_engine->time.updateTimestep();
 
             processEvents();
             fixedUpdate();
             update();
             render();
 
-            ECS::get().m_entityManager.removeEntities();
+            g_engine->ecs.m_entityManager.removeEntities();
         }
 
         shutdown();
@@ -51,7 +31,7 @@ namespace idrs
     void Engine::processEvents()
     {
         Event e;
-        while (m_window->pollEvents(e))
+        while (g_engine->window.pollEvents(e))
         {
             m_game->processEvents(e);
         }
@@ -59,7 +39,7 @@ namespace idrs
 
     void Engine::fixedUpdate()
     {
-        while (Time::doUpdate())
+        while (g_engine->time.doUpdate())
         {
             m_game->fixedUpdate();
         }
@@ -72,17 +52,16 @@ namespace idrs
 
     void Engine::render()
     {
-        m_renderer->clear(0.1f, 0.1f, 0.1f, 1.0f);
+        g_engine->renderer.clear(0.1f, 0.1f, 0.1f, 1.0f);
 
         m_game->draw();
 
-        m_window->swapBuffers();
+        g_engine->window.swapBuffers();
     }
 
     void Engine::shutdown()
     {
         delete m_game;
-        delete m_window;
-        delete m_renderer;
+        delete g_engine;
     }
 }

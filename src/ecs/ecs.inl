@@ -1,35 +1,35 @@
 template<typename T>
 inline T &ECS::add(Entity entity)
 {
-    return get().m_componentManager.add<T>(entity);
+    return m_componentManager.add<T>(entity);
 }
 
 template <typename T>
 inline T &ECS::get(Entity entity)
 {
-    return get().m_componentManager.get<T>(entity);
+    return m_componentManager.get<T>(entity);
 }
 
 template<typename T>
 inline std::vector<Entity> &ECS::getEntities()
 {
-    return get().m_componentManager.getEntities<T>();
+    return m_componentManager.getEntities<T>();
 }
 
 template<typename T>
 inline void ECS::remove(Entity entity)
 {
-    return get().m_componentManager.remove<T>(entity);
+    return m_componentManager.remove<T>(entity);
 }
 
 template<typename T>
 inline bool ECS::has(Entity entity)
 {
-    return get().m_componentManager.has<T>(entity);
+    return m_componentManager.has<T>(entity);
 }
 
 template<typename... Components, typename Fn>
 inline void ECS::query(Fn fn)
 {
-    get().m_componentManager.query<Components...>(std::forward<Fn>(fn));
+    m_componentManager.query<Components...>(std::forward<Fn>(fn));
 }

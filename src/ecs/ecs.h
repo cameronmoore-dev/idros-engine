@@ -9,37 +9,33 @@ namespace idrs
     {
     friend class Engine;
     public:
-        static Entity create();
-        static void destroy(Entity entity);
-        static void destroyAll();
+        ECS() = default;
+
+        Entity create();
+        void destroy(Entity entity);
+        void destroyAll();
 
         template<typename T>
-        static T &add(Entity entity);
+        T &add(Entity entity);
 
         template<typename T>
-        static T &get(Entity entity);
+        T &get(Entity entity);
 
         template<typename T>
-        static std::vector<Entity> &getEntities();
+        std::vector<Entity> &getEntities();
 
         template<typename T>
-        static void remove(Entity entity);
+        void remove(Entity entity);
 
         template<typename... Components, typename Fn>
-        static void query(Fn fn);
+        void query(Fn fn);
 
         template<typename T>
-        static bool has(Entity entity);
+        bool has(Entity entity);
 
     private:
         EntityManager m_entityManager;
         ComponentManager m_componentManager;
-
-    private:
-        static ECS &get();
-        ECS() = default;
-
-        static void init();
     };
 
     #include "ecs.inl"

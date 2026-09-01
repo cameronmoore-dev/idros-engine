@@ -24,6 +24,7 @@
 #include "core/graphics/uniformbuffer.h"
 
 #include "igame.h"
+#include "enginecontext.h"
 #include "debug.h"
 #include "time.hpp"
 #include "random.hpp"

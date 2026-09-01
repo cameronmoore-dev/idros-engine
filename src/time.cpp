@@ -10,23 +10,11 @@ namespace idrs
     {
     }
 
-    Time &Time::get()
-    {
-        static Time instance;
-        return instance;
-    }
-
-    void Time::init()
-    {
-        get();
-    }
-
     const bool Time::doUpdate()
     {
-        Time &instance = get();
-        while (instance.m_lag >= instance.m_fixedDT)
+        while (m_lag >= m_fixedDT)
         {
-            instance.m_lag -= instance.m_fixedDT;
+            m_lag -= m_fixedDT;
             return true;
         }
 
@@ -35,32 +23,30 @@ namespace idrs
 
     const f32 Time::deltaTime()
     {
-        return get().m_deltaTime * get().m_timescale;
+        return m_deltaTime * m_timescale;
     }
 
     const f32 Time::unscaledDeltaTime()
     {
-        return get().m_deltaTime;
+        return m_deltaTime;
     }
 
     void Time::updateTimestep()
     {
-        Time &instance = get();
+        m_clock.stop();
+        m_deltaTime = m_clock.secondsf();
+        m_clock.start();
 
-        instance.m_clock.stop();
-        instance.m_deltaTime = instance.m_clock.secondsf();
-        instance.m_clock.start();
-
-        if (instance.m_deltaTime >= 0.1f)
+        if (m_deltaTime >= 0.1f)
         {
-            instance.m_deltaTime = 0.1f;
+            m_deltaTime = 0.1f;
         }
 
-        instance.m_lag += instance.m_deltaTime * instance.m_timescale;
+        m_lag += m_deltaTime * m_timescale;
     }
 
     void Time::setTimescale(f32 scale)
     {
-        get().m_timescale = scale;
+        m_timescale = scale;
     }
 }

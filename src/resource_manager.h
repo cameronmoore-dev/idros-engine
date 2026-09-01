@@ -18,8 +18,6 @@ namespace idrs
 {
     class ResourceManager
     {
-    friend class Engine;
-
     using ResourceVar = std::variant<
         std::shared_ptr<Texture>, 
         std::shared_ptr<Image>, 
@@ -37,22 +35,24 @@ namespace idrs
         };
 
     public:
-        static void setLoadFlag(const LoadFlag flag);
+        ResourceManager() = default;
+
+        void setLoadFlag(const LoadFlag flag);
 
         template<typename T, typename... Args>
-        static T &load(const std::filesystem::path &path, Args... args);
+        T &load(const std::filesystem::path &path, Args... args);
 
         template<typename T, typename... Args>
-        static void loadDirectory(const std::filesystem::path &path, Args... args);
+        void loadDirectory(const std::filesystem::path &path, Args... args);
 
-        static Shader &loadShader(const std::filesystem::path &vpath, const std::filesystem::path &fpath);
+        Shader &loadShader(const std::filesystem::path &vpath, const std::filesystem::path &fpath);
 
         template<typename T>
-        static T &getResource(const std::string &name);
+        T &getResource(const std::string &name);
 
-        static void clearAll();
-        static void clearCommonResources();
-        static void clearSceneResources();
+        void clearAll();
+        void clearCommonResources();
+        void clearSceneResources();
 
     private:
         std::unordered_map<u64, ResourceVar> m_commonResources;
@@ -65,13 +65,6 @@ namespace idrs
         const std::string getResourceName(const std::string &path);
 
         template <typename T>
-        static T &add(const std::filesystem::path &path, std::shared_ptr<T> resource);
-
-    private:
-        static ResourceManager &get();
-        ResourceManager() = default;
-        ~ResourceManager() = default;
-
-        static void init();
+        T &add(const std::filesystem::path &path, std::shared_ptr<T> resource);
     };
 }

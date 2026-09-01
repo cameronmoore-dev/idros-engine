@@ -27,9 +27,32 @@ namespace idrs
         setHint(ContextProfile, GLContextProfile::Core);
     }
 
+    Window::Window(const std::string &title, uint16_t width, uint16_t height, uint32_t style) : 
+        m_style(0),
+        m_width(0),
+        m_height(0),
+        m_cursorState(0),
+        m_isOpen(false),
+        m_targetFramerate(0),
+        m_frameStart(std::chrono::high_resolution_clock::now())
+    {
+        /* Set default values to window hints */
+        setHint(ColourBits, 32);
+        setHint(DepthBits, 24);
+        setHint(StencilBits, 8);
+        setHint(Samples, 0);
+        setHint(sRGBCapable, 0);
+        setHint(DoubleBuffer, 1);
+        setHint(ContextVerMajor, 4);
+        setHint(ContextVerMinor, 1);
+        setHint(ContextProfile, GLContextProfile::Core);
+
+        create(title, width, height, style);
+    }
+
     Window::~Window()
     {
-        m_impl.cleanup();
+        m_platform.cleanup();
     }
 
     void Window::setHint(Hints index, uint8_t value)
@@ -81,7 +104,7 @@ namespace idrs
         m_height = height;
         m_style = style;
 
-        bool success = m_impl.create(this, title, width, height, style);
+        bool success = m_platform.create(this, title, width, height, style);
         if (!success)
         {
             printf("Failed to create platform window!");
@@ -106,7 +129,7 @@ namespace idrs
         /* OS thread sleep */
         if (sleepDuration.count() > 0)
         {
-            m_impl.sleep(sleepDuration.count());
+            m_platform.sleep(sleepDuration.count());
         }
 
         /* Spin wait */
@@ -126,7 +149,7 @@ namespace idrs
 
     void Window::swapBuffers()
     {
-        m_impl.swapBuffers();
+        m_platform.swapBuffers();
         if (m_targetFramerate > 0)
         {
             sleep();
@@ -135,7 +158,7 @@ namespace idrs
 
     void Window::swapInterval(uint8_t interval)
     {
-        m_impl.swapInterval(interval);
+        m_platform.swapInterval(interval);
     }
 
     void Window::setFramerate(const u64 framerate)
@@ -145,51 +168,51 @@ namespace idrs
 
     void Window::setTitle(const std::string &title)
     {
-        m_impl.setTitle(title);
+        m_platform.setTitle(title);
     }
 
     void Window::setFullscreen(bool fullscreen)
     {
-        m_impl.setFullscreen(fullscreen);
+        m_platform.setFullscreen(fullscreen);
     }
 
     void Window::setPos(int32_t x, int32_t y)
     {
-        m_impl.setPos(x, y);
+        m_platform.setPos(x, y);
     }
 
     void Window::setSize(uint32_t width, uint32_t height)
     {
-        m_impl.setSize(width, height);
+        m_platform.setSize(width, height);
     }
 
     void Window::setFlash(uint32_t count, unsigned long timeout, bool sound)
     {
-        m_impl.setFlash(count, timeout, sound);
+        m_platform.setFlash(count, timeout, sound);
     }
 
     void Window::getCursorPos(int32_t &outX, int32_t &outY, bool relative)
     {
-        m_impl.getCursorPos(outX, outY, relative);
+        m_platform.getCursorPos(outX, outY, relative);
     }
 
     void Window::getPos(int32_t &outX, int32_t &outY)
     {
-        m_impl.getPos(outX, outY);
+        m_platform.getPos(outX, outY);
     }
 
     void Window::getSize(uint32_t &outWidth, uint32_t &outHeight)
     {
-        m_impl.getSize(outWidth, outHeight);
+        m_platform.getSize(outWidth, outHeight);
     }
 
     const bool Window::isFocused()
     {
-        return m_impl.isFocused();
+        return m_platform.isFocused();
     }
 
     const Style Window::nativeStyle(const Style style)
     {
-        return (Style)m_impl.nativeStyle(style);
+        return (Style)m_platform.nativeStyle(style);
     }
 }

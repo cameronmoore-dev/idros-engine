@@ -1,9 +1,7 @@
 #pragma once
 
-#include "core/window/window.h"
-#include "core/graphics/renderer.h"
-
 #include "igame.h"
+#include "enginecontext.h"
 
 namespace idrs
 {
@@ -15,9 +13,7 @@ namespace idrs
         void run();
 
     private:
-        IGame    *m_game;
-        Window   *m_window;
-        Renderer *m_renderer;
+        IGame *m_game;
 
     private:
         void processEvents();

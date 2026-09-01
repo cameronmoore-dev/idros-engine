@@ -1,15 +1,15 @@
 #include "physicsutils.h"
 
 #include "core/math.hpp"
-#include "ecs/ecs.h"
+#include "enginecontext.h"
 
 namespace idrs
 {
     void PhysicsUtils::resolveCollision(Entity a, Entity b)
     {
-        Transform &at = ECS::get<Transform>(a);
-        RectCollider &ac = ECS::get<RectCollider>(a);
-        RectCollider &bc = ECS::get<RectCollider>(b);
+        Transform &at = g_engine->ecs.get<Transform>(a);
+        RectCollider &ac = g_engine->ecs.get<RectCollider>(a);
+        RectCollider &bc = g_engine->ecs.get<RectCollider>(b);
 
         f32 xdir = ac.bounds.x - bc.bounds.x;
         f32 ydir = ac.bounds.y - bc.bounds.y;
@@ -26,8 +26,8 @@ namespace idrs
 
     void PhysicsUtils::updateCollider(Entity entity)
     {
-        Transform &transform = ECS::get<Transform>(entity);
-        RectCollider &collider = ECS::get<RectCollider>(entity);
+        Transform &transform = g_engine->ecs.get<Transform>(entity);
+        RectCollider &collider = g_engine->ecs.get<RectCollider>(entity);
 
         collider.bounds.x = transform.position.x + collider.offset.x;
         collider.bounds.y = transform.position.y + collider.offset.y;
@@ -47,10 +47,10 @@ namespace idrs
         f32 length = 1.0f;
         Entity hit;
 
-        const std::vector<Entity> &colliders = ECS::getEntities<RectCollider>();
+        const std::vector<Entity> &colliders = g_engine->ecs.getEntities<RectCollider>();
         for (Entity e : colliders)
         {
-            RectCollider &collider = ECS::get<RectCollider>(e);
+            RectCollider &collider = g_engine->ecs.get<RectCollider>(e);
             if (collider.ignoreRaycast)
             {
                 continue;

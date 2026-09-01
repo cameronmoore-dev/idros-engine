@@ -2,31 +2,20 @@
 
 namespace idrs
 {
-    ECS &ECS::get()
-    {
-        static ECS instance;
-        return instance;
-    }
-
-    void ECS::init()
-    {
-        get();
-    }
-
     Entity ECS::create()
     {
-        return get().m_entityManager.create();
+        return m_entityManager.create();
     }
 
     void ECS::destroy(Entity entity)
     {
-        get().m_entityManager.destroy(entity);
-        get().m_componentManager.removeAll(entity);
+        m_entityManager.destroy(entity);
+        m_componentManager.removeAll(entity);
     }
 
     void ECS::destroyAll()
     {
-        get().m_entityManager.clear();
-        get().m_componentManager.clear();
+        m_entityManager.clear();
+        m_componentManager.clear();
     }
 }

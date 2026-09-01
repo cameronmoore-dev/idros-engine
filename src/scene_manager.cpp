@@ -2,27 +2,24 @@
 
 namespace idrs
 {
-    SceneManager &SceneManager::get()
+    SceneManager::SceneManager() :
+        m_scene(nullptr)
     {
-        static SceneManager instance;
-        return instance;
     }
 
     void SceneManager::loadScene(const std::string &name)
     {
-        SceneManager &instance = get();
-
-        if (instance.m_scene)
+        if (m_scene)
         {
-            instance.m_scene->shutdown();
+            m_scene->shutdown();
         }
 
-        u64 key = instance.hash(name);
-        auto it = instance.m_sceneTable.find(key);
-        if (it != instance.m_sceneTable.end())
+        u64 key = hash(name);
+        auto it = m_sceneTable.find(key);
+        if (it != m_sceneTable.end())
         {
-            instance.m_scene = it->second;
-            instance.m_scene->start();
+            m_scene = it->second;
+            m_scene->start();
         }
         else
         {
@@ -32,7 +29,7 @@ namespace idrs
 
     Scene &SceneManager::currentScene()
     {
-        return *get().m_scene;
+        return *m_scene;
     }
 
     u64 SceneManager::hash(const std::string &name)
