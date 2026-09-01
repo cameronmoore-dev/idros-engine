@@ -1,7 +1,6 @@
 #include "physicsutils.h"
 
-#include <idcore/math.hpp>
-
+#include "core/math.hpp"
 #include "ecs/ecs.h"
 
 namespace idrs

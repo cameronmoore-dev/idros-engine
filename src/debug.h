@@ -3,11 +3,11 @@
 #include <string>
 #include <cstdio>
 
-#include <idcore/graphics/renderer.h>
-#include <idcore/graphics/vertexarray.h>
-#include <idcore/graphics/font.h>
-#include <idcore/graphics/text.h>
-#include <idcore/graphics/shader.h>
+#include "core/graphics/renderer.h"
+#include "core/graphics/vertexarray.h"
+#include "core/graphics/font.h"
+#include "core/graphics/text.h"
+#include "core/graphics/shader.h"
 
 #if defined(MSC_VER)
     #define BREAK __debugbreak

@@ -1,5 +1,4 @@
-#include "sprite_utils.h"
-
+#include "utils/sprite_utils.h"
 #include "ecs/ecs.h"
 
 namespace idrs

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <idcore/math.hpp>
-#include <idcore/typedefs.h>
+#include "core/math.hpp"
 
 namespace idrs
 {

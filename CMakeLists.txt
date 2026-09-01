@@ -7,19 +7,33 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(SRC_PATH			"${CMAKE_SOURCE_DIR}/src")
 set(LIB_INCLUDE_PATH	"${CMAKE_SOURCE_DIR}/ext/includes")
 set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
+set(RENDER_BACKEND "OpenGL" CACHE STRING "Idros's rendering backend")
 
+set(APP_NAME "idros-testapp")
+set(APP_DIR "C:\\Users\\Cameron\\Desktop\\${APP_NAME}")
 
+add_library(idros SHARED
+    "src/core/clock.cpp"
+	"src/core/math.cpp"
+	"src/core/audio/audio_engine.cpp"
+	"src/core/audio/sound.cpp"
+	"src/core/audio/music.cpp"
+	"src/core/graphics/image.cpp"
+	"src/core/window/input.cpp"
+    "src/core/window/window.cpp"
 
-add_library(idros SHARED 
     "src/entry.cpp"
     "src/engine.cpp"
     "src/debug.cpp"
     "src/time.cpp"
     "src/audio.cpp"
     "src/random.cpp"
+    "src/scene_manager.cpp"
+    "src/resource_manager.cpp"
+    "src/sprite_animation.cpp"
+    "src/serialization.cpp"
     "src/ecs/ecs.cpp"
     "src/ecs/entity_manager.cpp"
     "src/ecs/systems/sprite_animation_system.cpp"
@@ -30,17 +44,35 @@ add_library(idros SHARED
     "src/utils/textutils.cpp"
     "src/utils/uiutils.cpp"
     "src/utils/tagutils.cpp"
-    "src/scene_manager.cpp"
-    "src/resource_manager.cpp"
-    "src/sprite_animation.cpp"
-    "src/serialization.cpp"
 )
 
-target_include_directories(idros PRIVATE ${SRC_PATH} ${LIB_INCLUDE_PATH} ${LIB_INCLUDE_PATH}/idcore)
+if (WIN32)
+    target_sources(idros PUBLIC 
+        "src/core/audio/win32/win32_audio_engine.cpp"
+        "src/core/window/win32/win32_window.cpp"
+        "src/core/window/win32/win32_input.cpp"
+        "src/core/window/win32/wgl.c"
+    )
+endif()
 
-add_library(idcore STATIC IMPORTED)
-set_target_properties(idcore PROPERTIES IMPORTED_LOCATION "${LIB_PATH}/libidcore.a")
-target_link_libraries(idros PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,idcore>")
+if (RENDER_BACKEND STREQUAL "OpenGL")
+    target_sources(idros PUBLIC 
+        "src/core/graphics/opengl/gl.c"
+		"src/core/graphics/opengl/opengl.cpp"
+		"src/core/graphics/opengl/glvertexarray.cpp"
+		"src/core/graphics/opengl/glfont.cpp"
+		"src/core/graphics/opengl/gltext.cpp"
+		"src/core/graphics/opengl/glshader.cpp"
+		"src/core/graphics/opengl/gltexture.cpp"
+		"src/core/graphics/opengl/glblendmode.cpp"
+		"src/core/graphics/opengl/glframebuffer.cpp"
+        "src/core/graphics/opengl/glview2d.cpp"
+	    "src/core/graphics/opengl/glview3d.cpp"
+        "src/core/graphics/opengl/gluniformbuffer.cpp"
+    )
+endif()
+
+target_include_directories(idros PUBLIC "src" ${LIB_INCLUDE_PATH})
 add_subdirectory(ext)
 
 if (WIN32)
@@ -57,86 +89,162 @@ add_custom_command(
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "$<TARGET_FILE_DIR:idros>/libidros.dll"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\build"
+    "${APP_DIR}\\build"
 )
 add_custom_command(
     TARGET idros
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "$<TARGET_FILE_DIR:idros>/libidros.dll.a"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\libs"
+    "${APP_DIR}\\ext\\libs"
 )
+
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SRC_PATH}/entry.h"
-    "${SRC_PATH}/idros.h"
-    "${SRC_PATH}/igame.h"
-    "${SRC_PATH}/debug.h"
-    "${SRC_PATH}/time.hpp"
-    "${SRC_PATH}/audio.h"
-    "${SRC_PATH}/random.hpp"
-    "${SRC_PATH}/sprite_animation.h"
+    "${CMAKE_SOURCE_DIR}/src/core/clock.h"
+    "${CMAKE_SOURCE_DIR}/src/core/typedefs.h"
+    "${CMAKE_SOURCE_DIR}/src/core/math.hpp"
 
-    "${SRC_PATH}/scene.h"
-    "${SRC_PATH}/scene_manager.h"
-    "${SRC_PATH}/scene_manager.inl"
-    "${SRC_PATH}/resource_manager.h"
-
-    "${SRC_PATH}/serialization.h"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros"
+    "${APP_DIR}\\ext\\includes\\idros\\core"
 )
+
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\graphics"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SRC_PATH}/ecs/ecs.h"
-    "${SRC_PATH}/ecs/ecs.inl"
-    "${SRC_PATH}/ecs/entity.h"
-    "${SRC_PATH}/ecs/entity_manager.h"
-    "${SRC_PATH}/ecs/component_manager.h"
-    "${SRC_PATH}/ecs/component_manager.inl"
-    "${SRC_PATH}/ecs/component_set.h"
-    "${SRC_PATH}/ecs/component_set.inl"
-    "${SRC_PATH}/ecs/components.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/colour.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/font.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/framebuffer.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/glyph.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/image.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/renderer.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/shader.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/text.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/texture.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/blendmode.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/vertex.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/vertexarray.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/view2d.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/view3d.h"
+    "${CMAKE_SOURCE_DIR}/src/core/graphics/uniformbuffer.h"
 
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs"
+    "${APP_DIR}\\ext\\includes\\idros\\core\\graphics"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\window"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SRC_PATH}/ecs/systems/sprite_animation_system.h"
-    "${SRC_PATH}/ecs/systems/pathfindingsystem.h"
+    "${CMAKE_SOURCE_DIR}/src/core/window/window.h"
+    "${CMAKE_SOURCE_DIR}/src/core/window/input.h"
+    "${CMAKE_SOURCE_DIR}/src/core/window/event.h"
 
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\ecs\\systems"
+    "${APP_DIR}\\ext\\includes\\idros\\core\\window"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\audio"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SRC_PATH}/utils/sprite_utils.h"
-    "${SRC_PATH}/utils/physicsutils.h"
-    "${SRC_PATH}/utils/mouseutils.h"
-    "${SRC_PATH}/utils/textutils.h"
-    "${SRC_PATH}/utils/uiutils.h"
-    "${SRC_PATH}/utils/tagutils.h"
+    "${CMAKE_SOURCE_DIR}/src/core/audio/audio_engine.h"
+    "${CMAKE_SOURCE_DIR}/src/core/audio/sound.h"
+    "${CMAKE_SOURCE_DIR}/src/core/audio/music.h"
+    "${CMAKE_SOURCE_DIR}/src/core/audio/audioinfo.h"
+    "${CMAKE_SOURCE_DIR}/src/core/audio/format_headers.h"
 
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\utils"
+    "${APP_DIR}\\ext\\includes\\idros\\core\\audio"
+)
+
+if (WIN32)
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\audio\\win32"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/src/core/audio/win32/win32_audio_engine.h"
+
+        "${APP_DIR}\\ext\\includes\\idros\\core\\audio\\win32"
+    )
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\window\\win32"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/src/core/window/win32/win32_input.h"
+        "${CMAKE_SOURCE_DIR}/src/core/window/win32/win32_window.h"
+        "${CMAKE_SOURCE_DIR}/src/core/window/win32/wgl.h"
+
+        "${APP_DIR}\\ext\\includes\\idros\\core\\window\\win32"
+    )
+endif()
+
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/src/entry.h"
+    "${CMAKE_SOURCE_DIR}/src/idros.h"
+    "${CMAKE_SOURCE_DIR}/src/igame.h"
+    "${CMAKE_SOURCE_DIR}/src/debug.h"
+    "${CMAKE_SOURCE_DIR}/src/time.hpp"
+    "${CMAKE_SOURCE_DIR}/src/audio.h"
+    "${CMAKE_SOURCE_DIR}/src/random.hpp"
+    "${CMAKE_SOURCE_DIR}/src/sprite_animation.h"
+    "${CMAKE_SOURCE_DIR}/src/scene.h"
+    "${CMAKE_SOURCE_DIR}/src/scene_manager.h"
+    "${CMAKE_SOURCE_DIR}/src/scene_manager.inl"
+    "${CMAKE_SOURCE_DIR}/src/resource_manager.h"
+    "${CMAKE_SOURCE_DIR}/src/serialization.h"
+
+    "${APP_DIR}\\ext\\includes\\idros"
+)
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\ecs"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/src/ecs/ecs.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/ecs.inl"
+    "${CMAKE_SOURCE_DIR}/src/ecs/entity.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/entity_manager.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/component_manager.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/component_manager.inl"
+    "${CMAKE_SOURCE_DIR}/src/ecs/component_set.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/component_set.inl"
+    "${CMAKE_SOURCE_DIR}/src/ecs/components.h"
+
+    "${APP_DIR}\\ext\\includes\\idros\\ecs"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${LIB_INCLUDE_PATH}/idcore"
-    "C:\\Users\\Cameron\\Desktop\\idros-testapp\\ext\\includes\\idros\\idcore"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\ecs\\systems"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/src/ecs/systems/sprite_animation_system.h"
+    "${CMAKE_SOURCE_DIR}/src/ecs/systems/pathfindingsystem.h"
+
+    "${APP_DIR}\\ext\\includes\\idros\\ecs\\systems"
 )
-#
+
+add_custom_command(
+    TARGET idros
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\utils"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/src/utils/sprite_utils.h"
+    "${CMAKE_SOURCE_DIR}/src/utils/physicsutils.h"
+    "${CMAKE_SOURCE_DIR}/src/utils/mouseutils.h"
+    "${CMAKE_SOURCE_DIR}/src/utils/textutils.h"
+    "${CMAKE_SOURCE_DIR}/src/utils/uiutils.h"
+    "${CMAKE_SOURCE_DIR}/src/utils/tagutils.h"
+
+    "${APP_DIR}\\ext\\includes\\idros\\utils"
+)

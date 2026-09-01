@@ -1,7 +1,7 @@
 #pragma once
 
-#include <idcore/typedefs.h>
-#include <idcore/clock.h>
+#include "core/typedefs.h"
+#include "core/clock.h"
 
 namespace idrs
 {

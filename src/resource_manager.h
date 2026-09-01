@@ -5,12 +5,12 @@
 #include <variant>
 #include <filesystem>
 
-#include <idcore/graphics/texture.h>
-#include <idcore/graphics/image.h>
-#include <idcore/graphics/shader.h>
-#include <idcore/graphics/font.h>
-#include <idcore/audio/sound.h>
-#include <idcore/audio/music.h>
+#include "core/graphics/texture.h"
+#include "core/graphics/image.h"
+#include "core/graphics/shader.h"
+#include "core/graphics/font.h"
+#include "core/audio/sound.h"
+#include "core/audio/music.h"
 
 #include "sprite_animation.h"
 

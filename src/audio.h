@@ -1,6 +1,6 @@
 #pragma once
 
-#include <idcore/audio/audio_engine.h>
+#include "core/audio/audio_engine.h"
 
 namespace idrs
 {

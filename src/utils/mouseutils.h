@@ -1,7 +1,7 @@
 #pragma once
 
-#include <idcore/window/window.h>
-#include <idcore/graphics/view2d.h>
+#include "core/window/window.h"
+#include "core/graphics/view2d.h"
 
 namespace idrs
 {

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include <idcore/math.hpp>
+#include "core/math.hpp"
 
 namespace idrs
 {

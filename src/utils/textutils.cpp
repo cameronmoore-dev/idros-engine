@@ -1,7 +1,7 @@
 #include "textutils.h"
 
-#include <idcore/graphics/vertexarray.h>
-#include <idcore/graphics/glyph.h>
+#include "core/graphics/vertexarray.h"
+#include "core/graphics/glyph.h"
 
 #define VERTICES_PER_GLYPH 4
 

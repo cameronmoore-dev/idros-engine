@@ -2,14 +2,14 @@
 
 #include <functional>
 
-#include <idcore/graphics/texture.h>
-#include <idcore/graphics/vertexarray.h>
-#include <idcore/graphics/view2d.h>
-#include <idcore/graphics/font.h>
-#include <idcore/graphics/shader.h>
+#include "core/graphics/texture.h"
+#include "core/graphics/vertexarray.h"
+#include "core/graphics/view2d.h"
+#include "core/graphics/font.h"
+#include "core/graphics/shader.h"
+#include "core/graphics/colour.h"
 
 #include "ecs/entity.h"
-#include "graphics/colour.h"
 #include "sprite_animation.h"
 
 #define SEEK 0

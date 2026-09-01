@@ -1,6 +1,27 @@
 #pragma once
 
-#include <idcore/idcore.h>
+#include "core/typedefs.h"
+#include "core/clock.h"
+#include "core/math.hpp"
+#include "core/audio/audio_engine.h"
+#include "core/audio/sound.h"
+#include "core/audio/music.h"
+#include "core/audio/audioinfo.h"
+#include "core/audio/format_headers.h"
+#include "core/graphics/colour.h"
+#include "core/graphics/font.h"
+#include "core/graphics/framebuffer.h"
+#include "core/graphics/glyph.h"
+#include "core/graphics/image.h"
+#include "core/graphics/renderer.h"
+#include "core/graphics/shader.h"
+#include "core/graphics/text.h"
+#include "core/graphics/texture.h"
+#include "core/graphics/vertex.h"
+#include "core/graphics/vertexarray.h"
+#include "core/graphics/view2d.h"
+#include "core/graphics/view3d.h"
+#include "core/graphics/uniformbuffer.h"
 
 #include "igame.h"
 #include "debug.h"
