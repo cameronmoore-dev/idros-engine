@@ -21,9 +21,9 @@ namespace idrs
             WindowResize,
             DeviceChanged
         };
-    
+
         Type type = None;
-    
+
         union
         {
             int keyCode;
@@ -33,16 +33,16 @@ namespace idrs
                 int x;
                 int y;
             } mousePos;
-            
+
             int scrollDelta;
-    
+
             int gamepadButton; 
             struct
             {
                 int axis;
                 int value;
             } axisInfo;
-    
+
             struct
             {
                 int trigger;

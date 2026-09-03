@@ -3,7 +3,6 @@
 #include <vector>
 #include <queue>
 #include <cstdint>
-#include <cmath>
 
 #include "event.h"
 #include "core/typedefs.h"
@@ -117,6 +116,15 @@ namespace idrs
         Pause,        //!< The Pause key
     };
 
+    enum class Mouse
+    {
+        LeftButton = 0,
+        RightButton,
+        MiddleButton,
+        ThumbButton0,
+        ThumbButton1
+    };
+
     enum GamepadButtons
     {
         DpadUp = 0,
@@ -168,7 +176,9 @@ namespace idrs
     };
 
     const bool isKeyPressed(Key key);
+    const bool isMousePressed(Mouse btn);
     const u16 getKey(Key key);
+    const u16 getMouse(Mouse btn);
 
     const bool isGamepadConnected(uint8_t slot);
     const bool isGamepadButtonPressed(uint8_t slot, GamepadButtons button);

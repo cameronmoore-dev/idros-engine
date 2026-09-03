@@ -41,7 +41,7 @@ namespace idrs
         return true;
     }
 
-    bool PhysicsUtils::raycast2D(RaycastResult &result, Vec2f &start, Vec2f &dir, f32 dist, Entity exclude)
+    bool PhysicsUtils::raycast2D(RaycastResult &result, Vec2f &start, Vec2f &dir, f32 dist)
     {
         Vec2f end = math::normalize(dir) * dist;
         f32 length = 1.0f;
@@ -102,7 +102,7 @@ namespace idrs
 				/* The scalar value of the line between c and d */
 				f32 u = math::cross(cma, end) / rxs;
 
-				/* 
+				/*
                  * If both scalar values are less then the normalised distance between their respective points,
                  * then there is an intersection
                  */
@@ -118,7 +118,7 @@ namespace idrs
             }
         }
 
-        /* 
+        /*
          * Once all of the entities are looped through,
 		 * return the closest distance and the entity that was hit
          */

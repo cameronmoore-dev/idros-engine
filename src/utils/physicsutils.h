@@ -16,6 +16,6 @@ namespace idrs
         static void resolveCollision(Entity a, Entity b);
         static void updateCollider(Entity entity);
         static bool intersection(RectCollider &a, RectCollider& b);
-        static bool raycast2D(RaycastResult& result, Vec2f &start, Vec2f &dir, f32 dist, Entity exclude = k_nullEntityID);
+        static bool raycast2D(RaycastResult& result, Vec2f &start, Vec2f &dir, f32 dist);
     };
 }

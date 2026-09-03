@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "enginecontext.h"
+
 namespace idrs
 {
     Engine::Engine(IGame *game) : 

@@ -25,17 +25,8 @@
 
 #include "igame.h"
 #include "enginecontext.h"
-#include "debug.h"
-#include "time.hpp"
-#include "random.hpp"
-#include "audio.h"
-#include "scene_manager.h"
-#include "resource_manager.h"
 
-#include "ecs/ecs.h"
 #include "ecs/entity.h"
-#include "ecs/entity_manager.h"
-#include "ecs/component_manager.h"
 #include "ecs/components.h"
 #include "ecs/systems/sprite_animation_system.h"
 #include "ecs/systems/pathfindingsystem.h"

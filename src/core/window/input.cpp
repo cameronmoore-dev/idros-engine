@@ -1,5 +1,7 @@
 #include "input.h"
 
+#include <cmath>
+
 namespace idrs
 {
     const bool isGamepadConnected(uint8_t slot)
@@ -23,18 +25,18 @@ namespace idrs
         {
             return -1.f;
         }
-    
+
         Gamepad &gamepad = _priv::g_gamepads[slot];
         f32 axisValue = (f32)gamepad.stickAxes[(int)axis];
         f32 whole = (f32)gamepad.maxAxisValue;
         f32 axisPercent = std::floor(axisValue / whole * 100.f);
-    
+
         if (std::abs(axisPercent) > GamepadDeadzone::JoystickPercent)
         {
             /* Normalise value between -1.0 and 1.0 */
             return (axisValue / whole);
         }
-        
+
         return 0.f;
     }
 
@@ -58,7 +60,7 @@ namespace idrs
                 {
                     e.type = Event::GamepadButtonReleased;
                 }
-                
+
                 e.gamepadButton = i;
                 events.push(e);
             }

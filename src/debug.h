@@ -32,7 +32,7 @@ namespace idrs
     { \
         if (!(cond)) \
         { \
-            std::fprintf(stderr, "[ASSERT FAILED]: " mes " -- %s:%d \n", ##__VA_ARGS__, FILE, __LINE__); \
+            std::fprintf(stderr, "[ASSERT FAILED]: " mes " -- %s:%d \n", ##__VA_ARGS__, FILE_NAME, __LINE__); \
             BREAK; \
         } \
     }

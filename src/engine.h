@@ -1,7 +1,6 @@
 #pragma once
 
 #include "igame.h"
-#include "enginecontext.h"
 
 namespace idrs
 {

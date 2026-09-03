@@ -1,7 +1,7 @@
 #include "win32_input.h"
 
-#include <algorithm>
 #include <cstdio>
+#include <winuser.h>
 
 namespace idrs
 {
@@ -9,12 +9,22 @@ namespace idrs
     {
         return ((GetAsyncKeyState(strdToVK(key)) & 0x8000) != 0);
     }
-    
+
+    const bool isMousePressed(Mouse btn)
+    {
+        return ((GetAsyncKeyState(idrsToVK(btn)) & 0x8000) != 0);
+    }
+
     const u16 getKey(Key key)
     {
         return (u16)strdToVK(key);
     }
-    
+
+    const u16 getMouse(Mouse btn)
+    {
+        return (u16)idrsToVK(btn);
+    }
+
     void pollGamepads(RAWHID &hidData, std::queue<Event> &events)
     {
         int numXInputDevices = 0;
@@ -22,28 +32,28 @@ namespace idrs
         {
             Gamepad &gamepad = _priv::g_gamepads[i];
             Gamepad &previousState = _priv::g_previousGamepadStates[i];
-    
+
             switch (gamepad.vid)
             {
                 case GamepadVendorID::Xbox:
                 {
                     XINPUT_STATE state;
                     ZeroMemory(&state, sizeof(XINPUT_STATE));
-            
+
                     XInputGetState(numXInputDevices, &state);
                     xboxToStrd(gamepad, state);
-    
+
                     numXInputDevices++;
                 } break;
-        
+
                 case GamepadVendorID::Dualshock4:
                 {
                     dualshockToStrd(gamepad, hidData.bRawData);
                 } break;
-                
+
                 default: break;
             }
-            
+
             compareGamepadStates(gamepad, previousState, events);
             previousState = gamepad;
         }
@@ -92,12 +102,12 @@ namespace idrs
     {
         UINT size = 0;
         ::GetRawInputDeviceList(nullptr, &size, sizeof(RAWINPUTDEVICELIST));
-        
+
         std::vector<RAWINPUTDEVICELIST> devices(size);
         ::GetRawInputDeviceList(devices.data(), &size, sizeof(RAWINPUTDEVICELIST));
         _priv::g_gamepads.clear();
         _priv::g_previousGamepadStates.clear();
-        
+
         for (UINT i = 0; i < size; i++)
         {
             if (devices[i].dwType == RIM_TYPEHID)
@@ -117,6 +127,19 @@ namespace idrs
                 }
             }
         }
+    }
+
+    const u16 idrsToVK(Mouse btn)
+    {
+        switch (btn)
+        {
+            case Mouse::LeftButton:     return VK_LBUTTON; break;
+            case Mouse::RightButton:    return VK_RBUTTON; break;
+            case Mouse::MiddleButton:   return VK_MBUTTON; break;
+            case Mouse::ThumbButton0:   return VK_XBUTTON1; break;
+            case Mouse::ThumbButton1:   return VK_XBUTTON2; break;
+            default: return -1;
+        };
     }
 
     const u16 strdToVK(Key key)
