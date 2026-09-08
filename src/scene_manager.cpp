@@ -27,6 +27,12 @@ namespace idrs
         } 
     }
 
+    void SceneManager::restart()
+    {
+        m_scene->shutdown();
+        m_scene->start();
+    }
+
     Scene &SceneManager::currentScene()
     {
         return *m_scene;
@@ -34,6 +40,6 @@ namespace idrs
 
     u64 SceneManager::hash(const std::string &name)
     {
-        return std::hash<std::string>{}(name);   
+        return std::hash<std::string>{}(name);
     }
 }

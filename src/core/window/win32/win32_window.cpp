@@ -18,15 +18,15 @@ namespace idrs
 
         std::wstring wtitle(title.begin(), title.end());
         m_window = ::CreateWindowEx(
-            0, 
-            className(), 
-            wtitle.c_str(), 
+            0,
+            className(),
+            wtitle.c_str(),
             style,
-            CW_USEDEFAULT, CW_USEDEFAULT, 
-            width, height, 
-            0, 
-            0, 
-            GetModuleHandle(nullptr), 
+            CW_USEDEFAULT, CW_USEDEFAULT,
+            width, height,
+            0,
+            0,
+            GetModuleHandle(nullptr),
             this
         );
 
@@ -42,7 +42,6 @@ namespace idrs
         ::SetFocus(m_window);
 
         registerInputDevices();
-        storeGamepads();
 
         return true;
     }
@@ -91,22 +90,22 @@ namespace idrs
             ::GetMonitorInfo(hMonitor, &info);
             ::SetWindowLongPtr(m_window, GWL_STYLE, fsStyle);
             ::SetWindowPos( m_window,
-                            NULL, 
-                            info.rcMonitor.left, 
-                            info.rcMonitor.top, 
-                            info.rcMonitor.right, 
-                            info.rcMonitor.bottom, 
+                            NULL,
+                            info.rcMonitor.left,
+                            info.rcMonitor.top,
+                            info.rcMonitor.right,
+                            info.rcMonitor.bottom,
                             SWP_FRAMECHANGED);
             return;
         }
 
         ::SetWindowLongPtr(m_window, GWL_STYLE, m_wnd->m_style | WS_VISIBLE);
-        ::SetWindowPos( m_window, 
-                        NULL, 
-                        m_windowedRect.left, 
-                        m_windowedRect.top, 
-                        m_windowedRect.right - m_windowedRect.left, 
-                        m_windowedRect.bottom - m_windowedRect.top, 
+        ::SetWindowPos( m_window,
+                        NULL,
+                        m_windowedRect.left,
+                        m_windowedRect.top,
+                        m_windowedRect.right - m_windowedRect.left,
+                        m_windowedRect.bottom - m_windowedRect.top,
                         SWP_FRAMECHANGED);
     }
 
@@ -151,14 +150,13 @@ namespace idrs
     {
         POINT p;
         ::GetCursorPos(&p);
-        
+
         if (relative)
         {
             ::ScreenToClient(m_window, &p);
         }
         outX = p.x;
 
-         
         /* NOTE: Invert the cursor's Y position because 
          *       Win32 has the origin in the top-left,
          *       while OpenGL is the bottom-left
@@ -237,7 +235,6 @@ namespace idrs
 
         PIXELFORMATDESCRIPTOR pfd;
         pfd.nSize = sizeof(pfd);
-        
         ::SetPixelFormat(dummyDC, ChoosePixelFormat(dummyDC, &pfd), &pfd);
 
         HGLRC dummyRC;
@@ -256,15 +253,15 @@ namespace idrs
         /* Create the finished window and make the modern context */
         std::wstring wtitle(m_wnd->m_title.begin(), m_wnd->m_title.end());
         m_window = ::CreateWindowEx(
-            0, 
-            className(), 
-            wtitle.c_str(), 
+            0,
+            className(),
+            wtitle.c_str(),
             nativeStyle(m_wnd->m_style),
-            CW_USEDEFAULT, CW_USEDEFAULT, 
-            m_wnd->m_width, m_wnd->m_height, 
-            0, 
-            0, 
-            GetModuleHandle(nullptr), 
+            CW_USEDEFAULT, CW_USEDEFAULT,
+            m_wnd->m_width, m_wnd->m_height,
+            0,
+            0,
+            GetModuleHandle(nullptr),
             this
         );
         m_deviceContext = ::CreateCompatibleDC(0);
@@ -290,18 +287,18 @@ namespace idrs
 
         PIXELFORMATDESCRIPTOR desc;
         desc.nSize = sizeof(desc);
-        
+
         ::SetPixelFormat(m_deviceContext, formats, &desc);
 
-        s32 attribList[] =
-        { 
+        int32_t attribList[] =
+        {
             WGL_CONTEXT_MAJOR_VERSION_ARB, m_wnd->m_hints[ContextVerMajor],
             WGL_CONTEXT_MINOR_VERSION_ARB, m_wnd->m_hints[ContextVerMinor],
             WGL_CONTEXT_PROFILE_MASK_ARB,  m_wnd->m_hints[ContextProfile],
             0
         };
         HGLRC hRenderContext = wglCreateContextAttribsARB(m_deviceContext, 0, attribList);
-        
+
         ::wglMakeCurrent(m_deviceContext, hRenderContext);
     }
 
@@ -360,14 +357,9 @@ namespace idrs
             wnd = (Win32_Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
         }
 
-        if (wnd)
-        {
-            return wnd->handleMessages(uMsg, wParam, lParam);
-        }
-        else
-        {
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
-        }
+        return (wnd)
+            ? wnd->handleMessages(uMsg, wParam, lParam)
+            : DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
     void Win32_Window::pollMessages()
@@ -388,7 +380,9 @@ namespace idrs
             {
                 if (wParam == 0x0007)
                 {
-                    storeGamepads();
+                    Event e;
+                    e.type = Event::DeviceChanged;
+                    m_wnd->m_events.push(e);
                 }
             } break;
 
@@ -424,14 +418,19 @@ namespace idrs
                 RAWINPUT* raw = (RAWINPUT*)m_inputBuffer.data();
                 if (raw->header.dwType == RIM_TYPEHID)
                 {
-                    pollGamepads(raw->data.hid, m_wnd->m_events);
+                    Event e;
+                    e.type = Event::_DeviceInput;
+                    e._inputDev.data = raw->data.hid.bRawData;
+                    e._inputDev.eventQueue = (void*)&m_wnd->m_events;
+
+                    m_wnd->m_events.push(e);
                 }
 
                 if (raw->header.dwType == RIM_TYPEKEYBOARD)
                 {
                     Event e;
                     e.keyCode = raw->data.keyboard.VKey;
-                    
+
                     if (raw->data.keyboard.Message == WM_KEYDOWN)
                     {
                         e.type = Event::KeyPressed;

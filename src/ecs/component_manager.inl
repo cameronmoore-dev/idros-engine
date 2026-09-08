@@ -43,9 +43,12 @@ template <typename T>
 inline bool ComponentManager::has(Entity entity)
 {
     u64 key = std::type_index(typeid(T)).hash_code();
-    ComponentSet<T> &set = *static_cast<ComponentSet<T> *>(m_pool.at(key));
 
-    return (set.getDenseIndex(entity) != k_nullEntityID);
+    /* NOTE: Even if a component is in the map, return false if it isn't initialized */
+    ComponentSet<T> *set = static_cast<ComponentSet<T>*>(m_pool.at(key));
+    return (set != nullptr)
+        ? (set->getDenseIndex(entity) != k_nullEntityID)
+        : false;
 }
 
 template<typename T>
@@ -86,21 +89,17 @@ inline void ComponentManager::query(Fn fn)
         static_cast<IComponentSet*>(m_pool[std::type_index(typeid(Components)).hash_code()])...
     };
 
-    bool nullSet = false;
-    auto smallestSet = *std::min_element(sets.begin(), sets.end(), [&nullSet](IComponentSet *a, IComponentSet *b)
-    {
-        if (!a || !b)
-        {
-            nullSet = true;
-            return false;
-        }
-        return a->size() < b->size();
-    });
-
-    if (nullSet)
+    /* NOTE: Searching for a null component set, if one is found then the query is aborted */
+    auto it = std::find(sets.begin(), sets.end(), nullptr);
+    if (it != sets.end())
     {
         return;
     }
+
+    auto smallestSet = *std::min_element(sets.begin(), sets.end(), [](IComponentSet *a, IComponentSet *b)
+    {
+        return a->size() < b->size();
+    });
 
     for (Entity e : smallestSet->entityList())
     {

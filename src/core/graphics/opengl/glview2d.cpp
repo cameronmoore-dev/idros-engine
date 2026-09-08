@@ -1,12 +1,10 @@
 #include "../view2d.h"
 
-#include <cmath>
-
 #include <glad/gl.h>
 
 namespace idrs
 {
-    View2D::View2D(const IRect &rect, const f32 zNear, const f32 zFar) : 
+    View2D::View2D(const IRect &rect, const f32 zNear, const f32 zFar) :
         m_projection(matrix::orthographic(rect.x, rect.w, rect.y, rect.h, zNear, zFar)),
         m_state({ rect.x, rect.w, rect.y, rect.h, zNear, zFar }),
         m_view(matrix::identity()),
@@ -17,10 +15,10 @@ namespace idrs
 
     void View2D::update()
     {
-        Vec3f localUp = { std::sin(math::degToRad(m_roll)), std::cos(math::degToRad(m_roll)), 0.f };
+        Vec3f localUp = { 0.0f, 1.0f, 0.f };
         Vec3f pos = { (f32)m_state.x, (f32)m_state.y, 0.f };
         Vec3f fwd = { 0.f, 0.f, 1.f };
-        
+
         m_view = matrix::lookAt(pos, pos + fwd, localUp);
     }
 

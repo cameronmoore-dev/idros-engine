@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
 #include <unordered_map>
+
+#include "core/typedefs.h"
 
 #include "scene.h"
 
@@ -12,8 +15,9 @@ namespace idrs
 		SceneManager();
 
 		template<typename T>
-		void includeScene(Window &window, const std::string &name);
+		void includeScene(const std::string &name);
 		void loadScene(const std::string &name);
+        void restart();
 
 		Scene &currentScene();
 	

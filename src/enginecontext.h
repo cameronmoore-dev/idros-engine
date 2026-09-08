@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/window/window.h"
+#include "core/window/input.h"
 #include "core/graphics/renderer.h"
 #include "core/audio/audio_engine.h"
 #include "ecs/ecs.h"
@@ -15,6 +16,7 @@ namespace idrs
     struct EngineContext
     {
         Window window = Window("Idros Engine", 1280, 720, Style::Default);
+        Input input = Input();
         Renderer renderer = Renderer();
         AudioEngine audio = AudioEngine();
         ECS ecs = ECS();

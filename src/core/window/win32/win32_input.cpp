@@ -1,65 +1,99 @@
-#include "win32_input.h"
+#include "core/window/input.h"
+
+#include <winuser.h>
 
 #include <cstdio>
-#include <winuser.h>
 
 namespace idrs
 {
-    const bool isKeyPressed(Key key)
+    Win32_Input::Win32_Input(Input *input) :
+        m_input(input)
     {
-        return ((GetAsyncKeyState(strdToVK(key)) & 0x8000) != 0);
+        storeGamepads();
     }
 
-    const bool isMousePressed(Mouse btn)
+    bool Win32_Input::isKeyPressed(u32 key)
     {
-        return ((GetAsyncKeyState(idrsToVK(btn)) & 0x8000) != 0);
+        return ((GetAsyncKeyState(keyToVK(key)) & 0x8000) != 0);
     }
 
-    const u16 getKey(Key key)
+    bool Win32_Input::isMousePressed(u32 btn)
     {
-        return (u16)strdToVK(key);
+        return ((GetAsyncKeyState(mouseToVK(btn)) & 0x8000) != 0);
     }
 
-    const u16 getMouse(Mouse btn)
+    u16 Win32_Input::getKey(u32 key)
     {
-        return (u16)idrsToVK(btn);
+        return keyToVK(key);
     }
 
-    void pollGamepads(RAWHID &hidData, std::queue<Event> &events)
+    u16 Win32_Input::getMouse(u32 btn)
+    {
+        return mouseToVK(btn);
+    }
+
+    void Win32_Input::storeGamepads()
+    {
+        UINT size = 0;
+        ::GetRawInputDeviceList(nullptr, &size, sizeof(RAWINPUTDEVICELIST));
+
+        std::vector<RAWINPUTDEVICELIST> devices(size);
+        ::GetRawInputDeviceList(devices.data(), &size, sizeof(RAWINPUTDEVICELIST));
+        m_input->m_gamepads.clear();
+
+        for (UINT i = 0; i < size; i++)
+        {
+            if (devices[i].dwType == RIM_TYPEHID)
+            {
+                RID_DEVICE_INFO info;
+                ::GetRawInputDeviceInfo(devices[i].hDevice, RIDI_DEVICEINFO, nullptr, &size);
+                ::GetRawInputDeviceInfo(devices[i].hDevice, RIDI_DEVICEINFO, &info, &size);
+
+                /* Is this device a gamepad */
+                if (info.hid.usUsage == 0x5)
+                {
+                    Gamepad pad = {};
+                    pad.vendorId = info.hid.dwVendorId;
+                    m_input->m_gamepads.emplace_back(pad);
+                    printf("Gamepad Connected (Device: %d): %#x\n", i, pad.vendorId);
+                }
+            }
+        }
+    }
+
+    void Win32_Input::pollGamepads(u8 *hidData, std::queue<Event> &events)
     {
         int numXInputDevices = 0;
-        for (size_t i = 0; i < _priv::g_gamepads.size(); i++)
+        for (size_t i = 0; i < m_input->m_gamepads.size(); i++)
         {
-            Gamepad &gamepad = _priv::g_gamepads[i];
-            Gamepad &previousState = _priv::g_previousGamepadStates[i];
+            Gamepad &gamepad = m_input->m_gamepads[i];
+            Gamepad previousState = m_input->m_gamepads[i];
 
-            switch (gamepad.vid)
+            switch (gamepad.vendorId)
             {
                 case GamepadVendorID::Xbox:
                 {
-                    XINPUT_STATE state;
-                    ZeroMemory(&state, sizeof(XINPUT_STATE));
+                    XINPUT_STATE state = {};
 
                     XInputGetState(numXInputDevices, &state);
-                    xboxToStrd(gamepad, state);
+                    xboxToIdrs(gamepad, state);
 
                     numXInputDevices++;
                 } break;
 
                 case GamepadVendorID::Dualshock4:
                 {
-                    dualshockToStrd(gamepad, hidData.bRawData);
+                    dualshockToIdrs(gamepad, hidData);
                 } break;
 
                 default: break;
             }
 
-            compareGamepadStates(gamepad, previousState, events);
-            previousState = gamepad;
+            m_input->compareGamepadStates(gamepad, previousState, events);
         }
     }
 
-    void xboxToStrd(Gamepad &gamepad, XINPUT_STATE &state)
+    void Win32_Input::xboxToIdrs(Gamepad &gamepad, XINPUT_STATE &state)
     {
         gamepad.buttons = state.Gamepad.wButtons;
         gamepad.stickAxes[GamepadAxis::LX] = state.Gamepad.sThumbLX;
@@ -70,7 +104,7 @@ namespace idrs
         gamepad.maxAxisValue = INT16_MAX;
     }
 
-    void dualshockToStrd(Gamepad &gamepad, BYTE *rawData)
+    void Win32_Input::dualshockToIdrs(Gamepad &gamepad, BYTE *rawData)
     {
         gamepad.stickAxes[GamepadAxis::LX] = rawData[1] - 128;
         gamepad.stickAxes[GamepadAxis::LY] = -(rawData[2] - 128);
@@ -98,53 +132,22 @@ namespace idrs
         gamepad.maxAxisValue = INT8_MAX;
     }
 
-    void storeGamepads()
+    u16 Win32_Input::mouseToVK(u32 btn)
     {
-        UINT size = 0;
-        ::GetRawInputDeviceList(nullptr, &size, sizeof(RAWINPUTDEVICELIST));
-
-        std::vector<RAWINPUTDEVICELIST> devices(size);
-        ::GetRawInputDeviceList(devices.data(), &size, sizeof(RAWINPUTDEVICELIST));
-        _priv::g_gamepads.clear();
-        _priv::g_previousGamepadStates.clear();
-
-        for (UINT i = 0; i < size; i++)
+        switch ((Mouse)btn)
         {
-            if (devices[i].dwType == RIM_TYPEHID)
-            {
-                RID_DEVICE_INFO info;
-                ::GetRawInputDeviceInfo(devices[i].hDevice, RIDI_DEVICEINFO, nullptr, &size);
-                ::GetRawInputDeviceInfo(devices[i].hDevice, RIDI_DEVICEINFO, &info, &size);
-
-                /* Is this device a gamepad */
-                if (info.hid.usUsage == 0x5)
-                {
-                    Gamepad pad = {};
-                    pad.vid = info.hid.dwVendorId;
-                    _priv::g_gamepads.emplace_back(pad);
-                    _priv::g_previousGamepadStates.emplace_back(pad);
-                    printf("Gamepad Connected (Device: %d): %#x\n", i, pad.vid);
-                }
-            }
-        }
-    }
-
-    const u16 idrsToVK(Mouse btn)
-    {
-        switch (btn)
-        {
-            case Mouse::LeftButton:     return VK_LBUTTON; break;
-            case Mouse::RightButton:    return VK_RBUTTON; break;
-            case Mouse::MiddleButton:   return VK_MBUTTON; break;
-            case Mouse::ThumbButton0:   return VK_XBUTTON1; break;
-            case Mouse::ThumbButton1:   return VK_XBUTTON2; break;
+            case Mouse::LeftButton:     return VK_LBUTTON;
+            case Mouse::RightButton:    return VK_RBUTTON;
+            case Mouse::MiddleButton:   return VK_MBUTTON;
+            case Mouse::ThumbButton0:   return VK_XBUTTON1;
+            case Mouse::ThumbButton1:   return VK_XBUTTON2;
             default: return -1;
         };
     }
 
-    const u16 strdToVK(Key key)
+    u16 Win32_Input::keyToVK(u32 key)
     {
-        switch (key)
+        switch ((Key)key)
         {
             case Key::A:          return 'A';
             case Key::B:          return 'B';

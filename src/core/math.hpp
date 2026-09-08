@@ -11,7 +11,7 @@ namespace idrs
     using Mat2 = std::array<std::array<f32, 2>, 2>;
 
     inline const f32 pi = 3.14159265359f;
-    inline const f32 e = 2.71828f;
+    inline const f32 e  = 2.71828f;
 
     struct Vec2u
     {
@@ -45,7 +45,7 @@ namespace idrs
         const Vec2f operator*=(const Vec2f &rhs) { return { x *= rhs.x, y *= rhs.y }; }
         const Vec2f operator/=(const Vec2f &rhs) { return { x /= rhs.x, y /= rhs.y }; }
     };
-    
+
     struct Vec3f
     {
         f32 x;
@@ -61,7 +61,7 @@ namespace idrs
 
         const Vec3f operator*(const f32 &rhs) const { return { x * rhs, y * rhs, z * rhs }; }
     };
-    
+
     struct Vec4f
     {
         f32 x;
@@ -123,6 +123,7 @@ namespace idrs
         const Vec2f normalize(const Vec2f &vec);
         const Vec3f cross(const Vec3f &a, const Vec3f &b);
         const f32 cross(const Vec2f &a, const Vec2f &b);
+        const s32 round(s32 value);
     } // namespace math
 } // namespace idrs
 

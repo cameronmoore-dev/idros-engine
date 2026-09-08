@@ -27,9 +27,9 @@ namespace idrs
             Mat4 result = {};
 
             result[0][0] = 2.f / (right - left);
-            result[0][3] = -(right + left) / (right - left);
+            result[0][3] = -(f32)(right + left) / (right - left);
             result[1][1] = 2.f / (top - bottom);
-            result[1][3] = -(top + bottom) / (top - bottom);
+            result[1][3] = -(f32)(top + bottom) / (top - bottom);
             result[2][2] = -2.f / (zFar - zNear);
             result[2][3] = -(zFar + zNear) / (zFar - zNear);
             result[3][3] = 1.f;
@@ -39,9 +39,9 @@ namespace idrs
 
         const Mat4 lookAt(const Vec3f& pos, const Vec3f& forward, const Vec3f& up)
         {
-            const Vec3f f = math::normalize(pos - forward);            /* Local Forward */
-            const Vec3f s = math::normalize(math::cross(f, up)); /* Local Side */
-            const Vec3f u = math::cross(s, f);                        /* Local Up */
+            const Vec3f f = math::normalize(pos - forward);         /* Local Forward */
+            const Vec3f s = math::normalize(math::cross(f, up));    /* Local Side */
+            const Vec3f u = math::cross(s, f);                      /* Local Up */
 
             Mat4 result = {};
             result[0][0] = s.x;
@@ -289,7 +289,7 @@ namespace idrs
         {
             return (a.x * b.x) + (a.y * b.y);
         }
-    
+
         const Vec3f normalize(const Vec3f &vec)
         {
             f32 mag = std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
@@ -301,20 +301,28 @@ namespace idrs
             f32 mag = std::sqrt(vec.x * vec.x + vec.y * vec.y);
             return { vec.x / mag, vec.y / mag };
         }
-    
+
         const Vec3f cross(const Vec3f &a, const Vec3f &b)
         {
             Vec3f c;
             c.x = a.y * b.z - a.z * b.y;
             c.y = a.z * b.x - a.x * b.z;
             c.z = a.x * b.y - a.y * b.x;
-    
+
             return c;
         }
 
         const f32 cross(const Vec2f &a, const Vec2f &b)
         {
             return a.x * b.y - a.y * b.x;
+        }
+
+        const s32 round(s32 value)
+        {
+            f32 t = (f32)value;
+            return (t < 0.0f)
+                ? (s32)(t - 0.5f)
+                : (s32)(t + 0.5f);
         }
     } // namespace math
 } // namespace idrs

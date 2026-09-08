@@ -4,29 +4,64 @@
 
 namespace idrs
 {
-    const bool isGamepadConnected(uint8_t slot)
+    Input::Input() :
+        m_platform(this)
     {
-        return slot < _priv::g_gamepads.size();
     }
 
-    const bool isGamepadButtonPressed(uint8_t slot, GamepadButtons button)
+    bool Input::isKeyPressed(Key key)
     {
-        if (slot >= _priv::g_gamepads.size())
+        return m_platform.isKeyPressed((u32)key);
+    }
+
+    bool Input::isMousePressed(Mouse btn)
+    {
+        return m_platform.isMousePressed((u32)btn);
+    }
+
+    u16 Input::getKey(Key key)
+    {
+        return m_platform.getKey((u32)key);
+    }
+
+    u16 Input::getMouse(Mouse btn)
+    {
+        return m_platform.getMouse((u32)btn);
+    }
+
+    bool Input::isGamepadConnected(u32 slot)
+    {
+        return slot < m_gamepads.size();
+    }
+
+    bool Input::isGamepadButtonPressed(u32 slot, GamepadButtons button)
+    {
+        if (slot >= m_gamepads.size())
         {
             return false;
         }
 
-        return ((_priv::g_gamepads[slot].buttons >> button) & 0x1);
+        return ((m_gamepads[slot].buttons >> button) & 0x1);
     }
 
-    const f32 controllerAxisValue(uint8_t slot, GamepadAxis axis)
+    void Input::storeGamepads()
     {
-        if (slot >= _priv::g_gamepads.size())
+        m_platform.storeGamepads();
+    }
+
+    void Input::pollGamepads(u8 *hidData, std::queue<Event> &events)
+    {
+        m_platform.pollGamepads(hidData, events);
+    }
+
+    f32 Input::controllerAxisValue(u32 slot, GamepadAxis axis)
+    {
+        if (slot >= m_gamepads.size())
         {
             return -1.f;
         }
 
-        Gamepad &gamepad = _priv::g_gamepads[slot];
+        Gamepad &gamepad = m_gamepads[slot];
         f32 axisValue = (f32)gamepad.stickAxes[(int)axis];
         f32 whole = (f32)gamepad.maxAxisValue;
         f32 axisPercent = std::floor(axisValue / whole * 100.f);
@@ -40,7 +75,7 @@ namespace idrs
         return 0.f;
     }
 
-    void compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events)
+    void Input::compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events)
     {
         if (current.buttons == previous.buttons)
         {

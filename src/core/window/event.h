@@ -19,7 +19,9 @@ namespace idrs
             GamepadTrigger,
 
             WindowResize,
-            DeviceChanged
+            DeviceChanged,
+
+            _DeviceInput
         };
 
         Type type = None;
@@ -36,7 +38,7 @@ namespace idrs
 
             int scrollDelta;
 
-            int gamepadButton; 
+            int gamepadButton;
             struct
             {
                 int axis;
@@ -54,6 +56,12 @@ namespace idrs
                 int width;
                 int height;
             } wndResizeInfo;
+
+            struct
+            {
+                unsigned char *data;
+                void *eventQueue;
+            } _inputDev;
         };
     };
 }

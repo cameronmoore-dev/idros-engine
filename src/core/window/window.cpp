@@ -68,7 +68,7 @@ namespace idrs
         }
         event = m_events.front();
         m_events.pop();
-        return true; 
+        return true;
     }
 
     void Window::cursorEnableFlags(const uint8_t state)
@@ -125,7 +125,7 @@ namespace idrs
         auto nextFrameTime = m_frameStart + frameLength;
         auto now = std::chrono::high_resolution_clock::now();
         std::chrono::milliseconds sleepDuration = std::chrono::duration_cast<std::chrono::milliseconds>((nextFrameTime - now) - std::chrono::milliseconds(1));
-        
+
         /* OS thread sleep */
         if (sleepDuration.count() > 0)
         {
@@ -161,7 +161,7 @@ namespace idrs
         m_platform.swapInterval(interval);
     }
 
-    void Window::setFramerate(const u64 framerate)
+    void Window::setFramerate(uint64_t framerate)
     {
         m_targetFramerate = framerate;
     }

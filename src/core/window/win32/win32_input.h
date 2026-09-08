@@ -1,20 +1,35 @@
 #include <windows.h>
 #include <xinput.h>
 
-#include "../input.h"
+#include <queue>
+
+#include "core/typedefs.h"
 
 namespace idrs
 {
-    const bool isKeyPressed(Key key);
-    const bool isMousePressed(Mouse btn);
-    const u16 getKey(Key key);
-    const u16 getMouse(Mouse btn);
-    const u16 strdToVK(Key key);
-    const u16 idrsToVK(Mouse btn);
+    class Input;
+    struct Event;
+    struct Gamepad;
+    class Win32_Input
+    {
+    public:
+        Win32_Input(Input *input);
 
-    void storeGamepads();
-    void pollGamepads(RAWHID &hidData, std::queue<Event> &events);
+        bool isKeyPressed(u32 key);
+        bool isMousePressed(u32 btn);
+        u16 getKey(u32 key);
+        u16 getMouse(u32 btn);
 
-    void xboxToStrd(Gamepad &gamepad, XINPUT_STATE &state);
-    void dualshockToStrd(Gamepad &gamepad, BYTE *rawData);
+        void storeGamepads();
+        void pollGamepads(u8 *hidData, std::queue<Event> &events);
+
+    private:
+        Input *m_input = nullptr;
+
+    private:
+        u16 mouseToVK(u32 btn);
+        u16 keyToVK(u32 key);
+        void xboxToIdrs(Gamepad &gamepad, XINPUT_STATE &state);
+        void dualshockToIdrs(Gamepad &gamepad, BYTE *rawData);
+    };
 }

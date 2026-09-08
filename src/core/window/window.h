@@ -4,8 +4,7 @@
     #include "win32/win32_window.h"
     #define PLATFORM_WINDOW idrs::Win32_Window;
     using PlatformWindow = idrs::Win32_Window;
-#endif
-#if defined (__linux__)
+#elif defined (__linux__)
     #include "linux/x11_window.h"
     #define PLATFORM_WINDOW idrs::X11_Window;
     using PlatformWindow = idrs::X11_Window;
@@ -13,7 +12,7 @@
 
 #include <array>
 #include <chrono>
-#include <thread>
+#include <queue>
 
 #include "event.h"
 
@@ -34,7 +33,7 @@ namespace idrs
         Minimisable,
         Default
     };
-    
+
     enum CursorFlags
     {
         Hidden  = 0x1,
@@ -58,8 +57,7 @@ namespace idrs
 
     class Window
     {
-        friend class PLATFORM_WINDOW;
-
+    friend class PLATFORM_WINDOW;
     public:
         Window();
         Window(const std::string &title, uint16_t width, uint16_t height, uint32_t style);
@@ -76,7 +74,7 @@ namespace idrs
         bool create(const std::string &title, uint16_t width, uint16_t height, uint32_t style);
         void swapBuffers();
         void swapInterval(uint8_t interval);
-        void setFramerate(const uint64_t framerate);
+        void setFramerate(uint64_t framerate);
         void setTitle(const std::string &title);
         void setFullscreen(bool fullscreen);
         void setPos(int32_t x, int32_t y);
@@ -87,10 +85,10 @@ namespace idrs
         void getSize(uint32_t &outWidth, uint32_t &outHeight);
         const bool isFocused();
         const Style nativeStyle(const Style style);
-    
+
     private:
         PlatformWindow m_platform;
-        
+
         std::queue<Event> m_events;
         std::array<Hints, HintsCount> m_hints;
         std::string m_title;
@@ -101,7 +99,7 @@ namespace idrs
         uint16_t m_height;
         uint8_t m_cursorState;
         bool m_isOpen = false;
-    
+
     private:
         void glSetup();
         void registerInputDevices();

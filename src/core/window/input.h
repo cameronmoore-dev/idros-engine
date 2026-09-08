@@ -1,11 +1,17 @@
 #pragma once
 
 #include <vector>
-#include <queue>
 #include <cstdint>
 
 #include "event.h"
 #include "core/typedefs.h"
+
+#if defined (_WIN32)
+    #include "core/window/win32/win32_input.h"
+    #define PLATFORM_INPUT idrs::Win32_Input;
+    using PlatformInput = idrs::Win32_Input;
+#elif defined (__linux__)
+#endif
 
 /* https://www.psdevwiki.com/ps4/DS4-USB#Data_Format */
 namespace idrs
@@ -168,27 +174,36 @@ namespace idrs
 
     struct Gamepad
     {
-        u16 vid;
+        u16 vendorId;
         u16 buttons;
         s16 stickAxes[4];
         u16 triggers;
         u16 maxAxisValue = INT16_MAX;
     };
 
-    const bool isKeyPressed(Key key);
-    const bool isMousePressed(Mouse btn);
-    const u16 getKey(Key key);
-    const u16 getMouse(Mouse btn);
-
-    const bool isGamepadConnected(uint8_t slot);
-    const bool isGamepadButtonPressed(uint8_t slot, GamepadButtons button);
-    const f32 controllerAxisValue(uint8_t slot, GamepadAxis axis);
-    void compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events);
-    void storeGamepads();
-
-    namespace _priv
+    class Input
     {
-        inline std::vector<Gamepad> g_gamepads;
-        inline std::vector<Gamepad> g_previousGamepadStates;
-    }
+    friend class PLATFORM_INPUT
+    friend class Engine;
+    public:
+        Input();
+
+        bool isKeyPressed(Key key);
+        bool isMousePressed(Mouse btn);
+        u16 getKey(Key key);
+        u16 getMouse(Mouse btn);
+
+        bool isGamepadConnected(u32 slot);
+        bool isGamepadButtonPressed(u32 slot, GamepadButtons button);
+
+    private:
+        PlatformInput m_platform;
+        std::vector<Gamepad> m_gamepads;
+
+    private:
+        f32 controllerAxisValue(u32 slot, GamepadAxis axis);
+        void compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events);
+        void storeGamepads();
+        void pollGamepads(u8 *hidData, std::queue<Event> &events);
+    };
 }

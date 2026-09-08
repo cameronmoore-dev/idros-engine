@@ -4,7 +4,7 @@
 
 namespace idrs
 {
-    Engine::Engine(IGame *game) : 
+    Engine::Engine(IGame *game) :
         m_game(game)
     {
         g_engine = new EngineContext;
@@ -35,6 +35,20 @@ namespace idrs
         Event e;
         while (g_engine->window.pollEvents(e))
         {
+            switch (e.type)
+            {
+                case Event::DeviceChanged:
+                {
+                    g_engine->input.storeGamepads();
+                    continue;
+                };
+
+                case Event::_DeviceInput:
+                {
+                    g_engine->input.pollGamepads(e._inputDev.data, *static_cast<std::queue<Event>*>(e._inputDev.eventQueue));
+                    continue;
+                };
+            }
             m_game->processEvents(e);
         }
     }

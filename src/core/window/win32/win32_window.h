@@ -12,13 +12,11 @@
 #define NOMINMAX
 #endif
 
+#include <windows.h>
+
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <chrono>
-#include <thread>
-
-#include "win32_input.h"
 
 namespace idrs
 {
@@ -56,7 +54,7 @@ namespace idrs
         RECT m_rect;
         RECT m_windowedRect;
         std::vector<BYTE> m_inputBuffer;
-    
+
     private:
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
         LRESULT handleMessages(UINT uMsg, WPARAM wParam, LPARAM lParam);
