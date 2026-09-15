@@ -20,8 +20,6 @@
     #define FILE_NAME  __FILE__
 #endif
 
-namespace idrs
-{
 #ifndef _NDEBUG
     #define LOG(mes, ...) \
     { \
@@ -30,11 +28,12 @@ namespace idrs
 
     #define ASSERT(cond, mes, ...) \
     { \
-        if (!(cond)) \
+        if ((cond)) {}\
+        else \
         { \
             std::fprintf(stderr, "[ASSERT FAILED]: " mes " -- %s:%d \n", ##__VA_ARGS__, FILE_NAME, __LINE__); \
             BREAK; \
-        } \
+        }\
     }
 
     #define EARLY_OUT() {}
@@ -45,6 +44,8 @@ namespace idrs
     #define EARLY_OUT() { return; }
 #endif
 
+namespace idrs
+{
     class Debug
     {
     public:

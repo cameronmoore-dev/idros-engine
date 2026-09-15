@@ -69,6 +69,4 @@ namespace idrs
 
         clear();
     }
-
-    
 }

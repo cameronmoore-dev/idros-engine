@@ -16,8 +16,8 @@ namespace idrs
         if (type == IO::ReadText)
         {
             FILE *fp;
-            fopen_s(&fp, path.string().c_str(), "rb");
-            char contents[path.string().size()];
+            fp = fopen(path.string().c_str(), "rb");
+            char contents[UINT16_MAX];
             rapidjson::FileReadStream frs(fp, contents, sizeof(contents));
 
             dread.ParseStream(frs);
@@ -46,7 +46,7 @@ namespace idrs
         {
             /* Push write document contents into a file */
             FILE *fp;
-            fopen_s(&fp, "_prefab.json", "w");
+            fp = fopen("_prefab.json", "w");
             char buf[UINT16_MAX];
 
             rapidjson::FileWriteStream os(fp, buf, sizeof(buf));

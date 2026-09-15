@@ -91,9 +91,12 @@ namespace idrs
         return m_isOpen;
     }
 
+    /* TODO: Change this to get the native screen size from the platform,
+             as this is out of date if the window size changes
+     */
     void Window::getScreenSize(uint32_t &outWidth, uint32_t &outHeight)
     {
-        outWidth = m_width;
+        outWidth  = m_width;
         outHeight = m_height;
     }
 

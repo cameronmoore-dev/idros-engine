@@ -7,7 +7,7 @@ namespace idrs
 {
     void TagUtils::set(Tag &tag, const char* str)
     {
-        strcpy_s(tag.string, sizeof(tag.string), str);
+        strcpy(tag.string, str);
         tag.hash = std::hash<std::string_view>{}(str);
     }
 

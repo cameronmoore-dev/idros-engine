@@ -6,9 +6,10 @@
     using PlatformAudioEngine = idrs::Win32AudioEngine;
 #endif
 #if defined (__linux__)
+    #include "linux/linux_audioengine.h"
+    #define PLATFORM_AUDIO_ENGINE idrs::LinuxAudioEngine;
+    using PlatformAudioEngine = idrs::LinuxAudioEngine;
 #endif
-
-#include "sound.h"
 
 namespace idrs
 {

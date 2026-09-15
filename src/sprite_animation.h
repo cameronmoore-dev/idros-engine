@@ -21,7 +21,7 @@ namespace idrs
     public:
         enum class LoopType
         {
-            None,
+            OneShot,
             Repeat,
             PingPong
         };
@@ -31,7 +31,7 @@ namespace idrs
         void addEvent(AnimationEvent &event);
         void resetEventsTriggeredFlag();
 
-        void setLoopType(const LoopType type);
+        void setLoopType(const SpriteAnimation::LoopType type);
         void setSpeed(const u32 speed);
         void setPlaying(const bool status);
         void setReversing(const bool status);
@@ -40,7 +40,7 @@ namespace idrs
         std::vector<AnimationEvent> &getEvents();
         const Vec2u getStartFrame();
         const char *getName();
-        const LoopType getLoopType();
+        const SpriteAnimation::LoopType getLoopType();
         const f32 getSpeed();
         const u32 getRows();
         const u32 getColumns();
@@ -52,7 +52,7 @@ namespace idrs
         std::vector<AnimationEvent> m_events;
         char m_name[32];
         Vec2u m_start;
-        LoopType m_loop;
+        SpriteAnimation::LoopType m_loop;
         f32 m_speed;
         u32 m_rows;
         u32 m_columns;

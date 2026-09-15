@@ -11,6 +11,9 @@
     #define PLATFORM_INPUT idrs::Win32_Input;
     using PlatformInput = idrs::Win32_Input;
 #elif defined (__linux__)
+    #include "core/window/linux/linux_input.h"
+    #define PLATFORM_INPUT idrs::Linux_Input;
+    using PlatformInput = idrs::Linux_Input;
 #endif
 
 /* https://www.psdevwiki.com/ps4/DS4-USB#Data_Format */

@@ -37,13 +37,13 @@ namespace idrs
         {
             switch (e.type)
             {
-                case Event::DeviceChanged:
+                case Event::Type::DeviceChanged:
                 {
                     g_engine->input.storeGamepads();
                     continue;
                 };
 
-                case Event::_DeviceInput:
+                case Event::Type::_DeviceInput:
                 {
                     g_engine->input.pollGamepads(e._inputDev.data, *static_cast<std::queue<Event>*>(e._inputDev.eventQueue));
                     continue;

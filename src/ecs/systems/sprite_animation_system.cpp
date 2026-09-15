@@ -17,7 +17,7 @@ namespace idrs
                 updateCurrentFrame(animator);
                 switch (animator.current->getLoopType())
                 {
-                    case SpriteAnimation::LoopType::None:       oneShot(animator);  break;
+                    case SpriteAnimation::LoopType::OneShot:    oneShot(animator);  break;
                     case SpriteAnimation::LoopType::Repeat:     repeat(animator);   break;
                     case SpriteAnimation::LoopType::PingPong:   pingPong(animator); break;
                     default: break;

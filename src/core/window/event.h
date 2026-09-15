@@ -4,9 +4,9 @@ namespace idrs
 {
     struct Event
     {
-        enum Type
+        enum class Type
         {
-            None = 0,
+            Default = 0,
             KeyPressed,
             KeyReleased,
             MousePressed,
@@ -24,7 +24,7 @@ namespace idrs
             _DeviceInput
         };
 
-        Type type = None;
+        Type type = Type::Default;
 
         union
         {

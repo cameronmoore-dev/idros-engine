@@ -1,9 +1,8 @@
 #include "sprite_animation.h"
+#include "serialization.h"
 
 #include <filesystem>
 #include <string.h>
-
-#include "serialization.h"
 
 namespace idrs
 {
@@ -11,7 +10,7 @@ namespace idrs
     {
         Serialization reader(path, Serialization::IO::ReadText);
 
-        strcpy_s(m_name, reader.readString("/Name").c_str());
+        strcpy(m_name, reader.readString("/Name").c_str());
         m_loop = (LoopType)reader.readInt("/LoopType");
         m_rows = reader.readInt("/Rows");
         m_columns = reader.readInt("/Columns");

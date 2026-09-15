@@ -7,12 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(LIB_INCLUDE_PATH	"${CMAKE_SOURCE_DIR}/ext/includes")
-set(LIB_PATH			"${CMAKE_SOURCE_DIR}/ext/libs")
+set(LIB_INCLUDE_PATH "${CMAKE_SOURCE_DIR}/ext/includes")
+set(LIB_PATH "${CMAKE_SOURCE_DIR}/ext/libs")
 set(RENDER_BACKEND "OpenGL" CACHE STRING "Idros's rendering backend")
 
 set(APP_NAME "idros-testapp")
-set(APP_DIR "C:\\Users\\Cameron\\Desktop\\${APP_NAME}")
+if(WIN32)
+    set(APP_DIR "C:/Users/Cameron/Desktop/${APP_NAME}")
+elseif(LINUX)
+    set(APP_DIR "/home/cameron/Desktop/${APP_NAME}")
+endif()
 
 add_library(idros SHARED
     "src/core/clock.cpp"
@@ -46,17 +50,26 @@ add_library(idros SHARED
     "src/utils/tagutils.cpp"
 )
 
-if (WIN32)
-    target_sources(idros PUBLIC 
+if(WIN32)
+    target_sources(idros PUBLIC
         "src/core/audio/win32/win32_audio_engine.cpp"
         "src/core/window/win32/win32_window.cpp"
         "src/core/window/win32/win32_input.cpp"
         "src/core/window/win32/wgl.c"
     )
+elseif(LINUX)
+    target_sources(idros PUBLIC
+        "src/core/audio/linux/linux_audioengine.cpp"
+        # "src/core/window/linux/xdg-shell.cpp"
+        # "src/core/window/linux/wl_window.cpp"
+        "src/core/window/linux/x11_window.cpp"
+        "src/core/window/linux/linux_input.cpp"
+        "src/core/window/linux/egl.c"
+    )
 endif()
 
 if (RENDER_BACKEND STREQUAL "OpenGL")
-    target_sources(idros PUBLIC 
+    target_sources(idros PUBLIC
         "src/core/graphics/opengl/gl.c"
 		"src/core/graphics/opengl/opengl.cpp"
 		"src/core/graphics/opengl/glvertexarray.cpp"
@@ -77,44 +90,81 @@ add_subdirectory(ext)
 
 if (WIN32)
 	if (MSVC)
-		target_link_libraries(idros PRIVATE xinput.lib xaudio2_9.lib winmm.lib opengl32.lib)
+		target_link_libraries(idros PRIVATE
+            xinput.lib
+            xaudio2_9.lib
+            winmm.lib
+            opengl32.lib)
 	else()
-		target_link_libraries(idros PRIVATE -lxinput -lxaudio2_9 -lwinmm -lopengl32)
+		target_link_libraries(idros PRIVATE
+            -lxinput
+            -lxaudio2_9
+            -lwinmm
+            -lopengl32)
 	endif()
+elseif (LINUX)
+    target_link_libraries(idros PRIVATE
+        # -lwayland-client
+        -lX11
+        -lX11-xcb
+        -lEGL
+        -lGL
+    )
 endif()
 
+
+###############################################
 # Copies over necessary files to the test app
-add_custom_command(
-    TARGET idros
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "$<TARGET_FILE_DIR:idros>/libidros.dll"
-    "${APP_DIR}\\build"
-)
-add_custom_command(
-    TARGET idros
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "$<TARGET_FILE_DIR:idros>/libidros.dll.a"
-    "${APP_DIR}\\ext\\libs"
-)
+###############################################
+
+if (WIN32)
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:idros>/libidros.dll"
+        "${APP_DIR}/build"
+    )
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:idros>/libidros.dll.a"
+        "${APP_DIR}/ext/libs"
+    )
+elseif (LINUX)
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:idros>"
+        "${APP_DIR}/build"
+    )
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:idros>"
+        "${APP_DIR}/ext/libs"
+    )
+endif()
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/core/clock.h"
     "${CMAKE_SOURCE_DIR}/src/core/typedefs.h"
     "${CMAKE_SOURCE_DIR}/src/core/math.hpp"
 
-    "${APP_DIR}\\ext\\includes\\idros\\core"
+    "${APP_DIR}/ext/includes/idros/core"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\graphics"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/graphics"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/core/graphics/colour.h"
     "${CMAKE_SOURCE_DIR}/src/core/graphics/font.h"
@@ -132,25 +182,25 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}/src/core/graphics/view3d.h"
     "${CMAKE_SOURCE_DIR}/src/core/graphics/uniformbuffer.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\core\\graphics"
+    "${APP_DIR}/ext/includes/idros/core/graphics"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\window"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/window"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/core/window/window.h"
     "${CMAKE_SOURCE_DIR}/src/core/window/input.h"
     "${CMAKE_SOURCE_DIR}/src/core/window/event.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\core\\window"
+    "${APP_DIR}/ext/includes/idros/core/window"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\audio"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/audio"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/core/audio/audio_engine.h"
     "${CMAKE_SOURCE_DIR}/src/core/audio/sound.h"
@@ -158,36 +208,57 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}/src/core/audio/audioinfo.h"
     "${CMAKE_SOURCE_DIR}/src/core/audio/format_headers.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\core\\audio"
+    "${APP_DIR}/ext/includes/idros/core/audio"
 )
 
 if (WIN32)
     add_custom_command(
         TARGET idros
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\audio\\win32"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/audio/win32"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_SOURCE_DIR}/src/core/audio/win32/win32_audio_engine.h"
 
-        "${APP_DIR}\\ext\\includes\\idros\\core\\audio\\win32"
+        "${APP_DIR}/ext/includes/idros/core/audio/win32"
     )
     add_custom_command(
         TARGET idros
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\core\\window\\win32"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/window/win32"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_SOURCE_DIR}/src/core/window/win32/win32_input.h"
         "${CMAKE_SOURCE_DIR}/src/core/window/win32/win32_window.h"
         "${CMAKE_SOURCE_DIR}/src/core/window/win32/wgl.h"
 
-        "${APP_DIR}\\ext\\includes\\idros\\core\\window\\win32"
+        "${APP_DIR}/ext/includes/idros/core/window/win32"
+    )
+elseif(LINUX)
+    # add_custom_command(
+    #     TARGET idros
+    #     POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/audio/linux"
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+
+    #     "${APP_DIR}/ext/includes/idros/core/audio/linux"
+    # )
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/window/linux"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/src/core/window/linux/egl.h"
+        "${CMAKE_SOURCE_DIR}/src/core/window/linux/x11_window.h"
+        "${CMAKE_SOURCE_DIR}/src/core/window/linux/linux_input.h"
+        # "${CMAKE_SOURCE_DIR}/src/core/window/linux/xdg-shell.h"
+
+        "${APP_DIR}/ext/includes/idros/core/window/linux"
     )
 endif()
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/entry.h"
     "${CMAKE_SOURCE_DIR}/src/idros.h"
@@ -203,12 +274,12 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}/src/resource_manager.h"
     "${CMAKE_SOURCE_DIR}/src/serialization.h"
 
-    "${APP_DIR}\\ext\\includes\\idros"
+    "${APP_DIR}/ext/includes/idros"
 )
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\ecs"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/ecs"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/ecs/ecs.h"
     "${CMAKE_SOURCE_DIR}/src/ecs/ecs.inl"
@@ -220,24 +291,24 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}/src/ecs/component_set.inl"
     "${CMAKE_SOURCE_DIR}/src/ecs/components.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\ecs"
+    "${APP_DIR}/ext/includes/idros/ecs"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\ecs\\systems"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/ecs/systems"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/ecs/systems/sprite_animation_system.h"
     "${CMAKE_SOURCE_DIR}/src/ecs/systems/pathfindingsystem.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\ecs\\systems"
+    "${APP_DIR}/ext/includes/idros/ecs/systems"
 )
 
 add_custom_command(
     TARGET idros
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}\\ext\\includes\\idros\\utils"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/utils"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/src/utils/sprite_utils.h"
     "${CMAKE_SOURCE_DIR}/src/utils/physicsutils.h"
@@ -246,5 +317,5 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}/src/utils/uiutils.h"
     "${CMAKE_SOURCE_DIR}/src/utils/tagutils.h"
 
-    "${APP_DIR}\\ext\\includes\\idros\\utils"
+    "${APP_DIR}/ext/includes/idros/utils"
 )

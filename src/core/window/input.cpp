@@ -89,11 +89,11 @@ namespace idrs
                 Event e;
                 if ((current.buttons >> i) & 0x1)
                 {
-                    e.type = Event::GamepadButtonPressed;
+                    e.type = Event::Type::GamepadButtonPressed;
                 }
                 else
                 {
-                    e.type = Event::GamepadButtonReleased;
+                    e.type = Event::Type::GamepadButtonReleased;
                 }
 
                 e.gamepadButton = i;
@@ -113,7 +113,7 @@ namespace idrs
             if (std::abs(axisPercent) > GamepadDeadzone::JoystickPercent)
             {
                 Event e;
-                e.type = Event::GamepadAxisMoved;
+                e.type = Event::Type::GamepadAxisMoved;
                 e.axisInfo.axis = i;
                 e.axisInfo.value = current.stickAxes[i];
 
@@ -129,14 +129,14 @@ namespace idrs
         Event e;
         if (((current.triggers >> 8) & 0xFF) != ((previous.triggers >> 8) & 0xFF))
         {
-            e.type = Event::GamepadTrigger;
+            e.type = Event::Type::GamepadTrigger;
             e.triggerInfo.trigger = 0;
             e.triggerInfo.value = ((current.triggers >> 8) & 0xFF);
         }
 
         if ((current.triggers & 0xFF) != (previous.triggers & 0xFF))
         {
-            e.type = Event::GamepadTrigger;
+            e.type = Event::Type::GamepadTrigger;
             e.triggerInfo.trigger = 1;
             e.triggerInfo.value = (current.triggers & 0xFF);
         }
