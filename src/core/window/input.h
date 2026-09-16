@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 #include <cstdint>
 
 #include "event.h"
@@ -200,6 +201,7 @@ namespace idrs
         bool isGamepadButtonPressed(u32 slot, GamepadButtons button);
 
     private:
+        bool m_inputmap[UINT16_MAX];
         PlatformInput m_platform;
         std::vector<Gamepad> m_gamepads;
 
@@ -208,5 +210,7 @@ namespace idrs
         void compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events);
         void storeGamepads();
         void pollGamepads(u8 *hidData, std::queue<Event> &events);
+
+        void setInputState(u32 inputCode, bool pressed);
     };
 }

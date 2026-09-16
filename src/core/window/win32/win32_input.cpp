@@ -14,12 +14,14 @@ namespace idrs
 
     bool Win32_Input::isKeyPressed(u32 key)
     {
-        return ((GetAsyncKeyState(keyToVK(key)) & 0x8000) != 0);
+        // return ((GetAsyncKeyState(keyToVK(key)) & 0x8000) != 0);
+        return false;
     }
 
     bool Win32_Input::isMousePressed(u32 btn)
     {
-        return ((GetAsyncKeyState(mouseToVK(btn)) & 0x8000) != 0);
+        // return ((GetAsyncKeyState(mouseToVK(btn)) & 0x8000) != 0);
+        return false;
     }
 
     u16 Win32_Input::getKey(u32 key)

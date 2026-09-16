@@ -5,18 +5,28 @@
 namespace idrs
 {
     Input::Input() :
-        m_platform(this)
+        m_platform(this),
+        m_inputmap{}
     {
+    }
+
+    void Input::setInputState(u32 inputCode, bool pressed)
+    {
+        if (inputCode > UINT16_MAX)
+        {
+            return;
+        }
+        m_inputmap[inputCode] = pressed;
     }
 
     bool Input::isKeyPressed(Key key)
     {
-        return m_platform.isKeyPressed((u32)key);
+        return m_inputmap[getKey(key)];
     }
 
     bool Input::isMousePressed(Mouse btn)
     {
-        return m_platform.isMousePressed((u32)btn);
+        return m_inputmap[getMouse(btn)];
     }
 
     u16 Input::getKey(Key key)
@@ -87,14 +97,9 @@ namespace idrs
             if (((current.buttons >> i) ^ (previous.buttons >> i)) == 1)
             {
                 Event e;
-                if ((current.buttons >> i) & 0x1)
-                {
-                    e.type = Event::Type::GamepadButtonPressed;
-                }
-                else
-                {
-                    e.type = Event::Type::GamepadButtonReleased;
-                }
+                e.type = ((current.buttons >> i) & 0x1) 
+                    ? Event::Type::GamepadButtonPressed 
+                    : Event::Type::GamepadButtonReleased;
 
                 e.gamepadButton = i;
                 events.push(e);

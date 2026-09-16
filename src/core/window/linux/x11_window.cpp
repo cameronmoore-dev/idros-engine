@@ -249,6 +249,7 @@ namespace idrs
                 break;
             }
 
+            Event e;
             switch (event->response_type & ~0x80)
             {
                 case XCB_CLIENT_MESSAGE:
@@ -264,66 +265,55 @@ namespace idrs
                 {
                     xcb_configure_notify_event_t *cfg = (xcb_configure_notify_event_t *)event;
 
-                    Event e;
                     e.type = Event::Type::WindowResize;
                     e.wndResizeInfo.width  = cfg->width;
                     e.wndResizeInfo.height = cfg->height;
-                    m_wnd->m_events.push(e);
                 } break;
 
                 case XCB_KEY_PRESS:
                 {
                     xcb_key_press_event_t *kpe = (xcb_key_press_event_t *)event;
                     xcb_keycode_t code = kpe->detail;
-                    KeySym key = XkbKeycodeToKeysym(m_display, (KeyCode)code, 0, (code & ShiftMask) ? 1 : 0);
+                    KeySym key = XkbKeycodeToKeysym(m_display, (KeyCode)code, 0, 1);
 
-                    Event e;
                     e.type = Event::Type::KeyPressed;
                     e.keyCode = (s32)key;
-                    if (key == XKB_KEY_Escape)
-                    {
-                        m_wnd->close();
-                        break;
-                    }
-
-                    m_wnd->m_events.push(e);
                 } break;
 
                 case XCB_KEY_RELEASE:
                 {
                     xcb_key_release_event_t *kpe = (xcb_key_release_event_t *)event;
                     xcb_keycode_t code = kpe->detail;
-                    KeySym key = XkbKeycodeToKeysym(m_display, (KeyCode)code, 0, (code & ShiftMask) ? 1 : 0);
+                    KeySym key = XkbKeycodeToKeysym(m_display, (KeyCode)code, 0, 1);
 
-                    Event e;
                     e.type = Event::Type::KeyReleased;
                     e.keyCode = (s32)key;
-                    m_wnd->m_events.push(e);
                 } break;
 
                 case XCB_BUTTON_PRESS:
                 {
                     xcb_button_press_event_t *bpe = (xcb_button_press_event_t *)event;
 
-                    Event e;
                     e.type = Event::Type::MousePressed;
                     e.mouseButton = bpe->detail;
-                    m_wnd->m_events.push(e);
                 } break;
 
                 case XCB_BUTTON_RELEASE:
                 {
                     xcb_button_release_event_t *bre = (xcb_button_release_event_t *)event;
 
-                    Event e;
                     e.type = Event::Type::MouseReleased;
                     e.mouseButton = bre->detail;
-                    m_wnd->m_events.push(e);
                 } break;
 
                 case XCB_MOTION_NOTIFY: break;
 
                 default: break;
+            }
+
+            if (e.type != Event::Type::Default)
+            {
+                m_wnd->m_events.push(e);
             }
 
             delete(event);

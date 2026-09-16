@@ -48,6 +48,26 @@ namespace idrs
                     g_engine->input.pollGamepads(e._inputDev.data, *static_cast<std::queue<Event>*>(e._inputDev.eventQueue));
                     continue;
                 };
+
+                case Event::Type::KeyPressed:
+                {
+                    g_engine->input.setInputState(e.keyCode, true);
+                } break;
+
+                case Event::Type::KeyReleased:
+                {
+                    g_engine->input.setInputState(e.keyCode, false);
+                } break;
+
+                case Event::Type::MousePressed:
+                {
+                    g_engine->input.setInputState(e.mouseButton, true);
+                } break;
+
+                case Event::Type::MouseReleased:
+                {
+                    g_engine->input.setInputState(e.mouseButton, false);
+                } break;
             }
             m_game->processEvents(e);
         }
