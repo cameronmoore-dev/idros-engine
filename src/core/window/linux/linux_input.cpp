@@ -1,12 +1,35 @@
 #include "linux_input.h"
 #include "core/window/input.h"
 
+#include <xkbcommon/xkbcommon.h>
+#include <libevdev-1.0/libevdev/libevdev.h>
+
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
+
+#include "debug.h"
+
 namespace idrs
 {
-    Linux_Input::Linux_Input(Input *input) : 
-        m_input(input)
+    typedef struct InputEventContext
     {
-        storeGamepads();
+        libevdev *dev;
+        s32 result;
+    } InputEventContext;
+
+    Linux_Input::Linux_Input(Input *input) : 
+        m_input(input),
+        m_ctx(nullptr)
+    {
+        m_ctx = new InputEventContext{};
+        // storeGamepads();
+    }
+
+    Linux_Input::~Linux_Input()
+    {
+        libevdev_free(m_ctx->dev);
+        delete(m_ctx);
     }
 
     u16 Linux_Input::getKey(u32 key)
@@ -19,11 +42,34 @@ namespace idrs
         return mouseToXKB(btn);
     }
 
-    void Linux_Input::storeGamepads() {}
-    void Linux_Input::pollGamepads(u8 *hidData, std::queue<Event> &events) {}
+    void Linux_Input::storeGamepads()
+    {
+        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
+        if (fd == -1)
+        {
+            return;
+        }
+        
+        m_ctx->result = libevdev_new_from_fd(fd, &m_ctx->dev);
+        ASSERT((m_ctx->result >= 0), "Failed to init libevdev: %d", m_ctx->result)
 
-    bool isGamepadConnected(u32 slot) {return false;}
-    bool isGamepadButtonPressed(u32 slot, GamepadButtons button) {return false;}
+        printf("Device Name: %s\n", libevdev_get_name(m_ctx->dev));
+        printf("Device Bus: %#x\n", libevdev_get_id_bustype(m_ctx->dev));
+        printf("Device Vendor ID: %#x\n", libevdev_get_id_vendor(m_ctx->dev));
+        printf("Device Product ID: %#x\n", libevdev_get_id_product(m_ctx->dev));
+    }
+
+    void Linux_Input::pollGamepads(u8 *hidData, std::queue<Event> &events)
+    {
+        /* TODO: BTN_NORTH and BTN_WEST (X, Y on the Xbox One Gamepad) are flipped,
+                 fix this when translating to engine gamepad layout
+        */
+        printf("After: %p\n", hidData);
+        struct input_event *event = (input_event *)hidData;
+        printf("Type: %s\n", libevdev_event_type_get_name(event->type));
+        printf("Code: %s\n", libevdev_event_code_get_name(event->type, event->code));
+        printf("Value: %d\n", event->value);
+    }
 
     u16 Linux_Input::mouseToXKB(u32 btn)
     {

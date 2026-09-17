@@ -2,6 +2,7 @@
 
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
+#include <libevdev-1.0/libevdev/libevdev.h>
 
 #include <string>
 
@@ -20,6 +21,7 @@ namespace idrs
         bool create(Window *wnd, const std::string &title, u32 width, u32 height, u32 style);
         void cleanup();
         void sleep(const uint64_t duration);
+        void pollMessages();
 
         void swapBuffers();
         void swapInterval(uint8_t interval);
@@ -44,8 +46,14 @@ namespace idrs
         xcb_screen_t *m_screen;
         xcb_atom_t wm_deleteWindow;
 
+        /* TODO: Probably just wrap all platform specific types 
+                 into an opaque struct that gets defined in source file
+        */
+        input_event input;
+        libevdev *dev;
+        s32 evdev_result;
+
     private:
-        void pollMessages();
         void eglSetup();
         xcb_atom_t xcbInternAtom(xcb_connection_t &conn, const std::string &atomName);
     };

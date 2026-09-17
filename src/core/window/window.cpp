@@ -110,7 +110,7 @@ namespace idrs
         bool success = m_platform.create(this, title, width, height, style);
         if (!success)
         {
-            printf("Failed to create platform window!");
+            printf("Failed to create platform window!\n");
             return false;
         }
         if (!gladLoaderLoadGL())
@@ -157,6 +157,9 @@ namespace idrs
         {
             sleep();
         }
+        
+        /* NOTE: The very end of the frame is the same as the beginning of a frame */
+        m_platform.pollMessages();
     }
 
     void Window::swapInterval(uint8_t interval)

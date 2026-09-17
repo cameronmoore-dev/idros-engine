@@ -1,13 +1,13 @@
 #pragma once
 
-#include <xkbcommon/xkbcommon.h>
-
 #include <queue>
 
 #include "core/typedefs.h"
 
 namespace idrs
 {
+    struct InputEventContext;
+
     class Input;
     struct Event;
     struct Gamepad;
@@ -15,6 +15,7 @@ namespace idrs
     {
     public:
         Linux_Input(Input *input);
+        ~Linux_Input();
 
         u16 getKey(u32 key);
         u16 getMouse(u32 btn);
@@ -24,6 +25,7 @@ namespace idrs
 
     private:
         Input *m_input;
+        InputEventContext *m_ctx;
 
     private:
         u16 keyToXKB(u32 key);

@@ -45,6 +45,7 @@ namespace idrs
         void registerInputDevices();
         void updateCursor();
         void sleep(const uint64_t duration);
+        void pollMessages();
 
     private:
         Window *m_wnd = nullptr;
@@ -60,6 +61,6 @@ namespace idrs
         LRESULT handleMessages(UINT uMsg, WPARAM wParam, LPARAM lParam);
         LPCWSTR className() const { return L"WindowClass"; }
         void registerWinClass();
-        void pollMessages();
+        
     };
 }

@@ -51,7 +51,6 @@ namespace idrs
         updateCursor();
 
         ::SwapBuffers(m_deviceContext);
-        pollMessages();
     }
 
     void Win32_Window::swapInterval(uint8_t interval)
