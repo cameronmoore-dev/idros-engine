@@ -1,6 +1,7 @@
 #include "input.h"
 
 #include <cmath>
+#include <cstdio>
 
 namespace idrs
 {
@@ -8,6 +9,7 @@ namespace idrs
         m_platform(this),
         m_inputmap{}
     {
+        storeGamepads();
     }
 
     void Input::setInputState(u32 inputCode, bool pressed)
@@ -114,7 +116,7 @@ namespace idrs
                 continue;
             }
 
-            float axisPercent = (float)current.stickAxes[i] / (float)current.maxAxisValue * 100.f;
+            float axisPercent = ((float)current.stickAxes[i] / (float)current.maxAxisValue) * 100.f;
             if (std::abs(axisPercent) > GamepadDeadzone::JoystickPercent)
             {
                 Event e;

@@ -30,5 +30,6 @@ namespace idrs
     private:
         u16 keyToXKB(u32 key);
         u16 mouseToXKB(u32 btn);
+        void rawToGamepad(Gamepad &gamepad, u8 *hidData);
     };
 }

@@ -36,9 +36,9 @@ namespace idrs
         m_display(nullptr),
         m_connection(nullptr),
         m_screen(nullptr),
-        m_rndState(nullptr),
-        dev(nullptr),
-        evdev_result(0)
+        m_rndState(nullptr)
+        // dev(nullptr),
+        // evdev_result(0)
     {
         m_rndState = new RendererState{};
     }
@@ -112,16 +112,9 @@ namespace idrs
 
 
         //
-        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
-        if (fd == -1)
-        {
-            return false;
-        }
-        evdev_result = libevdev_new_from_fd(fd, &dev);
-        printf("Device Name: %s\n", libevdev_get_name(dev));
-        printf("Device Bus: %#x\n", libevdev_get_id_bustype(dev));
-        printf("Device Vendor ID: %#x\n", libevdev_get_id_vendor(dev));
-        printf("Device Product ID: %#x\n", libevdev_get_id_product(dev));
+        // s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
+        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_3032363030313330303736363436-event-joystick", O_RDONLY | O_NONBLOCK);
+        libevdev_new_from_fd(fd, &dev);
         //
 
         return true;
@@ -131,6 +124,7 @@ namespace idrs
     {
         XAutoRepeatOn(m_display);
         xcb_destroy_window(m_connection, m_window);
+        libevdev_free(dev);
     }
 
     void X11_Window::swapBuffers()
@@ -268,7 +262,6 @@ namespace idrs
                 e.type = Event::Type::_DeviceInput;
                 e._inputDev.data = (u8*)&input;
                 e._inputDev.eventQueue = (void*)&m_wnd->m_events;
-                printf("Before: %p\n", e._inputDev.data);
             }
         }
         if (e.type != Event::Type::Default)

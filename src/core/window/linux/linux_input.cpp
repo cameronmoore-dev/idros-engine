@@ -23,7 +23,6 @@ namespace idrs
         m_ctx(nullptr)
     {
         m_ctx = new InputEventContext{};
-        // storeGamepads();
     }
 
     Linux_Input::~Linux_Input()
@@ -44,7 +43,8 @@ namespace idrs
 
     void Linux_Input::storeGamepads()
     {
-        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
+        // s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
+        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_3032363030313330303736363436-event-joystick", O_RDONLY | O_NONBLOCK);
         if (fd == -1)
         {
             return;
@@ -53,22 +53,67 @@ namespace idrs
         m_ctx->result = libevdev_new_from_fd(fd, &m_ctx->dev);
         ASSERT((m_ctx->result >= 0), "Failed to init libevdev: %d", m_ctx->result)
 
-        printf("Device Name: %s\n", libevdev_get_name(m_ctx->dev));
-        printf("Device Bus: %#x\n", libevdev_get_id_bustype(m_ctx->dev));
-        printf("Device Vendor ID: %#x\n", libevdev_get_id_vendor(m_ctx->dev));
-        printf("Device Product ID: %#x\n", libevdev_get_id_product(m_ctx->dev));
+        Gamepad pad = {};
+        pad.vendorId = libevdev_get_id_vendor(m_ctx->dev);
+        m_input->m_gamepads.emplace_back(pad);
+        printf("Gamepad Connected (Device: %d): %#x\n", 0, pad.vendorId);
     }
 
     void Linux_Input::pollGamepads(u8 *hidData, std::queue<Event> &events)
     {
-        /* TODO: BTN_NORTH and BTN_WEST (X, Y on the Xbox One Gamepad) are flipped,
-                 fix this when translating to engine gamepad layout
-        */
-        printf("After: %p\n", hidData);
-        struct input_event *event = (input_event *)hidData;
-        printf("Type: %s\n", libevdev_event_type_get_name(event->type));
-        printf("Code: %s\n", libevdev_event_code_get_name(event->type, event->code));
-        printf("Value: %d\n", event->value);
+        /* NOTE: libevdev's button id's correspond the the Nintendo standard */
+        for (u32 i = 0; i < m_input->m_gamepads.size(); i++)
+        {
+            Gamepad &gamepad = m_input->m_gamepads[i];
+            Gamepad previous = m_input->m_gamepads[i];
+
+            struct input_event *event = (input_event *)hidData;
+
+            gamepad.stickAxes[GamepadAxis::LX] = (event->code == ABS_X)  ? event->value : gamepad.stickAxes[GamepadAxis::LX];
+            gamepad.stickAxes[GamepadAxis::LY] = (event->code == ABS_Y)  ? event->value : gamepad.stickAxes[GamepadAxis::LY];
+            gamepad.stickAxes[GamepadAxis::RX] = (event->code == ABS_RX) ? event->value : gamepad.stickAxes[GamepadAxis::RX];
+            gamepad.stickAxes[GamepadAxis::RY] = (event->code == ABS_RY) ? event->value : gamepad.stickAxes[GamepadAxis::RY];
+
+            if (event->code == ABS_HAT0X)
+            {
+                gamepad.buttons = (gamepad.buttons & ~(1 << DpadLeft));
+                gamepad.buttons = (gamepad.buttons & ~(1 << DpadRight));
+            }
+            if (event->code == ABS_HAT0Y)
+            {
+                gamepad.buttons = (gamepad.buttons & ~(1 << DpadUp));
+                gamepad.buttons = (gamepad.buttons & ~(1 << DpadDown));
+            }
+
+            // TODO: You could put each libevdev button and dpad enum into an array
+            //       that would correspond with the engine button enum layout
+            //       then loop through it, set its bit to 0, then set the bit to 1 if needed
+
+            gamepad.buttons ^= (((u16)(event->code == ABS_HAT0Y) * (u16)(event->value < 0)) << GamepadButtons::DpadUp);
+            gamepad.buttons ^= (((u16)(event->code == ABS_HAT0Y) * (u16)(event->value > 0)) << GamepadButtons::DpadDown);
+            gamepad.buttons ^= (((u16)(event->code == ABS_HAT0X) * (u16)(event->value < 0)) << GamepadButtons::DpadLeft);
+            gamepad.buttons ^= (((u16)(event->code == ABS_HAT0X) * (u16)(event->value > 0)) << GamepadButtons::DpadRight);
+            gamepad.buttons ^= ((u16)(event->code == BTN_START) << GamepadButtons::Start);
+            gamepad.buttons ^= ((u16)(event->code == BTN_SELECT) << GamepadButtons::Back);
+            gamepad.buttons ^= ((u16)(event->code == BTN_THUMBL) << GamepadButtons::LeftStick);
+            gamepad.buttons ^= ((u16)(event->code == BTN_THUMBR) << GamepadButtons::RightStick);
+            gamepad.buttons ^= ((u16)(event->code == BTN_TL) << GamepadButtons::LeftShoulder);
+            gamepad.buttons ^= ((u16)(event->code == BTN_TR) << GamepadButtons::RightShoulder);
+            gamepad.buttons ^= ((u16)(event->code == BTN_SOUTH) << GamepadButtons::A);
+            gamepad.buttons ^= ((u16)(event->code == BTN_EAST) << GamepadButtons::B);
+            gamepad.buttons ^= ((u16)(event->code == BTN_NORTH) << GamepadButtons::X); // Is swapped for Xbox One gamepad
+            gamepad.buttons ^= ((u16)(event->code == BTN_WEST) << GamepadButtons::Y);  // Is swapped for Xbox One gamepad
+
+            u8 lt = (event->code == ABS_Z)  ? (event->value / UINT8_MAX) : 0;
+            u8 rt = (event->code == ABS_RZ) ? (event->value / UINT8_MAX) : 0;
+            gamepad.triggers = ((lt << 8) | rt);
+
+            m_input->compareGamepadStates(gamepad, previous, events);
+        }
+    }
+
+    void Linux_Input::rawToGamepad(Gamepad &gamepad, u8 *hidData)
+    {
     }
 
     u16 Linux_Input::mouseToXKB(u32 btn)

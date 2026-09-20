@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <array>
-#include <cstdint>
 
 #include "event.h"
 #include "core/typedefs.h"
