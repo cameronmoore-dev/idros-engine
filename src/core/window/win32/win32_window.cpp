@@ -419,9 +419,7 @@ namespace idrs
                 {
                     Event e;
                     e.type = Event::_DeviceInput;
-                    e._inputDev.data = raw->data.hid.bRawData;
-                    e._inputDev.eventQueue = (void*)&m_wnd->m_events;
-
+                    e._deviceInputPlatformInternal = raw->data.hid.bRawData;
                     m_wnd->m_events.push(e);
                 }
 

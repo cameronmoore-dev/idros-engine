@@ -18,7 +18,8 @@ namespace idrs
         {
             g_engine->ecs.m_entityManager.addEntities();
             g_engine->time.updateTimestep();
-
+            g_engine->input.pumpGamepadEvents(g_engine->window.m_events);
+            
             processEvents();
             fixedUpdate();
             update();
@@ -45,7 +46,9 @@ namespace idrs
 
                 case Event::Type::_DeviceInput:
                 {
-                    g_engine->input.pollGamepads(e._inputDev.data, *static_cast<std::queue<Event>*>(e._inputDev.eventQueue));
+                    g_engine->input.pollGamepads(
+                        e._deviceInputPlatformInternal, 
+                        *static_cast<std::queue<Event>*>(&g_engine->window.m_events));
                     continue;
                 };
 

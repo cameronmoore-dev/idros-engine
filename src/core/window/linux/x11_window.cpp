@@ -4,8 +4,6 @@
 
 #include "egl.h"
 
-#include <sys/mman.h>
-#include <xkbcommon/xkbcommon.h>
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
 #include <X11/Xlib-xcb.h>
@@ -37,8 +35,7 @@ namespace idrs
         m_connection(nullptr),
         m_screen(nullptr),
         m_rndState(nullptr),
-        dev(nullptr),
-        evdev_result(0)
+        udevice(nullptr)
     {
         m_rndState = new RendererState{};
     }
@@ -110,12 +107,10 @@ namespace idrs
 
         eglSetup();
 
-
-        //
-        // s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
-        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_3032363030313330303736363436-event-joystick", O_RDONLY | O_NONBLOCK);
-        libevdev_new_from_fd(fd, &dev);
-        //
+        udevice = udev_new();
+        umonitor = udev_monitor_new_from_netlink(udevice, "udev");
+        udev_monitor_filter_add_match_subsystem_devtype(umonitor, "input", nullptr);
+        udev_monitor_enable_receiving(umonitor);
 
         return true;
     }
@@ -124,7 +119,8 @@ namespace idrs
     {
         XAutoRepeatOn(m_display);
         xcb_destroy_window(m_connection, m_window);
-        libevdev_free(dev);
+        udev_unref(udevice);
+        udev_monitor_unref(umonitor);
     }
 
     void X11_Window::swapBuffers()
@@ -199,10 +195,9 @@ namespace idrs
         xcb_query_pointer_cookie_t pcookie = xcb_query_pointer(m_connection, m_window);
         xcb_query_pointer_reply_t *preply = xcb_query_pointer_reply(m_connection, pcookie, nullptr);
 
-        /* NOTE: Invert the cursor's Y position because 
-         *       XCB has the origin in the top-left,
-         *       while OpenGL is the bottom-left
-         */
+        // NOTE: Invert the cursor's Y position because 
+        //       XCB has the origin in the top-left,
+        //       while OpenGL is the bottom-left
         if (relative)
         {
             outX = preply->win_x;
@@ -251,32 +246,17 @@ namespace idrs
 
     void X11_Window::pollMessages()
     {
-        memset(inputBuffer, 0, sizeof(inputBuffer));
-        u32 numEvents = 0;
-        while ( evdev_result == LIBEVDEV_READ_STATUS_SUCCESS || 
-                evdev_result == LIBEVDEV_READ_STATUS_SYNC || 
-                evdev_result == -EAGAIN)
+        // NOTE: Poll for device changes
+        udev_device *device = udev_monitor_receive_device(umonitor);
+        if (device)
         {
-            input_event ev;
-            evdev_result = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
-            if (evdev_result == -EAGAIN || 
-                numEvents > sizeof(inputBuffer))
+            const char *action = udev_device_get_action(device);
+            bool isHotplug = (strcmp(action, "add") == 0) || 
+                             (strcmp(action, "remove") == 0);
+            if (isHotplug)
             {
-                break;
-            }
-
-            Event e;
-            if (ev.type != 0)
-            {
-                inputBuffer[numEvents] = ev;   
-                e.type = Event::Type::_DeviceInput;
-                e._inputDev.data = (u8*)&inputBuffer[numEvents];
-                e._inputDev.eventQueue = (void*)&m_wnd->m_events;
-                numEvents++;
-            }
-
-            if (e.type != Event::Type::Default)
-            {
+                Event e;
+                e.type = Event::Type::DeviceChanged;
                 m_wnd->m_events.push(e);
             }
         }

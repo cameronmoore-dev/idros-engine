@@ -57,11 +57,7 @@ namespace idrs
                 int height;
             } wndResizeInfo;
 
-            struct
-            {
-                unsigned char *data;
-                void *eventQueue;
-            } _inputDev;
+            unsigned char *_deviceInputPlatformInternal;
         };
     };
 }

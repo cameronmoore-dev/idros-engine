@@ -9,7 +9,6 @@ namespace idrs
     Win32_Input::Win32_Input(Input *input) :
         m_input(input)
     {
-        storeGamepads();
     }
 
     bool Win32_Input::isKeyPressed(u32 key)

@@ -107,6 +107,7 @@ elseif (LINUX)
         # -lwayland-client
         -lX11
         -lX11-xcb
+        -ludev
         -levdev
         -lEGL
         -lGL

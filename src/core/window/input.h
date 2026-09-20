@@ -182,12 +182,14 @@ namespace idrs
         s16 stickAxes[4];
         u16 triggers;
         u16 maxAxisValue = INT16_MAX;
+
+        void *_internal;
     };
 
     class Input
     {
-    friend class PLATFORM_INPUT
     friend class Engine;
+    friend class PLATFORM_INPUT
     public:
         Input();
 
@@ -209,6 +211,7 @@ namespace idrs
         void compareGamepadStates(Gamepad &current, Gamepad &previous, std::queue<Event> &events);
         void storeGamepads();
         void pollGamepads(u8 *hidData, std::queue<Event> &events);
+        void pumpGamepadEvents(std::queue<Event> &events);
 
         void setInputState(u32 inputCode, bool pressed);
     };

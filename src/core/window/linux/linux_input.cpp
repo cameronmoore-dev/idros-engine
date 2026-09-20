@@ -2,31 +2,27 @@
 #include "core/window/input.h"
 
 #include <fcntl.h>
+#include <string.h>
 
 #include <xkbcommon/xkbcommon.h>
 #include <libevdev-1.0/libevdev/libevdev.h>
+#include <libudev.h>
 
 #include "debug.h"
 
 namespace idrs
 {
-    typedef struct InputEventContext
-    {
-        libevdev *dev;
-        s32 result;
-    } InputEventContext;
-
     Linux_Input::Linux_Input(Input *input) : 
-        m_input(input),
-        m_ctx(nullptr)
+        m_input(input)
     {
-        m_ctx = new InputEventContext{};
     }
 
     Linux_Input::~Linux_Input()
     {
-        libevdev_free(m_ctx->dev);
-        delete(m_ctx);
+        for (Gamepad &pad : m_input->m_gamepads)
+        {
+            libevdev_free((libevdev *)pad._internal);
+        }
     }
 
     u16 Linux_Input::getKey(u32 key)
@@ -41,25 +37,57 @@ namespace idrs
 
     void Linux_Input::storeGamepads()
     {
-        // s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_7EED8030908D-event-joystick", O_RDONLY | O_NONBLOCK);
-        s32 fd = open("/dev/input/by-id/usb-Microsoft_Controller_3032363030313330303736363436-event-joystick", O_RDONLY | O_NONBLOCK);
-        if (fd == -1)
+        for (Gamepad &pad : m_input->m_gamepads)
         {
-            return;
+            libevdev_free((libevdev *)pad._internal);
         }
-        
-        m_ctx->result = libevdev_new_from_fd(fd, &m_ctx->dev);
-        ASSERT((m_ctx->result >= 0), "Failed to init libevdev: %d", m_ctx->result)
+        m_input->m_gamepads.clear();
 
-        Gamepad pad = {};
-        pad.vendorId = libevdev_get_id_vendor(m_ctx->dev);
-        m_input->m_gamepads.emplace_back(pad);
-        printf("Gamepad Connected (Device: %d): %#x\n", 0, pad.vendorId);
+        udev *dev = udev_new();
+        udev_enumerate *enumerate = udev_enumerate_new(dev);
+        udev_enumerate_add_match_subsystem(enumerate, "input");
+        udev_enumerate_add_match_property(enumerate, "ID_INPUT_JOYSTICK", "1");
+        udev_enumerate_scan_devices(enumerate);
+        udev_list_entry *devices = udev_enumerate_get_list_entry(enumerate);
+        udev_list_entry *entry;
+        udev_list_entry_foreach(entry, devices)
+        {
+            const char *syspath = udev_list_entry_get_name(entry);
+            udev_device *device = udev_device_new_from_syspath(dev, syspath);
+            udev_device *parent = udev_device_get_parent_with_subsystem_devtype(device, "usb", "usb_device");
+            if (device)
+            {
+                const char *devnode = udev_device_get_devnode(device);
+                const char *vendor  = udev_device_get_sysattr_value(parent, "idVendor");
+
+                bool isControllerSupported = (strcmp(vendor, "045e") == 0) || 
+                                             (strcmp(vendor, "054c") == 0);
+                if (devnode && isControllerSupported)
+                {
+                    libevdev *evdev;
+                    s32 fd = open(devnode, O_RDONLY | O_NONBLOCK);
+                    s32 result = libevdev_new_from_fd(fd, &evdev);
+                    if (result >= 0)
+                    {
+                        Gamepad gamepad = {};
+                        gamepad.vendorId = libevdev_get_id_vendor(evdev);
+                        gamepad._internal = (void*)evdev;
+                        m_input->m_gamepads.emplace_back(gamepad);
+                        printf("Gamepad Connected (Device: %d): %#x\n", ((u32)m_input->m_gamepads.size() - 1), gamepad.vendorId);
+                    }
+                }
+            }
+
+            udev_device_unref(device);
+        }
+
+        udev_unref(dev);
+        udev_enumerate_unref(enumerate);
     }
 
     void Linux_Input::pollGamepads(u8 *hidData, std::queue<Event> &events)
     {
-        /* NOTE: libevdev's button id's correspond the the Nintendo standard */
+        // NOTE: libevdev's button id's correspond the the Nintendo standard
         for (u32 i = 0; i < m_input->m_gamepads.size(); i++)
         {
             Gamepad &gamepad = m_input->m_gamepads[i];
@@ -106,6 +134,45 @@ namespace idrs
             gamepad.triggers = ((lt << 8) | rt);
 
             m_input->compareGamepadStates(gamepad, previous, events);
+        }
+    }
+
+    void Linux_Input::pumpGamepadEvents(std::queue<Event> &events)
+    {
+        // TODO: Increase the max input events to support multiple controllers at once (16 per controller?)
+        memset(m_inputBuffer, 0, sizeof(m_inputBuffer));
+        for (Gamepad &pad : m_input->m_gamepads)
+        {
+            libevdev *evdev = (libevdev *)pad._internal;
+            s32 result = 0;
+            u32 numEvents = 0;
+
+            while ( result == LIBEVDEV_READ_STATUS_SUCCESS || 
+                    result == LIBEVDEV_READ_STATUS_SYNC || 
+                    result == -EAGAIN)
+            {
+                input_event ev;
+                result = libevdev_next_event(evdev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+                if (result == -EAGAIN || 
+                    numEvents > sizeof(m_inputBuffer))
+                {
+                    break;
+                }
+
+                Event e;
+                if (ev.type != 0)
+                {
+                    m_inputBuffer[numEvents] = ev;
+                    e.type = Event::Type::_DeviceInput;
+                    e._deviceInputPlatformInternal = (u8*)&m_inputBuffer[numEvents];
+                    numEvents++;
+                }
+
+                if (e.type != Event::Type::Default)
+                {
+                    events.push(e);
+                }
+            }
         }
     }
 

@@ -22,6 +22,7 @@ namespace idrs
 
         void storeGamepads();
         void pollGamepads(u8 *hidData, std::queue<Event> &events);
+        void pumpGamepadEvents(std::queue<Event> &events) {}
 
     private:
         Input *m_input = nullptr;

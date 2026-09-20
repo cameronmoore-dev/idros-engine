@@ -66,6 +66,11 @@ namespace idrs
         m_platform.pollGamepads(hidData, events);
     }
 
+    void Input::pumpGamepadEvents(std::queue<Event> &events)
+    {
+        m_platform.pumpGamepadEvents(events);
+    }
+
     f32 Input::controllerAxisValue(u32 slot, GamepadAxis axis)
     {
         if (slot >= m_gamepads.size())

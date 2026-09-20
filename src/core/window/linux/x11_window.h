@@ -3,6 +3,7 @@
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
 #include <libevdev-1.0/libevdev/libevdev.h>
+#include <libudev.h>
 
 #include <string>
 
@@ -40,18 +41,16 @@ namespace idrs
         Window *m_wnd = nullptr;
         RendererState *m_rndState;
 
+        // TODO: Probably just wrap all platform specific types
+        //       into an opaque struct that gets defined in source file
         Display *m_display;
         xcb_connection_t *m_connection;
         xcb_window_t m_window;
         xcb_screen_t *m_screen;
         xcb_atom_t wm_deleteWindow;
-
-        /* TODO: Probably just wrap all platform specific types 
-                 into an opaque struct that gets defined in source file
-         */
-        input_event inputBuffer[16];
-        libevdev *dev;
-        s32 evdev_result;
+        
+        udev *udevice;
+        udev_monitor *umonitor;
 
     private:
         void eglSetup();

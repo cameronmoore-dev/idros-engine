@@ -57,6 +57,7 @@ namespace idrs
 
     class Window
     {
+    friend class Engine;
     friend class PLATFORM_WINDOW;
     public:
         Window();

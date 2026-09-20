@@ -1,5 +1,7 @@
 #pragma once
 
+#include <libevdev-1.0/libevdev/libevdev.h>
+
 #include <queue>
 
 #include "core/typedefs.h"
@@ -22,10 +24,11 @@ namespace idrs
 
         void storeGamepads();
         void pollGamepads(u8 *hidData, std::queue<Event> &events);
+        void pumpGamepadEvents(std::queue<Event> &events);
 
     private:
         Input *m_input;
-        InputEventContext *m_ctx;
+        input_event m_inputBuffer[16];
 
     private:
         u16 keyToXKB(u32 key);
