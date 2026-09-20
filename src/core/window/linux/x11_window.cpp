@@ -36,9 +36,9 @@ namespace idrs
         m_display(nullptr),
         m_connection(nullptr),
         m_screen(nullptr),
-        m_rndState(nullptr)
-        // dev(nullptr),
-        // evdev_result(0)
+        m_rndState(nullptr),
+        dev(nullptr),
+        evdev_result(0)
     {
         m_rndState = new RendererState{};
     }
@@ -251,22 +251,34 @@ namespace idrs
 
     void X11_Window::pollMessages()
     {
-        struct input_event ev;
-        evdev_result = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
-        Event e;
-        if (evdev_result == LIBEVDEV_READ_STATUS_SUCCESS)
+        memset(inputBuffer, 0, sizeof(inputBuffer));
+        u32 numEvents = 0;
+        while ( evdev_result == LIBEVDEV_READ_STATUS_SUCCESS || 
+                evdev_result == LIBEVDEV_READ_STATUS_SYNC || 
+                evdev_result == -EAGAIN)
         {
+            input_event ev;
+            evdev_result = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+            if (evdev_result == -EAGAIN || 
+                numEvents > sizeof(inputBuffer))
+            {
+                break;
+            }
+
+            Event e;
             if (ev.type != 0)
             {
-                input = ev;
+                inputBuffer[numEvents] = ev;   
                 e.type = Event::Type::_DeviceInput;
-                e._inputDev.data = (u8*)&input;
+                e._inputDev.data = (u8*)&inputBuffer[numEvents];
                 e._inputDev.eventQueue = (void*)&m_wnd->m_events;
+                numEvents++;
             }
-        }
-        if (e.type != Event::Type::Default)
-        {
-            m_wnd->m_events.push(e);
+
+            if (e.type != Event::Type::Default)
+            {
+                m_wnd->m_events.push(e);
+            }
         }
 
         xcb_generic_event_t *event;

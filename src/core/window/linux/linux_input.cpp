@@ -1,12 +1,10 @@
 #include "linux_input.h"
 #include "core/window/input.h"
 
+#include <fcntl.h>
+
 #include <xkbcommon/xkbcommon.h>
 #include <libevdev-1.0/libevdev/libevdev.h>
-
-#include <fcntl.h>
-#include <errno.h>
-#include <string.h>
 
 #include "debug.h"
 
@@ -66,7 +64,7 @@ namespace idrs
         {
             Gamepad &gamepad = m_input->m_gamepads[i];
             Gamepad previous = m_input->m_gamepads[i];
-
+            
             struct input_event *event = (input_event *)hidData;
 
             gamepad.stickAxes[GamepadAxis::LX] = (event->code == ABS_X)  ? event->value : gamepad.stickAxes[GamepadAxis::LX];
@@ -88,7 +86,6 @@ namespace idrs
             // TODO: You could put each libevdev button and dpad enum into an array
             //       that would correspond with the engine button enum layout
             //       then loop through it, set its bit to 0, then set the bit to 1 if needed
-
             gamepad.buttons ^= (((u16)(event->code == ABS_HAT0Y) * (u16)(event->value < 0)) << GamepadButtons::DpadUp);
             gamepad.buttons ^= (((u16)(event->code == ABS_HAT0Y) * (u16)(event->value > 0)) << GamepadButtons::DpadDown);
             gamepad.buttons ^= (((u16)(event->code == ABS_HAT0X) * (u16)(event->value < 0)) << GamepadButtons::DpadLeft);

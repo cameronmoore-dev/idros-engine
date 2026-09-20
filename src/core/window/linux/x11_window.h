@@ -48,8 +48,8 @@ namespace idrs
 
         /* TODO: Probably just wrap all platform specific types 
                  into an opaque struct that gets defined in source file
-        */
-        input_event input;
+         */
+        input_event inputBuffer[16];
         libevdev *dev;
         s32 evdev_result;
 
