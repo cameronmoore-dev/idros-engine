@@ -16,6 +16,7 @@ if(WIN32)
     set(APP_DIR "C:/Users/Cameron/Desktop/${APP_NAME}")
 elseif(LINUX)
     set(APP_DIR "/home/cameron/Desktop/${APP_NAME}")
+    set(PIPEWIRE_INCLUDES "/usr/include/spa-0.2" "/usr/include/pipewire-0.3")
 endif()
 
 add_library(idros SHARED
@@ -85,7 +86,11 @@ if (RENDER_BACKEND STREQUAL "OpenGL")
     )
 endif()
 
-target_include_directories(idros PUBLIC "src" ${LIB_INCLUDE_PATH})
+if(WIN32)
+    target_include_directories(idros PUBLIC src ${LIB_INCLUDE_PATH})
+else()
+    target_include_directories(idros PUBLIC src ${LIB_INCLUDE_PATH} ${PIPEWIRE_INCLUDES})
+endif()
 add_subdirectory(ext)
 
 if (WIN32)
@@ -109,6 +114,7 @@ elseif (LINUX)
         -lX11-xcb
         -ludev
         -levdev
+        -lpipewire-0.3
         -lEGL
         -lGL
     )
@@ -235,14 +241,15 @@ if (WIN32)
         "${APP_DIR}/ext/includes/idros/core/window/win32"
     )
 elseif(LINUX)
-    # add_custom_command(
-    #     TARGET idros
-    #     POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/audio/linux"
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    add_custom_command(
+        TARGET idros
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_DIR}/ext/includes/idros/core/audio/linux"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/src/core/audio/linux/linux_audioengine.h"
 
-    #     "${APP_DIR}/ext/includes/idros/core/audio/linux"
-    # )
+        "${APP_DIR}/ext/includes/idros/core/audio/linux"
+    )
     add_custom_command(
         TARGET idros
         POST_BUILD
