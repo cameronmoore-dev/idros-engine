@@ -47,7 +47,8 @@ namespace idrs
         void play(Sound &sound);
         void play(Music &music);
         void pause(u32 id);
-        void stop(u32 id);
+        void resume(u32 id) {}
+        void stop(u32 &id);
 
         bool isPlaying(u32 id);
 

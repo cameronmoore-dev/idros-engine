@@ -3,7 +3,6 @@
 #define MAX_ACTIVE_AUDIO_CLIPS 16
 
 #include <pipewire/pipewire.h>
-#include <spa/param/audio/format-utils.h>
 
 #include "core/audio/sound.h"
 #include "core/audio/music.h"
@@ -29,7 +28,8 @@ namespace idrs
         void play(Sound &sound);
         void play(Music &music);
         void pause(u32 id);
-        void stop(u32 id);
+        void resume(u32 id);
+        void stop(u32 &id);
 
         bool isPlaying(u32 id);
         
@@ -40,6 +40,7 @@ namespace idrs
 
     private:
         LinuxAudioData *getFreeSlot(u32 &outID);
+        static void onControlInfo(void *userdata, u32 id, const pw_stream_control *control);
         static void onProcessSound(void *userdata);
         static void onProcessMusic(void *userdata);
     };

@@ -27,7 +27,7 @@ namespace idrs
             case AudioType::Sound:
             {
                 Sound &s = *static_cast<Sound*>(pContext);
-                s.id = UINT32_MAX;
+                s.id = INACTIVE_ID;
                 isPlaying = false;
             } break;
 
@@ -161,7 +161,7 @@ namespace idrs
         voice.isPlaying = false;
     }
 
-    void Win32AudioEngine::stop(u32 id)
+    void Win32AudioEngine::stop(u32 &id)
     {
         XAudioVoice &voice = m_voices[id];
         voice.voice->Stop();
@@ -169,6 +169,7 @@ namespace idrs
         voice.voice->SetVolume(1.0f);
         voice.voice->SetFrequencyRatio(1.0f);
         voice.isPlaying = false;
+        id = INACTIVE_ID;
     }
 
     u32 Win32AudioEngine::getOpenVoiceSlot(u32 numChannels)
@@ -188,6 +189,6 @@ namespace idrs
 
     bool Win32AudioEngine::isPlaying(u32 id)
     {
-        return id != UINT32_MAX;
+        return id != INACTIVE_ID;
     }
 }

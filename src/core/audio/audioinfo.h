@@ -5,6 +5,7 @@
 namespace idrs
 {
     #define SAMPLES_KHZ 48.0f
+    #define INACTIVE_ID UINT32_MAX
 
     struct AudioInfo
     {

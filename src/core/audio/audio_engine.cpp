@@ -22,7 +22,12 @@ namespace idrs
         m_platform.pause(id);
     }
 
-    void AudioEngine::stop(u32 id)
+    void AudioEngine::resume(u32 id)
+    {
+        m_platform.resume(id);
+    }
+
+    void AudioEngine::stop(u32 &id)
     {
         m_platform.stop(id);
     }

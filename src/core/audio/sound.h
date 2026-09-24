@@ -11,7 +11,7 @@ namespace idrs
     class Sound
     {
     public:
-        u32 id = UINT32_MAX;
+        u32 id = INACTIVE_ID;
 
     public:
         Sound() = default;

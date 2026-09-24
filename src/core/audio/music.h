@@ -11,7 +11,7 @@ namespace idrs
     class Music
     {
     public:
-        u32 id;
+        u32 id = INACTIVE_ID;
 
     public:
         Music() = default;

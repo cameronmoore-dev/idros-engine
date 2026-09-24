@@ -29,7 +29,8 @@ namespace idrs
 
         void play(AudioInfo &info);
         void pause(u32 id);
-        void stop(u32 id);
+        void resume(u32 id);
+        void stop(u32 &id);
 
         bool isPlaying(u32 handle);
 

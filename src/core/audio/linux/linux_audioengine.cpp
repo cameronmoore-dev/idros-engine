@@ -3,6 +3,9 @@
 
 #include "time.hpp"
 
+#include <spa/param/audio/format-utils.h>
+#include <spa/param/props.h>
+
 namespace idrs
 {
     LinuxAudioEngine::LinuxAudioEngine(AudioEngine *audio) : 
@@ -25,6 +28,11 @@ namespace idrs
 
     void LinuxAudioEngine::play(Sound &sound)
     {
+        if (sound.id != INACTIVE_ID)
+        {
+            return;
+        }
+
         LinuxAudioData *data = getFreeSlot(sound.id);
         data->streamEvents.version = PW_VERSION_STREAM_EVENTS;
         data->streamEvents.process = onProcessSound;
@@ -37,7 +45,7 @@ namespace idrs
             data->stream = nullptr;
         }
 
-        const spa_pod *params[1];
+        const spa_pod *params[2];
         uint8_t buffer[1024];
         spa_pod_builder pod = SPA_POD_BUILDER_INIT(buffer, sizeof(buffer));
         pw_properties *props = pw_properties_new(
@@ -56,14 +64,18 @@ namespace idrs
         spa_audio_info_raw raw = SPA_AUDIO_INFO_RAW_INIT();
         raw.format = SPA_AUDIO_FORMAT_S16;
         raw.channels = sound.info().numChannels;
-        raw.rate = sound.info().sampleRate;
+        raw.rate = sound.info().sampleRate * sound.getPitch();
         params[0] = spa_format_audio_raw_build(&pod, SPA_PARAM_EnumFormat, &raw);
+        params[1] = (spa_pod *)spa_pod_builder_add_object(&pod,
+            SPA_TYPE_OBJECT_Props, SPA_PARAM_Props,
+            SPA_PROP_volume, SPA_POD_Float(sound.getVolume())
+        );
 
         pw_stream_flags flags = (pw_stream_flags)(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS);
         pw_stream_connect(
             data->stream,
             PW_DIRECTION_OUTPUT, PW_ID_ANY,
-            flags, params, 1
+            flags, params, 2
         );
 
         data->isPlaying = true;
@@ -72,19 +84,122 @@ namespace idrs
 
     void LinuxAudioEngine::play(Music &music)
     {
+        if (music.id != INACTIVE_ID)
+        {
+            return;
+        }
+
+        LinuxAudioData *data = getFreeSlot(music.id);
+        music.reset();
+
+        data->streamEvents.version = PW_VERSION_STREAM_EVENTS;
+        data->streamEvents.process = onProcessMusic;
+        data->streamEvents.control_info = onControlInfo;
+
+        pw_thread_loop_lock(m_threadLoop);
+
+        if (!data->isPlaying && data->stream != nullptr)
+        {
+            pw_stream_destroy(data->stream);
+            data->stream = nullptr;
+        }
+
+        const spa_pod *params[2];
+        uint8_t buffer[1024];
+        spa_pod_builder pod = SPA_POD_BUILDER_INIT(buffer, sizeof(buffer));
+
+        pw_properties *props = pw_properties_new(
+            PW_KEY_MEDIA_TYPE, "Audio",
+            PW_KEY_MEDIA_CATEGORY, "Playback",
+            PW_KEY_MEDIA_ROLE, "Music",
+            NULL
+        );
+
+        data->audioType = (void *)&music;
+        data->stream = pw_stream_new_simple(
+            pw_thread_loop_get_loop(m_threadLoop),
+            "music", props, 
+            &data->streamEvents, data
+        );
+
+        spa_audio_info_raw raw = SPA_AUDIO_INFO_RAW_INIT();
+        raw.format = SPA_AUDIO_FORMAT_S16;
+        raw.channels = music.info().numChannels;
+        raw.rate = music.info().sampleRate * music.getPitch();
+        params[0] = spa_format_audio_raw_build(&pod, SPA_PARAM_EnumFormat, &raw);
+        params[1] = (spa_pod *)spa_pod_builder_add_object(&pod,
+            SPA_TYPE_OBJECT_Props, SPA_PARAM_Props,
+            SPA_PROP_volume, SPA_POD_Float(music.getVolume())
+        );
+
+        pw_stream_flags flags = (pw_stream_flags)(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS);
+        pw_stream_connect(
+            data->stream,
+            PW_DIRECTION_OUTPUT, PW_ID_ANY,
+            flags, params, 2
+        );
+
+        data->isPlaying = true;
+        pw_thread_loop_unlock(m_threadLoop);
+
+        // NOTE: Setting stream controls only takes effect when the stream state is STREAMING.
+        //       At this point it's just CONNECTING
+        pw_stream_state state = pw_stream_get_state(data->stream, nullptr);
     }
 
     void LinuxAudioEngine::pause(u32 id)
     {
+        LinuxAudioData *data = &m_clips[id];
+        pw_stream_state state = pw_stream_get_state(data->stream, nullptr);
+        if (state != PW_STREAM_STATE_PAUSED && 
+            state != PW_STREAM_STATE_UNCONNECTED)
+        {
+            pw_thread_loop_lock(m_threadLoop);
+            pw_stream_set_active(data->stream, false);
+            pw_thread_loop_unlock(m_threadLoop);
+        }
     }
 
-    void LinuxAudioEngine::stop(u32 id)
+    void LinuxAudioEngine::resume(u32 id)
     {
+        LinuxAudioData *data = &m_clips[id];
+        pw_stream_state state = pw_stream_get_state(data->stream, nullptr);
+        if (state == PW_STREAM_STATE_PAUSED && 
+            state != PW_STREAM_STATE_UNCONNECTED)
+        {
+            pw_thread_loop_lock(m_threadLoop);
+            pw_stream_set_active(data->stream, true);
+            pw_thread_loop_unlock(m_threadLoop);
+        }
+    }
+
+    void LinuxAudioEngine::stop(u32 &id)
+    {
+        if (id == INACTIVE_ID)
+        {
+            return;
+        }
+        
+        LinuxAudioData *data = &m_clips[id];
+        pw_thread_loop_lock(m_threadLoop);
+        pw_stream_disconnect(data->stream);
+        pw_stream_destroy(data->stream);
+        pw_thread_loop_unlock(m_threadLoop);
+
+        data->stream = nullptr;
+        data->isPlaying = false;
+        id = INACTIVE_ID;
     }
 
     bool LinuxAudioEngine::isPlaying(u32 id)
     {
-        return id != UINT32_MAX;
+        if (id != INACTIVE_ID)
+        {
+            LinuxAudioData *data = &m_clips[id];
+            pw_stream_state state = pw_stream_get_state(data->stream, nullptr);
+            return (state != PW_STREAM_STATE_PAUSED);
+        }
+        return false;
     }
 
     LinuxAudioData *LinuxAudioEngine::getFreeSlot(u32 &outID)
@@ -101,6 +216,16 @@ namespace idrs
         return &m_clips[MAX_ACTIVE_AUDIO_CLIPS - 1];
     }
 
+    void LinuxAudioEngine::onControlInfo(void *userdata, u32 id, const pw_stream_control *control)
+    {
+        if (id == SPA_PROP_volume)
+        {
+            LinuxAudioData *data = (LinuxAudioData *)userdata;
+            pw_stream_set_control(data->stream, id, control->n_values, control->values);
+        }
+    }
+
+    // TODO: Handle repeating/looping sound effects
     void LinuxAudioEngine::onProcessSound(void *userdata)
     {
         LinuxAudioData &data = *(LinuxAudioData *)userdata;
@@ -135,7 +260,7 @@ namespace idrs
         }
         else
         {
-            sound.id = UINT32_MAX;
+            sound.id = INACTIVE_ID;
             data.bufferPos = 0;
             data.isPlaying = false;
             spa_buf->datas[0].chunk->size = 0;

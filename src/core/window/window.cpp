@@ -83,6 +83,7 @@ namespace idrs
 
     void Window::close()
     {
+        m_platform.cleanup();
         m_isOpen = false;
     }
 
